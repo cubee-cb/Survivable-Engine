@@ -16,21 +16,31 @@ namespace SurviveCore
 
     public WorldActor() : base()
     {
+      position = Vector2.Zero;
+      velocity = Vector2.Zero;
+
+    }
+
+    public WorldActor(Vector2 spawnLocation) : base()
+    {
+      position = spawnLocation;
+      velocity = Vector2.Zero;
     }
 
     public virtual void LoadGraphics(GraphicsDevice graphicsDevice)
     {
-      texture = new Texture2D(graphicsDevice, 1, 1);
-    }
-
-    public virtual void Draw(SpriteBatch spriteBatch)
-    {
-      throw new NotImplementedException();
+      texture = new Texture2D(graphicsDevice, 32, 32);
     }
 
     public virtual void Update(int tick, float deltaTime)
     {
       throw new NotImplementedException();
+    }
+
+    public virtual void Draw(SpriteBatch spriteBatch)
+    {
+      // todo: handle spritesheets and multiple textures
+      spriteBatch.Draw(texture, position, Color.White);
     }
 
     public virtual Vector2 TryMove(Vector2 delta)

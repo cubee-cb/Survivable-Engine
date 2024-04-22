@@ -8,25 +8,18 @@ namespace SurviveCore.Engine
 {
   internal class SimpleWalker : WorldActor
   {
-    public SimpleWalker() : base()
-    {
-    }
-
-    public override void LoadGraphics()
+    /*
+    public override void LoadGraphics(GraphicsDevice graphicsDevice)
     {
       
     }
+    */
 
     public override void Update(int tick, float deltaTime)
     {
       velocity.X = 1;
 
       TryMove(velocity);
-    }
-
-    public override void Draw(SpriteBatch spriteBatch)
-    {
-
     }
 
 

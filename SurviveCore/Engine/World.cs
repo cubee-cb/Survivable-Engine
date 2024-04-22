@@ -6,6 +6,7 @@ using System.Text;
 
 namespace SurviveCore.Engine
 {
+  //todo: we could probably make a new class for each world type, but that's probably best left for the game content
   internal class World : Updatable, Renderable
   {
     List<WorldActor> actors;
@@ -15,9 +16,12 @@ namespace SurviveCore.Engine
       actors = new List<WorldActor>();
     }
 
-    public void LoadGraphics()
+    public void LoadGraphics(GraphicsDevice graphicsDevice)
     {
-
+      foreach (WorldActor actor in actors)
+      {
+        actor.LoadGraphics(graphicsDevice);
+      }
     }
 
     public void Update(int tick, float deltaTime)

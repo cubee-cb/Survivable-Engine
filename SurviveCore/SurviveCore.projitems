@@ -9,6 +9,8 @@
     <Import_RootNamespace>SurviveCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\GameInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\World.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\IdentifiableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Interfaces\ItemRenderable.cs" />

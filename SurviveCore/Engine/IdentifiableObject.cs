@@ -6,7 +6,7 @@ namespace SurviveCore.Engine
 {
   internal abstract class IdentifiableObject
   {
-    private const int id;
+    private int id;
 
     public IdentifiableObject()
     {
