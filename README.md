@@ -4,5 +4,8 @@ An object-oriented rebuild of [Everlost Isle](https://cubee.games/?rel=games&sub
 Built on Monogame 3.8.1 in Visual Studio 2022.
 
 Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though I intend to build the engine separately from the game's content in a way that can allow easy modding and potentially entirely new games to be built on it.
+
 I've decided to put my early experiments up here for people to see what I'm up to, and if I do something stupid or miss something obvious, hopefully someone can help me out :)
 
+Notes
+- I've named it Survivable because I've been suffixing all my interfaces with -able so far, and the old engine didn't use interfaces at all so it's a worthy distinction.
