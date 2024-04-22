@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SurviveCore", "SurviveCore\SurviveCore.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurviveDesktop", "SurviveDesktop\SurviveDesktop.csproj", "{A5F58922-1001-48B9-B2C9-537B97B75145}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5F58922-1001-48B9-B2C9-537B97B75145}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F58922-1001-48B9-B2C9-537B97B75145}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5F58922-1001-48B9-B2C9-537B97B75145}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F58922-1001-48B9-B2C9-537B97B75145}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F9DFE6D5-73A6-4B1A-87BD-7540C1CC6620}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SurviveCore\SurviveCore.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
+		SurviveCore\SurviveCore.projitems*{a5f58922-1001-48b9-b2c9-537b97b75145}*SharedItemsImports = 5
+	EndGlobalSection
+EndGlobal
