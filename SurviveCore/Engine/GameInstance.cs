@@ -51,14 +51,14 @@ namespace SurviveCore.Engine
       // how do we handle smoothing between low tickrates?
       deltaTimeAccumulated += deltaTime;
 
-      float targetDeltaTime = 1 / tickRate;
+      float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
         activeWorld.Update(tick, deltaTime);
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
-        ELDebug.Log("ping! acc delta: " + deltaTimeAccumulated);
+        ELDebug.Log("ping! acc delta: " + deltaTimeAccumulated + " / " + targetDeltaTime + " (took " + deltaTime + " this frame)");
       }
 
     }

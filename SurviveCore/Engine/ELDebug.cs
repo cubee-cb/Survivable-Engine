@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace SurviveCore.Engine
@@ -8,7 +9,7 @@ namespace SurviveCore.Engine
   {
     public static void Log(object output)
     {
-      Console.WriteLine("[log] " + output.ToString());
+      Debug.WriteLine("[log] " + output.ToString());
     }
 
   }

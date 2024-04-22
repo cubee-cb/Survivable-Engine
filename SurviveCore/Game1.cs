@@ -27,7 +27,7 @@ namespace SurviveCore
     protected override void Initialize()
     {
       // TODO: Add your initialization logic here
-      placeholderGameInstance = new GameInstance(targetTickRate: 30, graphicsDevice: GraphicsDevice);
+      placeholderGameInstance = new GameInstance(targetTickRate: 60, graphicsDevice: GraphicsDevice);
 
       base.Initialize();
     }
@@ -40,6 +40,7 @@ namespace SurviveCore
 
       // TODO: use this.Content to load your game content here
       texMissing = Content.Load<Texture2D>("tex/missing");
+
     }
 
 
