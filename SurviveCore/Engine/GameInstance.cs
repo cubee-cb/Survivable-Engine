@@ -51,6 +51,8 @@ namespace SurviveCore.Engine
       // how do we handle smoothing between low tickrates?
       deltaTimeAccumulated += deltaTime;
 
+      // this lets up catch up if we fall behind (assuming the device can handle it, otherwise this is will progressively take more performance), or slow down if we're going too fast.
+      // doesn't matter too much if we use fixed time step as the default is, but if we want to disable it, it shouldn't affect too much?
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
