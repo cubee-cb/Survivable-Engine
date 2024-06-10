@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using SurviveCore.Engine.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,7 +31,7 @@ namespace SurviveCore.Engine
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/generate worlds as needed
       World tempWorld = new World(this);
-      tempWorld.AddActor(new SimpleWalker());
+      //tempWorld.AddActor(new SimpleWalker());
 
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;

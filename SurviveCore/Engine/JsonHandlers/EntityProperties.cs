@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,13 +8,13 @@ namespace SurviveCore.Engine.JsonHandlers
   public readonly struct EntityProperties
   {
     // descriptions
-    public readonly string textureSheetName;
-    public readonly string internalName;
-    public readonly List<string> tags;
+    public readonly string textureSheetName = "entity.default";
+    public readonly string internalName = "entity.default";
+    public readonly List<string> tags = new List<string>();
 
     // stats
-    public readonly int maxHealth;
-    public readonly int inventorySize;
+    public readonly int maxHealth = 10;
+    public readonly int inventorySize = 5;
 
     // lua
     public readonly string luaAI;
@@ -26,8 +27,9 @@ namespace SurviveCore.Engine.JsonHandlers
 
     public EntityProperties(string jsonObject)
     {
-      textureSheetName = "defaultEntityTexture";
-      internalName = "default entity";
+      /*
+      textureSheetName =;
+      internalName = key;
       tags = new List<string>();
 
       maxHealth = 10;
@@ -38,7 +40,9 @@ namespace SurviveCore.Engine.JsonHandlers
       luaInteract = "";
       luaDamaged = "";
       luaDefeated = "";
+      */
 
+      this = JsonConvert.DeserializeObject<EntityProperties>(jsonObject);
 
     }
 

@@ -9,6 +9,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+
+using SurviveDesktop;
+
 namespace SurviveCore.Engine
 {
   // this class is not static. make sure to call the constructor before using any of its functions so the placeholder assets can be properly initialised.
@@ -19,6 +25,7 @@ namespace SurviveCore.Engine
     const string AUDIO_PATH = "sfx";
     const string MUSIC_PATH = "music";
     const string LUA_PATH = "lua";
+    const string JSON_PATH = "json";
 
     static Texture2D missingTexture;
     static Texture2D missingSound;
@@ -27,6 +34,7 @@ namespace SurviveCore.Engine
     static Dictionary<string, Texture2D> textures;
     static Dictionary<string, SoundEffect> sounds;
     static Dictionary<string, Song> music;
+    static Dictionary<string, string> jsonData;
     static Dictionary<string, string> luaScripts;
 
 
@@ -40,6 +48,7 @@ namespace SurviveCore.Engine
       textures = new Dictionary<string, Texture2D>();
       sounds = new Dictionary<string, SoundEffect>();
       music = new Dictionary<string, Song>();
+      jsonData = new Dictionary<string, string>();
       luaScripts = new Dictionary<string, string>();
 
     }
@@ -53,7 +62,7 @@ namespace SurviveCore.Engine
         //return false;
       }
 
-      string relativePath = string.Join('/', CONTENT_PATH, TEXTURE_PATH);
+      string relativePath = string.Join('/', CONTENT_PATH, TEXTURE_PATH, fileName);
 
       // make a thread to load files in the background?
       // need to figure out how threads work
@@ -75,10 +84,37 @@ namespace SurviveCore.Engine
       return missingTexture;
     }
 
-    public static string GetJson<T>()
+    public static bool LoadJson<T>(string fileName)
     {
+      //todo: implement this properly (thread?)
 
-      return jsonString;
+      // load json file content
+      string relativePath = string.Join('/', CONTENT_PATH, JSON_PATH, fileName);
+      string jsonString = Platform.LoadContentFile(relativePath);
+
+      // add it to the loaded json dictionary
+      jsonData.Add(fileName, jsonString);
+
+      ELDebug.Log("loaded json file " + fileName);
+
+      return true;
+    }
+
+    public static T GetJson<T>(string fileName)
+    {
+      if (jsonData.ContainsKey(fileName))
+      {
+        string jsonString = jsonData[fileName];
+
+        return JsonConvert.DeserializeObject<T>(jsonString);
+      }
+
+      else
+      {
+        ELDebug.Log("couldn't find json file " + fileName + " in loaded assets");
+        return default;
+      }
+
     }
 
   }

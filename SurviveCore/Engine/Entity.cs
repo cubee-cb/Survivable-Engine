@@ -17,6 +17,7 @@ namespace SurviveCore
 
     protected float health;
 
+    protected Texture2D texture;
     protected EntityProperties properties;
 
     /// <summary>
@@ -29,6 +30,7 @@ namespace SurviveCore
 
       properties = Warehouse.GetJson<EntityProperties>(id);
 
+      texture = Warehouse.GetTexture(properties.textureSheetName);
       health = properties.maxHealth;
     }
 
@@ -57,7 +59,6 @@ namespace SurviveCore
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(SpriteBatch spriteBatch, float tickProgress)
     {
-      Texture2D texture = Warehouse.GetTexture("todo: get actual texture name");
 
       // todo: handle spritesheets and multiple textures
       spriteBatch.Draw(texture, position, Color.White);

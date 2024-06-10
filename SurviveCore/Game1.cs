@@ -39,7 +39,6 @@ namespace SurviveCore
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
       // TODO: use this.Content to load your game content here
-      texMissing = Content.Load<Texture2D>("tex/missing");
 
     }
 

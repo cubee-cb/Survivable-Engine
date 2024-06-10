@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using SurviveCore.Engine.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -61,12 +60,12 @@ namespace SurviveCore.Engine
 
     }
 
-    public void AddActor(Entity newEntity)
+    public void AddEntity(Entity newEntity)
     {
       entities.Add(newEntity);
     }
 
-    public void RemoveActor(Entity removeEntity)
+    public void RemoveEntity(Entity removeEntity)
     {
       //removeEntity.Dispose();
       entities.Remove(removeEntity);
