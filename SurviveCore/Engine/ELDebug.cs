@@ -7,9 +7,9 @@ namespace SurviveCore.Engine
 {
   internal class ELDebug
   {
-    public static void Log(object output)
+    public static void Log(object output, bool error = false)
     {
-      Debug.WriteLine("[log] " + output.ToString());
+      Debug.WriteLine(output.ToString(), error? "[ERROR]" : "[log]");
     }
 
   }

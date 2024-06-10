@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using MoonSharp.Interpreter;
+using Newtonsoft.Json;
+
 namespace SurviveCore
 {
   internal abstract class Entity : IdentifiableObject
@@ -17,8 +20,9 @@ namespace SurviveCore
 
     protected float health;
 
-    protected Texture2D texture;
-    protected EntityProperties properties;
+    [JsonIgnore] protected Texture2D texture;
+    //protected EntityProperties properties;
+
 
     /// <summary>
     /// 
@@ -28,10 +32,13 @@ namespace SurviveCore
       position = Vector2.Zero;
       velocity = Vector2.Zero;
 
-      properties = Warehouse.GetJson<EntityProperties>(id);
+      //properties = Warehouse.GetJson<EntityProperties>(id);
 
-      texture = Warehouse.GetTexture(properties.textureSheetName);
-      health = properties.maxHealth;
+      //texture = Warehouse.GetTexture(properties.textureSheetName);
+      //health = properties.maxHealth;
+
+      //luaTick.DoString(entityProperties.luaTick);
+
     }
 
     /// <summary>
@@ -50,6 +57,7 @@ namespace SurviveCore
     /// <param name="deltaTime">delta time of the previous frame</param>
     public virtual void Update(int tick, float deltaTime)
     {
+      //luaTick.Call(luaTick.Globals["update"], this);
     }
 
     /// <summary>

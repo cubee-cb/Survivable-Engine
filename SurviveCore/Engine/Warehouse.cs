@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
-
+using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -20,7 +20,13 @@ namespace SurviveCore.Engine
   // this class is not static. make sure to call the constructor before using any of its functions so the placeholder assets can be properly initialised.
   public class Warehouse
   {
-    const string CONTENT_PATH = "assets";
+    // paths are formatted as:                        /CONTENT_PATH/nameSpace/TEXTURE_PATH/
+    // for example, the default values would become:  /assets/default/spr/
+    // paths are relative to the executable
+    const string CONTENT_PATH = "assets"; // the base path where assets will be stored
+
+    static string nameSpace = "default"; // the subfolder the assets are stored in, for modding purposes
+
     const string TEXTURE_PATH = "spr";
     const string AUDIO_PATH = "sfx";
     const string MUSIC_PATH = "music";
@@ -62,7 +68,7 @@ namespace SurviveCore.Engine
         //return false;
       }
 
-      string relativePath = string.Join('/', CONTENT_PATH, TEXTURE_PATH, fileName);
+      string relativePath = string.Join('/', CONTENT_PATH, nameSpace, TEXTURE_PATH, fileName);
 
       // make a thread to load files in the background?
       // need to figure out how threads work
@@ -84,37 +90,94 @@ namespace SurviveCore.Engine
       return missingTexture;
     }
 
-    public static bool LoadJson<T>(string fileName)
-    {
-      //todo: implement this properly (thread?)
-
-      // load json file content
-      string relativePath = string.Join('/', CONTENT_PATH, JSON_PATH, fileName);
-      string jsonString = Platform.LoadContentFile(relativePath);
-
-      // add it to the loaded json dictionary
-      jsonData.Add(fileName, jsonString);
-
-      ELDebug.Log("loaded json file " + fileName);
-
-      return true;
-    }
-
+    /// <summary>
+    /// Gets a json file and turns it into an object, and loads it if it isn't already.
+    /// </summary>
+    /// <typeparam name="T">The type to deserialise the json file to.</typeparam>
+    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .json</param>
+    /// <returns>An object based on the type provided to the function.</returns>
     public static T GetJson<T>(string fileName)
     {
-      if (jsonData.ContainsKey(fileName))
-      {
-        string jsonString = jsonData[fileName];
+      string internalName = string.Join('.', nameSpace, fileName);
 
-        return JsonConvert.DeserializeObject<T>(jsonString);
+      // try to load the file
+      if (!jsonData.ContainsKey(internalName))
+      {
+        // load json file content
+        string relativePath = string.Join('/', CONTENT_PATH, nameSpace, JSON_PATH, fileName + ".json");
+        string jsonString = Platform.LoadContentFile(relativePath);
+
+        // add it to the loaded json dictionary
+        jsonData.Add(internalName, jsonString);
+
+        ELDebug.Log("loaded json file " + internalName);
+      }
+
+      // find the file, process, and return it
+      if (jsonData.ContainsKey(internalName))
+      {
+        string jsonString = jsonData[internalName];
+
+        T thing = JsonConvert.DeserializeObject<T>(jsonString);
+        return thing;
       }
 
       else
       {
-        ELDebug.Log("couldn't find json file " + fileName + " in loaded assets");
+        ELDebug.Log("failed to obtain json file " + internalName, error: true);
         return default;
       }
 
+    }
+
+    /// <summary>
+    /// Gets a Lua file and turns it into an object, and loads it if it isn't already.
+    /// The script is run once to define functions.
+    /// </summary>
+    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .lua</param>
+    /// <returns>A Script built based on the file contents.</returns>
+    public static Script GetLua(string fileName)
+    {
+      string internalName = string.Join('.', nameSpace, fileName);
+
+      // try to load the file if it isn't already loaded
+      if (!luaScripts.ContainsKey(internalName))
+      {
+        // load lua file content
+        string relativePath = string.Join('/', CONTENT_PATH, nameSpace, LUA_PATH, fileName + ".lua");
+        string luaString = Platform.LoadContentFile(relativePath);
+
+        // add it to the loaded json dictionary
+        luaScripts.Add(internalName, luaString);
+
+        ELDebug.Log("loaded lua file " + internalName);
+      }
+
+      if (luaScripts.ContainsKey(internalName))
+      {
+        string luaString = luaScripts[internalName];
+
+        // execute lua script and put it into a Script object
+        Script script = new Script();
+        script.DoString(luaString);
+        return script;
+      }
+
+      else
+      {
+        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
+        return default;
+      }
+
+    }
+
+    /// <summary>
+    /// set the namespace the warehouse is working in. this is the same as the game/mod assets folder name
+    /// </summary>
+    /// <param name="newNameSpace">the namespace</param>
+    public static void SetNameSpace(string newNameSpace)
+    {
+      nameSpace = newNameSpace;
     }
 
   }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,8 +21,12 @@ namespace SurviveCore.Engine
     private int activeWorldIndex = 0;
     World activeWorld;
 
-    public GameInstance(int targetTickRate, GraphicsDevice graphicsDevice)
+    public GameInstance(int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager)
     {
+      // initialise warehouse
+      warehouse = new Warehouse(contentManager);
+      Warehouse.SetNameSpace("everlost");
+
       tickRate = targetTickRate;
       tick = 0;
       deltaTimeAccumulated = 0;
@@ -32,6 +37,10 @@ namespace SurviveCore.Engine
       //todo: temp; need to figure out how world storage is going to work, and load from file/generate worlds as needed
       World tempWorld = new World(this);
       //tempWorld.AddActor(new SimpleWalker());
+
+      // create a test mob
+      Mob testMob = new Mob("mob.testghost", tempWorld);
+      tempWorld.AddEntity(testMob);
 
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
@@ -72,9 +81,12 @@ namespace SurviveCore.Engine
 
     }
 
-    public void Draw(SpriteBatch spriteBatch, float tickProgress)
+    public void Draw(SpriteBatch spriteBatch, float deltaTime)
     {
-      activeWorld.Draw(spriteBatch, tickProgress);
+
+
+      // pass tick progress as 1, we have no smoothing yet
+      activeWorld.Draw(spriteBatch, tickProgress: 1);
     }
 
   }

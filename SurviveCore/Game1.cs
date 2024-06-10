@@ -27,7 +27,7 @@ namespace SurviveCore
     protected override void Initialize()
     {
       // TODO: Add your initialization logic here
-      placeholderGameInstance = new GameInstance(targetTickRate: 10 /* 60 */, graphicsDevice: GraphicsDevice);
+      placeholderGameInstance = new GameInstance(targetTickRate: 10 /* 60 */, graphicsDevice: GraphicsDevice, Content);
 
       base.Initialize();
     }
@@ -62,13 +62,14 @@ namespace SurviveCore
 
     protected override void Draw(GameTime gameTime)
     {
+      float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
       GraphicsDevice.Clear(Color.CornflowerBlue);
 
       // TODO: Add your drawing code here
       spriteBatch.Begin();
 
-      // pass tick progress as one, we have no smoothing yet
-      placeholderGameInstance.Draw(spriteBatch, tickProgress: 1);
+      placeholderGameInstance.Draw(spriteBatch, deltaTime);
 
       spriteBatch.End();
 

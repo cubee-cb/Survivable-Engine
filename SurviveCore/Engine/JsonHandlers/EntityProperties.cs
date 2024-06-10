@@ -14,14 +14,12 @@ namespace SurviveCore.Engine.JsonHandlers
 
     // stats
     public readonly int maxHealth = 10;
-    public readonly int inventorySize = 5;
 
     // lua
-    public readonly string luaAI;
     public readonly string luaTick;
     public readonly string luaInteract;
     public readonly string luaDamaged;
-    public readonly string luaDefeated;
+    public readonly string luaDestroyed;
 
 
 

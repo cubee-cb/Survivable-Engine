@@ -25,15 +25,6 @@ namespace SurviveCore.Engine
 
     public void LoadContent(ContentManager content)
     {
-      // how should we handle this? i don't think we want to pass the contentmanager to all the entitys, that seems inefficient
-      // especially as then we may have a sprite per instance of an entity, even when they're using the same sprite
-      
-      // get entitys to load their data
-      foreach (Entity entity in entities)
-      {
-        //content.Load<Texture2D>(entity.textureSheetName);
-      }
-
       // load world's data
     }
 

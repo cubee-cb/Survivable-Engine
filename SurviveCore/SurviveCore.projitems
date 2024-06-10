@@ -9,7 +9,9 @@
     <Import_RootNamespace>SurviveCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Mob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="..\SurviveCore\Engine\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />
