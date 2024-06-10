@@ -9,22 +9,21 @@
     <Import_RootNamespace>SurviveCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
+    <Compile Include="..\SurviveCore\Engine\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\GameInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\World.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\IdentifiableObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Interfaces\ItemRenderable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Interfaces\Locomotable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Interfaces\Renderable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Interfaces\Updatable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\SimpleWalker.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldActor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Mobs\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Engine\Interfaces\" />
     <Folder Include="$(MSBuildThisFileDirectory)Everlost\Items\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Mobs\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Worlds\" />
     <Folder Include="$(MSBuildThisFileDirectory)Everlost\Tile\" />
   </ItemGroup>
   <ItemGroup>

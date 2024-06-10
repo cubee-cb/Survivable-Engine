@@ -27,7 +27,7 @@ namespace SurviveCore
     protected override void Initialize()
     {
       // TODO: Add your initialization logic here
-      placeholderGameInstance = new GameInstance(targetTickRate: 60, graphicsDevice: GraphicsDevice);
+      placeholderGameInstance = new GameInstance(targetTickRate: 10 /* 60 */, graphicsDevice: GraphicsDevice);
 
       base.Initialize();
     }
@@ -68,7 +68,8 @@ namespace SurviveCore
       // TODO: Add your drawing code here
       spriteBatch.Begin();
 
-      placeholderGameInstance.Draw(spriteBatch);
+      // pass tick progress as one, we have no smoothing yet
+      placeholderGameInstance.Draw(spriteBatch, tickProgress: 1);
 
       spriteBatch.End();
 

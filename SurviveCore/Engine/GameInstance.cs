@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace SurviveCore.Engine
     private int tick;
     private float deltaTimeAccumulated;
 
+    GraphicsDevice graphicsDevice;
+    Warehouse warehouse;
+    Texture2D missingTex;
+
     private List<World> worlds;
     private int activeWorldIndex = 0;
     World activeWorld;
-
-    GraphicsDevice graphicsDevice;
 
     public GameInstance(int targetTickRate, GraphicsDevice graphicsDevice)
     {
@@ -27,16 +30,21 @@ namespace SurviveCore.Engine
       worlds = new List<World>();
       activeWorldIndex = 0;
 
-
       //todo: temp; need to figure out how world storage is going to work, and load from file/generate worlds as needed
-      World tempWorld = new World();
+      World tempWorld = new World(this);
       tempWorld.AddActor(new SimpleWalker());
-
-      tempWorld.LoadGraphics(graphicsDevice);
 
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
+
+      LoadContent();
+
       ELDebug.Log("game instance initialised");
+    }
+
+    public void LoadContent()
+    {
+
     }
 
     public void Update(float deltaTime)
@@ -65,9 +73,9 @@ namespace SurviveCore.Engine
 
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, float tickProgress)
     {
-      activeWorld.Draw(spriteBatch);
+      activeWorld.Draw(spriteBatch, tickProgress);
     }
 
   }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,56 +7,69 @@ using System.Text;
 
 namespace SurviveCore.Engine
 {
-  //todo: we could probably make a new class for each world type, but that's probably best left for the game content
-  internal class World : Updatable, Renderable
+  //todo: we could probably make a new class for each world type, but that's probably best left for the games/mods
+  internal class World
   {
-    List<WorldActor> actors;
+    List<Entity> entities;
+    GameInstance gameInstance;
 
     public World()
     {
-      actors = new List<WorldActor>();
+      entities = new List<Entity>();
     }
 
-    public void LoadGraphics(GraphicsDevice graphicsDevice)
+    public World(GameInstance gameInstance)
     {
-      foreach (WorldActor actor in actors)
+      entities = new List<Entity>();
+      this.gameInstance = gameInstance;
+    }
+
+    public void LoadContent(ContentManager content)
+    {
+      // how should we handle this? i don't think we want to pass the contentmanager to all the entitys, that seems inefficient
+      // especially as then we may have a sprite per instance of an entity, even when they're using the same sprite
+      
+      // get entitys to load their data
+      foreach (Entity entity in entities)
       {
-        actor.LoadGraphics(graphicsDevice);
+        //content.Load<Texture2D>(entity.textureSheetName);
       }
+
+      // load world's data
     }
 
     public void Update(int tick, float deltaTime)
     {
 
-      // update world's actors
+      // update world's entitys
       //todo: create a partitioning system so only entities near the camera get updated
-      foreach (WorldActor actor in actors)
+      foreach (Entity entity in entities)
       {
-        actor.Update(tick, deltaTime);
+        entity.Update(tick, deltaTime);
       }
 
     }
 
-    public void Draw(SpriteBatch spriteBatch)
+    public void Draw(SpriteBatch spriteBatch, float tickProgress)
     {
-      // draw world's actors
-      foreach (WorldActor actor in actors)
+      // draw world's entitys
+      foreach (Entity entity in entities)
       {
-        actor.Draw(spriteBatch);
+        entity.Draw(spriteBatch, tickProgress);
       }
 
 
     }
 
-    public void AddActor(WorldActor newActor)
+    public void AddActor(Entity newEntity)
     {
-      actors.Add(newActor);
+      entities.Add(newEntity);
     }
 
-    public void RemoveActor(WorldActor removeActor)
+    public void RemoveActor(Entity removeEntity)
     {
-      removeActor.Dispose();
-      actors.Remove(removeActor);
+      //removeEntity.Dispose();
+      entities.Remove(removeEntity);
     }
 
 
