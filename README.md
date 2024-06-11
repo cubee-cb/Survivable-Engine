@@ -1,11 +1,41 @@
-# Survivable Engine
+# Survivable Engine (placeholder name)
 
 An object-oriented rebuild of [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle)'s engine, which was originally internally known as Survive. 
 Built on Monogame 3.8.1 in Visual Studio 2022.
 
-Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though I intend to build the engine separately from the game's content in a way that can allow easy modding and potentially entirely new games to be built on it.
+Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it.
 
 I've decided to put my early experiments up here for people to see what I'm up to, and if I do something stupid or miss something obvious, hopefully someone can help me out :)
 
-Notes
-- I've named it Survivable because I've been suffixing all my interfaces with -able so far, and the old engine didn't use interfaces at all so it's a worthy distinction.
+So far, I've:
+- Set up an Instance system to have multiple game clients run in the same executable, and run as different modes like Server or Client. Potentially useful for split-screen.
+- Set up a ticking system, so the update rate of each instance can be modified and the game's framereate can be unlocked without adversely affecting the game loop.
+- Made a runtime-loading asset system called Warehouse, which lets me load Json, Lua, and PNG files at runtime for loading mods.
+- Added an Entity/Mob system that can somewhat be controlled through basic Lua scripting and inherits properties from Json files.
+- Made a simple world generator system that uses a List of WorldGenRoutines to build world maps step-by-step with reusable routines.
+
+Notable milestones to-do:
+- Drawing with a camera offset.
+	- Monogame extended camera?
+- Add the player.
+- Add dynamic tiles.
+	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
+- Collisions with entities and tiles.
+- Inventories and items.
+- Slopes to move up the world ground.
+- Saving worlds and players.
+	- Should players be per-world as before like Stardew, or separate like Terraria?
+- Worldgen steps driven by Json.
+	- Currently they are just a bunch of classes, how to link them to Json?
+- Multiple worlds/"dimensions" per-save with their own mobs and world properties.
+	- Portals with destination world/position. (may be doors or literal portals)
+	- Mob spawns, world generator.
+- Entity smoothing between ticks.
+- Networking/splitscreen/multiplayer.
+	- Actual differences between host/client/dedicated.
+	- Tilemap/entity position syncing.
+- Game progression triggers.
+	- May be step-by-step or simple boolean.
+	- May have dependencies before availability. May optionally need to be fulfilled specifically after being made available, or can be completed beforehand without applying effects until later.
+
+
