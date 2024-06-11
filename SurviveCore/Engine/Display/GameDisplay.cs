@@ -11,11 +11,14 @@ namespace SurviveCore.Engine.Display
     private static GameDisplay currentDisplayInstance;
     private static EGameDisplayLayer currentDisplayLayer;
 
-    const int INTERNAL_WIDTH = 240;
-    const int INTERNAL_HEIGHT = 200;
+    const int BASE_INTERNAL_WIDTH = 128;
+    const int BASE_INTERNAL_HEIGHT = 128;
+    public const int OVERDRAW_MARGIN = 1;
 
     int width;
     int height;
+    int internalWidth;
+    int internalHeight;
     float scaleFactor;
 
     float UIScaleMultiplier = 1.0f;
@@ -37,33 +40,35 @@ namespace SurviveCore.Engine.Display
       ScaleDisplay(width, height);
     }
 
-    public float ScaleDisplay(int width, int height)
+    public float ScaleDisplay(int _width, int _height)
     {
-      // clear displays
-      display.Dispose();
-      renderGameWorld.Dispose();
-      renderUI.Dispose();
-      renderOverlay.Dispose();
+      // dispose the displays
+      display?.Dispose();
+      renderGameWorld?.Dispose();
+      renderUI?.Dispose();
+      renderOverlay?.Dispose();
 
-      this.width = width;
-      this.height = height;
+      width = _width;
+      height = _height;
 
-      float scale = Math.Min(width / INTERNAL_WIDTH, height / INTERNAL_HEIGHT);
+      scaleFactor = (float)Math.Floor((double)Math.Min(width / BASE_INTERNAL_WIDTH, height / BASE_INTERNAL_HEIGHT));
 
+      // OVERDRAW_MARGIN is multiplied by 2 so it's added to both sides
+      internalWidth = (int)(width / scaleFactor) + OVERDRAW_MARGIN * 2;
+      internalHeight = (int)(height / scaleFactor) + OVERDRAW_MARGIN * 2;
 
+      // create the displays
       display = new RenderTarget2D(graphicsDevice, width, height);
-      renderGameWorld = new RenderTarget2D(graphicsDevice, width, height);
+      renderGameWorld = new RenderTarget2D(graphicsDevice, internalWidth, internalHeight);
       renderUI = new RenderTarget2D(graphicsDevice, width, height);
       renderOverlay = new RenderTarget2D(graphicsDevice, width, height);
 
-
-      scaleFactor = scale;
-      return scale;
+      return scaleFactor;
     }
 
     public void Begin()
     {
-      spriteBatch.Begin();
+      spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
     }
 
     public void End()
@@ -71,19 +76,61 @@ namespace SurviveCore.Engine.Display
       spriteBatch.End();
     }
 
-    public static void SetDisplayInstance(GameDisplay display)
-    {
-      currentDisplayInstance = display;
-    }
-
     public void SetDisplayLayer(EGameDisplayLayer layer)
     {
       switch (layer)
       {
+        case EGameDisplayLayer.Base:
+          graphicsDevice.SetRenderTarget(display);
+          graphicsDevice.Clear(Color.Black);
+          break;
         case EGameDisplayLayer.Game:
           graphicsDevice.SetRenderTarget(renderGameWorld);
+          graphicsDevice.Clear(Color.CornflowerBlue);
+          break;
+        case EGameDisplayLayer.UI:
+          graphicsDevice.SetRenderTarget(renderUI);
+          graphicsDevice.Clear(Color.Transparent);
+          break;
+        case EGameDisplayLayer.Overlay:
+          graphicsDevice.SetRenderTarget(renderOverlay);
+          graphicsDevice.Clear(Color.Transparent);
           break;
       }
+    }
+
+    public Texture2D ComposeLayers()
+    {
+      graphicsDevice.SetRenderTarget(display);
+      graphicsDevice.Clear(Color.Black);
+      spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+
+      // make sure all the layers scale nicely
+      int targetInternalWidth = (int)(internalWidth * scaleFactor);
+      int targetInternalHeight = (int)(internalHeight * scaleFactor);
+      int internalOffsetX = (width - targetInternalWidth) / 2;
+      int internalOffsetY = (height - targetInternalHeight) / 2;
+
+      // draw the layers
+      spriteBatch.Draw(renderGameWorld, new Rectangle(internalOffsetX, internalOffsetY, targetInternalWidth, targetInternalHeight), Color.White);
+
+      spriteBatch.Draw(renderUI, display.Bounds, Color.White);
+      spriteBatch.Draw(renderOverlay, display.Bounds, Color.White);
+
+      spriteBatch.End();
+
+      // return the display as a texture, to use later
+      return display;
+    }
+
+
+
+
+    // statics
+
+    public static void SetDisplayInstance(GameDisplay display)
+    {
+      currentDisplayInstance = display;
     }
 
     public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0)
@@ -105,8 +152,9 @@ namespace SurviveCore.Engine.Display
 
   public enum EGameDisplayLayer
   {
-    Game = 0,
-    UI = 1,
-    Overlay = 2,
+    Base = 0,
+    Game = 1,
+    UI = 2,
+    Overlay = 3,
   }
 }

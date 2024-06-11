@@ -19,7 +19,7 @@ namespace SurviveCore.Engine
     private float deltaTimeAccumulated;
 
     GraphicsDevice graphicsDevice;
-    GameDisplay display;
+    public GameDisplay display;
     Warehouse warehouse;
     Texture2D missingTex;
 
@@ -94,7 +94,7 @@ namespace SurviveCore.Engine
 
     }
 
-    public void Draw(float deltaTime)
+    public Texture2D Draw(float deltaTime)
     {
       // dedicated servers don't need to bother with rendering
       if (instanceMode != EInstanceMode.Dedicated)
@@ -102,14 +102,49 @@ namespace SurviveCore.Engine
         // set GameDisplay methods to draw to this instance's screen
         GameDisplay.SetDisplayInstance(display);
 
+
+        // draw to the game world layer
         display.SetDisplayLayer(EGameDisplayLayer.Game);
         display.Begin();
 
         // pass tick progress to draw, so objects can visually smooth to their new location
         activeWorld.Draw(deltaTimeAccumulated * tickRate); // eqiv. to (deltaTimeAcc / targetDeltaTime)
 
+        // debug things
+        for (int i = 0; i < 500; i++)
+        {
+          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16), new Microsoft.Xna.Framework.Vector2(i * 12, i));
+        }
+
         display.End();
+
+
+        // draw to the UI layer
+        display.SetDisplayLayer(EGameDisplayLayer.UI);
+        display.Begin();
+
+        // debug things
+        for (int i = 0; i < 500; i++)
+        {
+          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16), new Microsoft.Xna.Framework.Vector2(i * 12, i));
+        }
+
+        display.End();
+
+
+        // draw to overlay layer
+        display.SetDisplayLayer(EGameDisplayLayer.Overlay);
+        display.Begin();
+
+        display.End();
+
+
+        // compose display layers to its base layer, and return them to the main loop
+        return display.ComposeLayers();
+
       }
+
+      return null;
     }
 
   }

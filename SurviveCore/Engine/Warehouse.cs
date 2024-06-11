@@ -36,9 +36,9 @@ namespace SurviveCore.Engine
 
     private const char NAMESPACE_SEPARATOR = '.';
 
-    private static Texture2D missingTexture;
-    private static SoundEffect missingSound;
-    private static Song missingMusic;
+    public static Texture2D missingTexture;
+    public static SoundEffect missingSound;
+    public static Song missingMusic;
 
     private static Dictionary<string, Texture2D> textures;
     private static Dictionary<string, SoundEffect> sounds;
