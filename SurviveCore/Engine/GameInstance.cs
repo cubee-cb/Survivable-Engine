@@ -10,6 +10,9 @@ namespace SurviveCore.Engine
 {
   internal class GameInstance
   {
+    EInstanceMode instanceMode;
+    int playerIndex;
+
     private int tickRate;
     private int tick;
     private float deltaTimeAccumulated;
@@ -22,10 +25,13 @@ namespace SurviveCore.Engine
     private int activeWorldIndex = 0;
     World activeWorld;
 
-    public GameInstance(int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager)
+    public GameInstance(EInstanceMode instanceMode, int playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager)
     {
+      this.instanceMode = instanceMode;
+      this.playerIndex = playerIndex;
+
       // initialise warehouse
-      warehouse = new Warehouse(contentManager);
+      warehouse = new Warehouse(contentManager, graphicsDevice);
       Warehouse.SetNameSpace("everlost");
 
       tickRate = targetTickRate;
@@ -39,6 +45,12 @@ namespace SurviveCore.Engine
       World tempWorld = new(this, 10, 10, new OverworldGenerator());
 
       //tempWorld.AddActor(new SimpleWalker());
+
+      // create local player (unless this is a dedicated server)
+      if (instanceMode != EInstanceMode.Dedicated)
+      {
+        //tempWorld.AddEntity(new Player(playerIndex, tempWorld));
+      }
 
       // create a test mob
       Mob testMob = new("mob.testghost", tempWorld);
@@ -78,10 +90,12 @@ namespace SurviveCore.Engine
 
     public void Draw(SpriteBatch spriteBatch, float deltaTime)
     {
-
-
-      // pass tick progress as 1, we have no smoothing yet
-      activeWorld.Draw(spriteBatch, tickProgress: 1);
+      // dedicated servers don't need to bother with rendering
+      if (instanceMode != EInstanceMode.Dedicated)
+      {
+        // pass tick progress as 1, we have no smoothing yet
+        activeWorld.Draw(spriteBatch, tickProgress: 1);
+      }
     }
 
   }

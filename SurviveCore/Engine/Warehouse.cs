@@ -43,13 +43,18 @@ namespace SurviveCore.Engine
     static Dictionary<string, string> jsonData;
     static Dictionary<string, string> luaScripts;
 
+    private static GraphicsDevice graphicsDevice;
 
-    public Warehouse(ContentManager content)
+
+    public Warehouse(ContentManager content, GraphicsDevice outerGraphicsDevice)
     {
-      // content.Load should only be used for built-in engine content like placeholders, not for game/mod assets.
+      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/mod assets.
       missingTexture = content.Load<Texture2D>("tex/missing");
       //missingSound = content.Load<Texture2D>("sfx/missing");
       //missingMusic = content.Load<Texture2D>("music/missing");
+
+      // set reference to the GraphicsDevice
+      graphicsDevice = outerGraphicsDevice;
 
       textures = new Dictionary<string, Texture2D>();
       sounds = new Dictionary<string, SoundEffect>();
@@ -59,7 +64,7 @@ namespace SurviveCore.Engine
 
     }
 
-    public static bool LoadTexture(string fileName)
+    public static Texture2D GetTexture(string fileName)
     {
       string internalName = string.Join('.', nameSpace, fileName);
 
@@ -67,36 +72,37 @@ namespace SurviveCore.Engine
       if (fileName == "")
       {
         ELDebug.Log("tried to load an empty texture filename in " + internalName, error: true);
-        return default;
+        return missingTexture;
       }
 
       // if the file exists, create a temporary blank texture so the thing is invisible while it loads
       // if it doesn't, exit early instead. GetTexture should handle nonexistent assets and return the missing texture instead
-      if (true)
-      {
-        //return false;
-      }
-
-      string relativePath = string.Join('/', CONTENT_PATH, nameSpace, TEXTURE_PATH, fileName);
 
       // make a thread to load files in the background?
       // need to figure out how threads work
       //Thread thread = new Thread(new ThreadStart(ThreadedLoadTexture));
 
-      // call platform-specific code here
-      textures.Add(fileName, missingTexture);
-
-      return true;
-    }
-
-    public static Texture2D GetTexture(string fileName)
-    {
-      if (textures.ContainsKey(fileName))
+      // try to load the file if it isn't already loaded
+      string relativePath = string.Join('/', CONTENT_PATH, nameSpace, TEXTURE_PATH, fileName + ".png");
+      if (!textures.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
-        return textures[fileName];
+        Stream stream = Platform.GetStream(relativePath);
+        Texture2D loadedTexture = Texture2D.FromStream(graphicsDevice, stream);
+        stream.DisposeAsync();
+
+        textures.Add(internalName, loadedTexture);
       }
 
-      return missingTexture;
+      // find the loaded texture and return it
+      if (textures.ContainsKey(internalName))
+      {
+        return textures[internalName];
+      }
+      else
+      {
+        ELDebug.Log("failed to obtain texture at " + relativePath, error: true);
+        return missingTexture;
+      }
     }
 
     /// <summary>
@@ -117,10 +123,10 @@ namespace SurviveCore.Engine
       }
 
       // try to load the file
-      if (!jsonData.ContainsKey(internalName))
+      string relativePath = string.Join('/', CONTENT_PATH, nameSpace, JSON_PATH, fileName + ".json");
+      if (!jsonData.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         // load json file content
-        string relativePath = string.Join('/', CONTENT_PATH, nameSpace, JSON_PATH, fileName + ".json");
         string jsonString = Platform.LoadContentFile(relativePath);
 
         // add it to the loaded json dictionary
@@ -129,7 +135,7 @@ namespace SurviveCore.Engine
         ELDebug.Log("loaded json file " + internalName);
       }
 
-      // find the file, process, and return it
+      // find the loaded json, process, and return it
       if (jsonData.ContainsKey(internalName))
       {
         string jsonString = jsonData[internalName];
@@ -140,7 +146,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain json file " + internalName, error: true);
+        ELDebug.Log("failed to obtain json file at " + relativePath, error: true);
         return default;
       }
 
@@ -164,10 +170,10 @@ namespace SurviveCore.Engine
       }
 
       // try to load the file if it isn't already loaded
-      if (!luaScripts.ContainsKey(internalName))
+      string relativePath = string.Join('/', CONTENT_PATH, nameSpace, LUA_PATH, fileName + ".lua");
+      if (!luaScripts.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         // load lua file content
-        string relativePath = string.Join('/', CONTENT_PATH, nameSpace, LUA_PATH, fileName + ".lua");
         string luaString = Platform.LoadContentFile(relativePath);
 
         // add it to the loaded json dictionary
@@ -176,6 +182,7 @@ namespace SurviveCore.Engine
         ELDebug.Log("loaded lua file " + internalName);
       }
 
+      // find the loaded lua, process, and return it
       if (luaScripts.ContainsKey(internalName))
       {
         string luaString = luaScripts[internalName];
@@ -188,7 +195,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
+        ELDebug.Log("failed to obtain lua file at " + relativePath, error: true);
         return default;
       }
 
