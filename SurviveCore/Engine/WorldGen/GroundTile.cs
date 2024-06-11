@@ -45,7 +45,7 @@ namespace SurviveCore.Engine.WorldGen
     public void Draw(SpriteBatch spriteBatch, float tickProgress, Vector2 position)
     {
       // todo: handle spritesheets and multiple textures
-      spriteBatch.Draw(texture, position - new Vector2(0, 1) * TILE_THICKNESS, Color.White);
+      spriteBatch.Draw(texture, position - new Vector2(0, elevation) * TILE_THICKNESS, Color.White);
     }
 
 
