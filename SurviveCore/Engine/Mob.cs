@@ -22,12 +22,21 @@ namespace SurviveCore.Engine
     public Mob(string id, World world) : base(id, world)
     {
 
+      // set initial properties
       properties = Warehouse.GetJson<MobProperties>(id);
-
-      texture = Warehouse.GetTexture(properties.textureSheetName);
       health = properties.maxHealth;
 
-      // create inventory
+      // load assets
+      if (properties.textureSheetName != null) texture = Warehouse.GetTexture(properties.textureSheetName);
+      if (properties.sounds != null)
+      {
+        foreach (string fileName in properties.sounds)
+        {
+          Warehouse.GetSoundEffect(fileName);
+        }
+      }
+
+      // create inventory (temoporary; will use Item class when implemented)
       inventory = new List<int>();
       for (int i = 0; i < properties.inventorySize; i++)
       {

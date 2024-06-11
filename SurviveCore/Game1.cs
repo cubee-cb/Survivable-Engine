@@ -25,6 +25,10 @@ namespace SurviveCore
       _graphics = new GraphicsDeviceManager(this);
       Content.RootDirectory = "Content";
       IsMouseVisible = true;
+
+      // uncomment these to uncap the framerate
+      _graphics.SynchronizeWithVerticalRetrace = false;
+      IsFixedTimeStep = false;
     }
 
 
@@ -37,8 +41,8 @@ namespace SurviveCore
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances = new()
       {
-        new GameInstance(EInstanceMode.Host, -1, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content),
-        //new GameInstance(EInstanceMode.Client, 0, targetTickRate: 30 /* 60 */, graphicsDevice: GraphicsDevice, Content)
+        new GameInstance(EInstanceMode.Host, 0, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content),
+        //new GameInstance(EInstanceMode.Client, 1, targetTickRate: 30 /* 60 */, graphicsDevice: GraphicsDevice, Content)
       };
 
       base.Initialize();

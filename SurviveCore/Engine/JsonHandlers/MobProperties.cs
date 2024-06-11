@@ -8,9 +8,10 @@ namespace SurviveCore.Engine.JsonHandlers
   public struct MobProperties
   {
     // descriptions
-    public string textureSheetName = "mob.default";
-    public string internalName = "mob.default";
+    public string textureSheetName = "mob_default";
+    public string internalName = "mob_default";
     public List<string> tags = new();
+    public List<string> sounds = new();
 
     // stats
     public int maxHealth = 10;

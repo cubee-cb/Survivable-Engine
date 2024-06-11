@@ -25,24 +25,27 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="assets\everlost\json\ground.grass.json">
+    <None Update="assets\everlost\json\ground_grass.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\json\mob.testghost.json">
+    <None Update="assets\everlost\json\mob_testghost.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\lua\mob.testghost.lua">
+    <None Update="assets\everlost\lua\mob_testghost.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\spr\ground.grass.png">
+    <None Update="assets\everlost\sfx\ground_grass_step.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\spr\mob.testghost.png">
+    <None Update="assets\everlost\sfx\mob_testghost_alert.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="assets\everlost\spr\" />
+    <None Update="assets\everlost\spr\ground_grass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\everlost\spr\mob_testghost.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

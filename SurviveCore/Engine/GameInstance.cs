@@ -53,7 +53,7 @@ namespace SurviveCore.Engine
       }
 
       // create a test mob
-      Mob testMob = new("mob.testghost", tempWorld);
+      Mob testMob = new("mob_testghost", tempWorld);
       tempWorld.AddEntity(testMob);
 
       worlds.Add(tempWorld);
@@ -81,9 +81,10 @@ namespace SurviveCore.Engine
       {
         activeWorld.Update(tick, deltaTime);
 
+        ELDebug.Log("ping! acc delta: " + deltaTimeAccumulated + "ms / " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
-        ELDebug.Log("ping! acc delta: " + deltaTimeAccumulated + " / " + targetDeltaTime + " (took " + deltaTime + " this frame)");
       }
 
     }

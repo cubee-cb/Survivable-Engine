@@ -21,11 +21,20 @@ namespace SurviveCore.Engine.WorldGen
 
     public GroundTile(string id, int elevation)
     {
+
+      // set initial properties
       properties = Warehouse.GetJson<GroundProperties>(id);
-
-      texture = Warehouse.GetTexture(properties.textureSheetName);
-
       this.elevation = elevation;
+
+      // load assets
+      if (properties.textureSheetName != null) texture = Warehouse.GetTexture(properties.textureSheetName);
+      if (properties.sounds != null)
+      {
+        foreach (string fileName in properties.sounds)
+        {
+          Warehouse.GetSoundEffect(fileName);
+        }
+      }
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);

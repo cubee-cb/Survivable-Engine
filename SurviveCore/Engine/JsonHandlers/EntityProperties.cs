@@ -5,21 +5,19 @@ using System.Text;
 
 namespace SurviveCore.Engine.JsonHandlers
 {
-  public readonly struct EntityProperties
+  public struct EntityProperties
   {
     // descriptions
-    public readonly string textureSheetName = "entity.default";
-    public readonly string internalName = "entity.default";
-    public readonly List<string> tags = new();
+    public string textureSheetName = "entity_default";
+    public string internalName = "entity_default";
+    public List<string> tags = new();
+    public List<string> sounds = new();
 
     // stats
-    public readonly int maxHealth = 10;
+    public int maxHealth = 10;
 
     // lua
-    public readonly string luaTick;
-    public readonly string luaInteract;
-    public readonly string luaDamaged;
-    public readonly string luaDestroyed;
+    public string lua;
 
 
 
@@ -33,11 +31,7 @@ namespace SurviveCore.Engine.JsonHandlers
       maxHealth = 10;
       inventorySize = 5;
 
-      luaAI = "";
-      luaTick = "";
-      luaInteract = "";
-      luaDamaged = "";
-      luaDefeated = "";
+      lua = "";
       */
 
       this = JsonConvert.DeserializeObject<EntityProperties>(jsonObject);

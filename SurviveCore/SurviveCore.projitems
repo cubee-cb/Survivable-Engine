@@ -31,10 +31,6 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
     <Folder Include="$(MSBuildThisFileDirectory)Engine\Interfaces\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Items\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Mobs\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Worlds\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Everlost\Tile\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
