@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SurviveCore.Engine;
+using System;
 
 namespace SurviveCore
 {
@@ -9,6 +10,8 @@ namespace SurviveCore
   {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch spriteBatch;
+
+    public static Random rnd = new Random();
 
     Texture2D texMissing;
 

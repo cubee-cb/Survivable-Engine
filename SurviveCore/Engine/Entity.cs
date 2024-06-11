@@ -14,6 +14,8 @@ namespace SurviveCore
 {
   internal abstract class Entity : IdentifiableObject
   {
+    [JsonIgnore] World world;
+
     // should this be vector3? thinking we want to support elevations
     protected Vector2 position;
     protected Vector2 velocity;
@@ -27,8 +29,10 @@ namespace SurviveCore
     /// <summary>
     /// 
     /// </summary>
-    public Entity(string id) : base()
+    public Entity(string id, World world) : base()
     {
+      this.world = world;
+
       position = Vector2.Zero;
       velocity = Vector2.Zero;
 
@@ -73,10 +77,10 @@ namespace SurviveCore
     }
 
     /// <summary>
-    /// try to move in a direction. if a collision is detected, the entity will only move as far is it can and the amount it moved will be returned.
+    /// Try to move in a direction. If a collision is detected, the entity will only move as far is it can and the amount it moved will be returned.
     /// </summary>
-    /// <param name="delta">distance to try to move</param>
-    /// <returns>actual distance the entity moved</returns>
+    /// <param name="delta">Distance to try to move.</param>
+    /// <returns>Actual distance the entity moved.</returns>
     public virtual Vector2 TryMove(Vector2 delta)
     {
       // todo: check for collisions with objects this object is allowed to collide with

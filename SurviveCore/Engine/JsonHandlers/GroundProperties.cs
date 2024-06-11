@@ -5,23 +5,23 @@ using System.Text;
 
 namespace SurviveCore.Engine.JsonHandlers
 {
-  public struct MobProperties
+  public struct GroundProperties
   {
     // descriptions
-    public string textureSheetName = "mob.default";
-    public string internalName = "mob.default";
+    public string textureSheetName = "ground.default";
+    public string internalName = "ground.default";
     public List<string> tags = new();
 
     // stats
-    public int maxHealth = 10;
-    public int inventorySize = 5;
+    //public int elevation = 0;
+    //public int elevation = 0;
 
     // lua
     public string lua;
 
 
 
-    public MobProperties(string jsonObject)
+    public GroundProperties(string jsonObject)
     {
       /*
       textureSheetName =;
@@ -38,7 +38,7 @@ namespace SurviveCore.Engine.JsonHandlers
       luaDefeated = "";
       */
 
-      this = JsonConvert.DeserializeObject<MobProperties>(jsonObject);
+      this = JsonConvert.DeserializeObject<GroundProperties>(jsonObject);
 
     }
 

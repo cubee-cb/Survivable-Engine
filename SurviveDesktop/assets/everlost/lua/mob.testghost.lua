@@ -2,12 +2,15 @@
 
 -- called every tick
 function AI(self)
-  print(self)
+  DebugLog(self)
   --self.position.X = self.position.X + 1
   Move(1, 0)
   local target = GetTarget({"tags", "are", "kinda", "cool"})
-  local x = target[0]
-  local y = target[1]
+  local x = target[1]
+  local y = target[2]
+
+  DebugLog("x target: " .. x)
+  DebugLog("y target: " .. y)
 
   MoveToward(x, y)
 

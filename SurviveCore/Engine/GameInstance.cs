@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,11 +36,12 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/generate worlds as needed
-      World tempWorld = new World(this);
+      World tempWorld = new(this, new OverworldGenerator());
+
       //tempWorld.AddActor(new SimpleWalker());
 
       // create a test mob
-      Mob testMob = new Mob("mob.testghost", tempWorld);
+      Mob testMob = new("mob.testghost", tempWorld);
       tempWorld.AddEntity(testMob);
 
       worlds.Add(tempWorld);

@@ -10,7 +10,7 @@ namespace SurviveCore.Engine.JsonHandlers
     // descriptions
     public readonly string textureSheetName = "entity.default";
     public readonly string internalName = "entity.default";
-    public readonly List<string> tags = new List<string>();
+    public readonly List<string> tags = new();
 
     // stats
     public readonly int maxHealth = 10;

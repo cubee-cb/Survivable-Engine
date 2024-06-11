@@ -11,7 +11,6 @@ namespace SurviveCore.Engine
   [MoonSharpUserData]
   internal class Mob : Entity
   {
-    [JsonIgnore] World world;
 
     [JsonIgnore] MobProperties properties;
 
@@ -20,10 +19,8 @@ namespace SurviveCore.Engine
     // lua scripts
     [JsonIgnore] private Script lua;
 
-    public Mob(string id, World world) : base(id)
+    public Mob(string id, World world) : base(id, world)
     {
-      this.world = world;
-
 
       properties = Warehouse.GetJson<MobProperties>(id);
 
@@ -39,6 +36,9 @@ namespace SurviveCore.Engine
 
       // initialise lua
       lua = Warehouse.GetLua(properties.lua);
+
+      // pass methods to lua
+      lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
       lua.Globals["Move"] = (Func<float, float, bool>)Move;
       lua.Globals["MoveToward"] = (Func<float, float, bool>)MoveToward;
       lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
@@ -63,15 +63,13 @@ namespace SurviveCore.Engine
 
     private bool Move(float x, float y)
     {
-      position.X += x;
-      position.Y += y;
+      TryMove(new Vector2(x, y));
       return true;
     }
 
     private bool MoveToward(float x, float y)
     {
-      position.X += Math.Sign(position.X - x);
-      position.Y += Math.Sign(position.Y - y);
+      TryMove(new Vector2(Math.Sign(x - position.X), Math.Sign(y - position.Y)));
       return true;
     }
 
@@ -80,10 +78,12 @@ namespace SurviveCore.Engine
       // find target matching tags
       foreach (string tag in tags.Values.AsObjects())
       {
-        ELDebug.Log(tag);
+        //ELDebug.Log(tag);
       }
 
-      return new Table(lua, DynValue.NewNumber(0), DynValue.NewNumber(0));
+      Vector2 target = new Vector2(Game1.rnd.Next(0, 512), Game1.rnd.Next(0, 512));
+
+      return new Table(lua, DynValue.NewNumber(target.X), DynValue.NewNumber(target.Y));
 
     }
 

@@ -1,0 +1,18 @@
+{
+  // properties
+  "internalName": "ground.grass",
+  "textureSheetName": "ground.grass",
+  "tags": [
+    "grass",
+    "growsTrees"
+  ],
+
+  // stats
+  //"maxHealth": 10,
+
+  // lua
+  "lua": "",
+
+  // eof
+  "": ""
+}

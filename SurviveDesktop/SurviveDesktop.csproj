@@ -25,6 +25,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="assets\everlost\json\ground.grass.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="assets\everlost\json\mob.testghost.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
