@@ -13,6 +13,7 @@ So far, I've:
 - Made a runtime-loading asset system called Warehouse, which lets me load Json, Lua, and PNG files at runtime for loading mods.
 - Added an Entity/Mob system that can somewhat be controlled through basic Lua scripting and inherits properties from Json files.
 - Made a simple world generator system that uses a List of WorldGenRoutines to build world maps step-by-step with reusable routines.
+- Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
 - Drawing with a camera offset.
@@ -30,7 +31,6 @@ Notable milestones to-do:
 - Multiple worlds/"dimensions" per-save with their own mobs and world properties.
 	- Portals with destination world/position. (may be doors or literal portals)
 	- Mob spawns, world generator.
-- Entity smoothing between ticks.
 - Networking/splitscreen/multiplayer.
 	- Actual differences between host/client/dedicated.
 	- Tilemap/entity position syncing.
