@@ -42,7 +42,7 @@ namespace SurviveCore
       gameInstances = new()
       {
         new GameInstance(EInstanceMode.Host, 0, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, 1, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        new GameInstance(EInstanceMode.Client, 1, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, 2, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, 3, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
       };
@@ -90,22 +90,23 @@ namespace SurviveCore
 
       // TODO: Add your drawing code here
 
-      // draw game instances
-      List<Texture2D> displays = new();
+      // figure out a somewhat reasonable grid size for the display, to fit the splitscreen displays
+      // kind of sketchy, probably best to have some predefined layouts, then get generative for more extreme counts.
       int displayGridX = (int)Math.Ceiling(Math.Sqrt(gameInstances.Count));
       int displayGridY = (int)Math.Floor(Math.Sqrt(gameInstances.Count) + 0.5f);
       int displayIndex = 0;
 
+      int displayWidth = Window.ClientBounds.Width / displayGridX;
+      int displayHeight = Window.ClientBounds.Height / displayGridY;
 
-      ELDebug.Log(displayGridX + " x " + displayGridY + " (" + 0 + "x)");
-
-      int displayWidth = _graphics.PreferredBackBufferWidth / displayGridX;
-      int displayHeight = _graphics.PreferredBackBufferHeight / displayGridY;
+      // draw game instances to their own textures
+      List<Texture2D> displays = new();
       foreach (GameInstance instance in gameInstances)
       {
-        //todo: this should handle sizing the displays to fit the grid layout
+        // resize the displays to fit the grid layout
         instance.display.ScaleDisplay(displayWidth, displayHeight);
 
+        // store rendered displays to actually draw later, so we can use one spritebatch for that instead of having to end it before we render the next display.
         displays.Add(instance.Draw(deltaTime));
         displayIndex++;
       }
@@ -117,8 +118,10 @@ namespace SurviveCore
       spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
       foreach (Texture2D display in displays)
       {
-        Rectangle bounds = new Rectangle(new Point(displayIndex % displayGridX * displayWidth, (int)Math.Floor((double)displayIndex / displayGridX) * displayHeight), display.Bounds.Size);
+        // figure out where this display should go based on the grid
+        Rectangle bounds = new(new Point(displayIndex % displayGridX * displayWidth, (int)Math.Floor((double)displayIndex / displayGridX) * displayHeight), display.Bounds.Size);
 
+        // draw it!
         spriteBatch.Draw(display, bounds, Color.White);
 
         displayIndex++;

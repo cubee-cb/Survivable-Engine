@@ -29,7 +29,7 @@ namespace SurviveCore.Engine.Display
     protected RenderTarget2D renderOverlay;
 
     private static GraphicsDevice graphicsDevice;
-    private static SpriteBatch spriteBatch;
+    private SpriteBatch spriteBatch;
 
     public GameDisplay(GraphicsDevice outerGraphicsDevice, int width, int height)
     {
@@ -143,9 +143,7 @@ namespace SurviveCore.Engine.Display
       if (flipX) effects = SpriteEffects.FlipHorizontally;
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
 
-
-      //currentDisplayInstance
-      spriteBatch.Draw(texture, location, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
+      currentDisplayInstance.spriteBatch.Draw(texture, location, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
     }
 
   }
