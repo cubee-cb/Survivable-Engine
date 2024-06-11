@@ -16,7 +16,8 @@ namespace SurviveCore
   {
     [JsonIgnore] World world;
 
-    // should this be vector3? thinking we want to support elevations
+    // should these be vector3? thinking we want to support elevations
+    private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
 
@@ -62,6 +63,8 @@ namespace SurviveCore
     public virtual void Update(int tick, float deltaTime)
     {
       //luaTick.Call(luaTick.Globals["update"], this);
+
+      lastPosition = position;
     }
 
     /// <summary>
@@ -71,9 +74,12 @@ namespace SurviveCore
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(SpriteBatch spriteBatch, float tickProgress)
     {
+      // lerp position to the actual one, based on the current progress of the tick.
+      // doesn't need to be global, because collisions are per-frame. visualPosition *should* equal position every time collisions are checked.
+      Vector2 visualPosition = Vector2.Lerp(lastPosition, position, tickProgress);
 
       // todo: handle spritesheets and multiple textures
-      spriteBatch.Draw(texture, position, Color.White);
+      spriteBatch.Draw(texture, visualPosition, Color.White);
     }
 
     /// <summary>

@@ -81,7 +81,7 @@ namespace SurviveCore.Engine
       {
         activeWorld.Update(tick, deltaTime);
 
-        ELDebug.Log("ping! acc delta: " + deltaTimeAccumulated + "ms / " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
@@ -94,8 +94,8 @@ namespace SurviveCore.Engine
       // dedicated servers don't need to bother with rendering
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        // pass tick progress as 1, we have no smoothing yet
-        activeWorld.Draw(spriteBatch, tickProgress: 1);
+        // pass tick progress to draw, so objects can visually smooth to their new location
+        activeWorld.Draw(spriteBatch, deltaTimeAccumulated * tickRate); // eqiv. to (deltaTimeAcc / targetDeltaTime)
       }
     }
 

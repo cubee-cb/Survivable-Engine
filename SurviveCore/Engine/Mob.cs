@@ -50,8 +50,8 @@ namespace SurviveCore.Engine
 
         // pass methods to lua
         lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
-        lua.Globals["Move"] = (Func<float, float, bool>)Move;
-        lua.Globals["MoveToward"] = (Func<float, float, bool>)MoveToward;
+        lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
+        lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
         lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
       }
 
@@ -72,21 +72,59 @@ namespace SurviveCore.Engine
 
     }
 
+    //                           //
+    // Lua-exposed methods below //
+    // v v v v v v v v v v v v v //
 
-    private bool Move(float x, float y)
+    /// <summary>
+    /// Move in a direction with speed. Vector is normalised.
+    /// </summary>
+    /// <param name="x">Vector X component.</param>
+    /// <param name="y">Vector Y component.</param>
+    /// <param name="speed">Distance to move.</param>
+    /// <returns>Whether the move was successful or not.</returns>
+    private bool Move(float x, float y, float speed)
     {
-      TryMove(new Vector2(x, y));
-      return true;
+      Vector2 moveVector = new Vector2(x, y);
+      moveVector.Normalize();
+
+      float movedDistance = TryMove(moveVector * speed).Length();
+
+      return movedDistance >= moveVector.Length();
     }
 
-    private bool MoveToward(float x, float y)
+    /// <summary>
+    /// Move toward an absolute position. with speed. Vector is normalised.
+    /// </summary>
+    /// <param name="x">X coordinate to move toward.</param>
+    /// <param name="y">Y coordinate to move toward.</param>
+    /// <param name="speed">Distance to move.</param>
+    /// <returns>Whether the move was successful or not.</returns>
+    private bool MoveToward(float x, float y, float speed)
     {
-      TryMove(new Vector2(Math.Sign(x - position.X), Math.Sign(y - position.Y)));
-      return true;
+      Vector2 moveVector = new Vector2(Math.Sign(x - position.X), Math.Sign(y - position.Y));
+      moveVector.Normalize();
+
+      float movedDistance = TryMove(moveVector * speed).Length();
+
+      return movedDistance >= moveVector.Length();
     }
 
+    /// <summary>
+    /// Get a target matching certain tags. If multiple are found, a random one is chosen other than the current target.
+    /// </summary>
+    /// <param name="tags">A list of tags to match.</param>
+    /// <returns>The position of the target</returns>
     private Table GetTarget(Table tags)
     {
+      /*/ todo:
+       * add priority selection (closest, random, strongest, same if possible)
+       * find targets
+       * filter out current target
+       * choose one
+       * return its position
+      //*/
+
       // find target matching tags
       foreach (string tag in tags.Values.AsObjects())
       {

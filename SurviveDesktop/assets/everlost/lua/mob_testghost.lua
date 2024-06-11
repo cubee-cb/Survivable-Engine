@@ -4,7 +4,7 @@
 function AI(self)
   --DebugLog(self)
 
-  Move(1, 0)
+  --Move(1, 0, 10)
   local target = GetTarget({"player"})
   local x = target[1]
   local y = target[2]
@@ -12,7 +12,7 @@ function AI(self)
   --DebugLog("x target: " .. x)
   --DebugLog("y target: " .. y)
 
-  MoveToward(x, y)
+  MoveToward(x, y, 5)
 
 end
 
