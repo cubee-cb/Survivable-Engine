@@ -75,14 +75,23 @@ namespace SurviveCore
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(float tickProgress)
     {
-      // lerp position to the actual one, based on the current progress of the tick.
-      // doesn't need to be global, because collisions are per-frame. visualPosition *should* equal position every time collisions are checked.
-      Vector2 visualPosition = Vector2.Lerp(lastPosition, position, tickProgress);
 
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), visualPosition);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), GetVisualPosition(tickProgress));
 
+    }
+
+    public virtual Vector2 GetPosition()
+    {
+      return position;
+    }
+
+    public virtual Vector2 GetVisualPosition(float tickProgress)
+    {
+      // lerp position to the actual one, based on the current progress of the tick.
+      // doesn't need to be global, because collisions are per-frame. visualPosition *should* equal position every time collisions are checked.
+      return Vector2.Lerp(lastPosition, position, tickProgress);
     }
 
     /// <summary>

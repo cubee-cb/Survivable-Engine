@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.JsonHandlers;
@@ -12,7 +13,7 @@ namespace SurviveCore.Engine
   internal class GameInstance
   {
     EInstanceMode instanceMode;
-    int playerIndex;
+    PlayerIndex playerIndex;
 
     private int tickRate;
     private int tick;
@@ -23,11 +24,13 @@ namespace SurviveCore.Engine
     Warehouse warehouse;
     Texture2D missingTex;
 
+    List<Entity> cameraFocusEntities;
+
     private List<World> worlds;
     private int activeWorldIndex = 0;
     World activeWorld;
 
-    public GameInstance(EInstanceMode instanceMode, int playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
+    public GameInstance(EInstanceMode instanceMode, PlayerIndex playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
     {
       this.instanceMode = instanceMode;
       this.playerIndex = playerIndex;
@@ -61,6 +64,12 @@ namespace SurviveCore.Engine
       Mob testMob = new("mob_testghost", tempWorld);
       tempWorld.AddEntity(testMob);
 
+      // tell camera to focus on this entity
+      cameraFocusEntities = new()
+      {
+        testMob
+      };
+
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 
@@ -76,7 +85,6 @@ namespace SurviveCore.Engine
       // just leave it global per-world?
       // move it to be per instance?
       // what about the player's updating?
-      // how do we handle smoothing between low tickrates?
       deltaTimeAccumulated += deltaTime;
 
       // this lets up catch up if we fall behind (assuming the device can handle it, otherwise this is will progressively take more performance), or slow down if we're going too fast.
@@ -99,6 +107,9 @@ namespace SurviveCore.Engine
       // dedicated servers don't need to bother with rendering
       if (instanceMode != EInstanceMode.Dedicated)
       {
+        // calculate time between last and next scheduled tick, for smoothing
+        float tickProgress = deltaTimeAccumulated * tickRate;
+
         // set GameDisplay methods to draw to this instance's screen
         GameDisplay.SetDisplayInstance(display);
 
@@ -106,15 +117,19 @@ namespace SurviveCore.Engine
         // draw to the game world layer
         display.SetDisplayLayer(EGameDisplayLayer.Game);
         display.Begin();
+        // move camera to follow targete entities
+        //todo: average position of all targeted entities. never let index 0 go off-screen
+        display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
 
         // pass tick progress to draw, so objects can visually smooth to their new location
-        activeWorld.Draw(deltaTimeAccumulated * tickRate); // eqiv. to (deltaTimeAcc / targetDeltaTime)
+        activeWorld.Draw(tickProgress); // eqiv. to (deltaTimeAcc / targetDeltaTime)
 
-        // debug things
+        /*/ debug things
         for (int i = 0; i < 500; i++)
         {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16), new Microsoft.Xna.Framework.Vector2(i * 12, i));
+          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
         }
+        //*/
 
         display.End();
 
@@ -122,12 +137,14 @@ namespace SurviveCore.Engine
         // draw to the UI layer
         display.SetDisplayLayer(EGameDisplayLayer.UI);
         display.Begin();
+        display.Camera(Vector2.Zero);
 
-        // debug things
+        /*/ debug things
         for (int i = 0; i < 500; i++)
         {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Microsoft.Xna.Framework.Rectangle(0, 0, 16, 16), new Microsoft.Xna.Framework.Vector2(i * 12, i));
+          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
         }
+        //*/
 
         display.End();
 
@@ -135,6 +152,7 @@ namespace SurviveCore.Engine
         // draw to overlay layer
         display.SetDisplayLayer(EGameDisplayLayer.Overlay);
         display.Begin();
+        display.Camera(Vector2.Zero);
 
         display.End();
 

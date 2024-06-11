@@ -15,11 +15,13 @@ namespace SurviveCore.Engine.Display
     const int BASE_INTERNAL_HEIGHT = 128;
     public const int OVERDRAW_MARGIN = 1;
 
-    int width;
-    int height;
-    int internalWidth;
-    int internalHeight;
+    public int width;
+    public int height;
+    public int internalWidth;
+    public int internalHeight;
     float scaleFactor;
+
+    private Vector2 cameraPosition;
 
     float UIScaleMultiplier = 1.0f;
     
@@ -36,8 +38,20 @@ namespace SurviveCore.Engine.Display
       // set reference to the GraphicsDevice and SpriteBatch
       graphicsDevice = outerGraphicsDevice;
       spriteBatch = new SpriteBatch(outerGraphicsDevice);
+      cameraPosition = Vector2.Zero;
 
       ScaleDisplay(width, height);
+    }
+
+    public Vector2 Camera()
+    {
+      return cameraPosition;
+    }
+
+    public Vector2 Camera(Vector2 newPos)
+    {
+      cameraPosition = newPos;
+      return cameraPosition;
     }
 
     public float ScaleDisplay(int _width, int _height)
@@ -136,6 +150,7 @@ namespace SurviveCore.Engine.Display
     public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0)
     {
       if (colour == null) colour = Color.White;
+      location -= currentDisplayInstance.cameraPosition;
 
       float depth = 0f;
       float scale = 1f;
