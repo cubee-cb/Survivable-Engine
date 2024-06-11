@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SurviveCore.Engine.Display;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
@@ -18,6 +19,7 @@ namespace SurviveCore.Engine
     private float deltaTimeAccumulated;
 
     GraphicsDevice graphicsDevice;
+    GameDisplay display;
     Warehouse warehouse;
     Texture2D missingTex;
 
@@ -25,10 +27,13 @@ namespace SurviveCore.Engine
     private int activeWorldIndex = 0;
     World activeWorld;
 
-    public GameInstance(EInstanceMode instanceMode, int playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager)
+    public GameInstance(EInstanceMode instanceMode, int playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
     {
       this.instanceMode = instanceMode;
       this.playerIndex = playerIndex;
+
+      // initialise display
+      display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
@@ -42,7 +47,7 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      World tempWorld = new(this, 10, 10, new OverworldGenerator());
+      World tempWorld = new(10, 10, new OverworldGenerator());
 
       //tempWorld.AddActor(new SimpleWalker());
 
@@ -89,13 +94,21 @@ namespace SurviveCore.Engine
 
     }
 
-    public void Draw(SpriteBatch spriteBatch, float deltaTime)
+    public void Draw(float deltaTime)
     {
       // dedicated servers don't need to bother with rendering
       if (instanceMode != EInstanceMode.Dedicated)
       {
+        // set GameDisplay methods to draw to this instance's screen
+        GameDisplay.SetDisplayInstance(display);
+
+        display.SetDisplayLayer(EGameDisplayLayer.Game);
+        display.Begin();
+
         // pass tick progress to draw, so objects can visually smooth to their new location
-        activeWorld.Draw(spriteBatch, deltaTimeAccumulated * tickRate); // eqiv. to (deltaTimeAcc / targetDeltaTime)
+        activeWorld.Draw(deltaTimeAccumulated * tickRate); // eqiv. to (deltaTimeAcc / targetDeltaTime)
+
+        display.End();
       }
     }
 

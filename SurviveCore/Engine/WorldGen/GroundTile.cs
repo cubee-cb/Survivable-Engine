@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
+using SurviveCore.Engine.Display;
 using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
@@ -42,10 +43,10 @@ namespace SurviveCore.Engine.WorldGen
 
 
 
-    public void Draw(SpriteBatch spriteBatch, float tickProgress, Vector2 position)
+    public void Draw(float tickProgress, Vector2 position)
     {
       // todo: handle spritesheets and multiple textures
-      spriteBatch.Draw(texture, position - new Vector2(0, elevation) * TILE_THICKNESS, Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), position - new Vector2(0, elevation) * TILE_THICKNESS);
     }
 
 

@@ -15,10 +15,7 @@ namespace SurviveCore
     public static Random rnd = new Random();
     public static GraphicsDevice graphicsDevice;
 
-    Texture2D texMissing;
-
     List<GameInstance> gameInstances;
-
 
     public Game1()
     {
@@ -41,8 +38,8 @@ namespace SurviveCore
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances = new()
       {
-        new GameInstance(EInstanceMode.Host, 0, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content),
-        //new GameInstance(EInstanceMode.Client, 1, targetTickRate: 30 /* 60 */, graphicsDevice: GraphicsDevice, Content)
+        new GameInstance(EInstanceMode.Host, 0, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        //new GameInstance(EInstanceMode.Client, 1, targetTickRate: 30 /* 60 */, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight)
       };
 
       base.Initialize();
@@ -91,7 +88,7 @@ namespace SurviveCore
 
       foreach (GameInstance instance in gameInstances)
       {
-        instance.Draw(spriteBatch, deltaTime);
+        instance.Draw(deltaTime);
       }
 
       spriteBatch.End();

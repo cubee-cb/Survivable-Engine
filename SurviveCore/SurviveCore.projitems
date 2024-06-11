@@ -9,6 +9,7 @@
     <Import_RootNamespace>SurviveCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />

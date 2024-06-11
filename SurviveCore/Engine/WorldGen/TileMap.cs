@@ -37,14 +37,14 @@ namespace SurviveCore.Engine.WorldGen
       return true;
     }
 
-    public void Draw(SpriteBatch spriteBatch, float tickProgress)
+    public void Draw(float tickProgress)
     {
       for (int ix = 0; ix < width; ix++)
       {
         for (int iy = 0; iy < height; iy++)
         {
           GroundTile tile = map[ix, iy];
-          tile.Draw(spriteBatch, tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
+          tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
         }
       }
 

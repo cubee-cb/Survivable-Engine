@@ -13,7 +13,6 @@ namespace SurviveCore.Engine
     TileMap map;
     WorldGenerator generator;
     List<Entity> entities;
-    GameInstance gameInstance;
 
     public World()
     {
@@ -26,12 +25,11 @@ namespace SurviveCore.Engine
 
     }
 
-    public World(GameInstance gameInstance, int width, int height, WorldGenerator generator)
+    public World(int width, int height, WorldGenerator generator)
     {
       map = new TileMap(width, height);
 
       entities = new List<Entity>();
-      this.gameInstance = gameInstance;
       this.generator = generator;
 
       this.generator.Generate(map);
@@ -49,15 +47,15 @@ namespace SurviveCore.Engine
 
     }
 
-    public void Draw(SpriteBatch spriteBatch, float tickProgress)
+    public void Draw(float tickProgress)
     {
-      map.Draw(spriteBatch, tickProgress);
+      map.Draw(tickProgress);
 
 
       // draw world's entities
       foreach (Entity entity in entities)
       {
-        entity.Draw(spriteBatch, tickProgress);
+        entity.Draw(tickProgress);
       }
 
 
