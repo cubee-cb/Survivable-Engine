@@ -37,8 +37,8 @@ namespace SurviveCore
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances = new()
       {
-        //new GameInstance(EInstanceMode.Server, -1, targetTickRate: 60, graphicsDevice: GraphicsDevice, Content),
-        new GameInstance(EInstanceMode.Client, 0, targetTickRate: 10 /* 60 */, graphicsDevice: GraphicsDevice, Content)
+        new GameInstance(EInstanceMode.Host, -1, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content),
+        //new GameInstance(EInstanceMode.Client, 0, targetTickRate: 30 /* 60 */, graphicsDevice: GraphicsDevice, Content)
       };
 
       base.Initialize();
