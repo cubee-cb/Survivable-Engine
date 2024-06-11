@@ -35,8 +35,8 @@ namespace SurviveCore.Engine
       worlds = new List<World>();
       activeWorldIndex = 0;
 
-      //todo: temp; need to figure out how world storage is going to work, and load from file/generate worlds as needed
-      World tempWorld = new(this, new OverworldGenerator());
+      //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
+      World tempWorld = new(this, 10, 10, new OverworldGenerator());
 
       //tempWorld.AddActor(new SimpleWalker());
 
@@ -47,14 +47,7 @@ namespace SurviveCore.Engine
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 
-      LoadContent();
-
       ELDebug.Log("game instance initialised");
-    }
-
-    public void LoadContent()
-    {
-
     }
 
     public void Update(float deltaTime)

@@ -43,7 +43,8 @@ namespace SurviveCore.Engine.WorldGen
       {
         for (int iy = 0; iy < height; iy++)
         {
-          map[ix, iy].Draw(spriteBatch, tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
+          GroundTile tile = map[ix, iy];
+          tile.Draw(spriteBatch, tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
         }
       }
 

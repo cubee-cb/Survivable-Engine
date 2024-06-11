@@ -21,11 +21,13 @@ namespace SurviveCore.Engine.WorldGen
 
     public virtual void Generate(TileMap map)
     {
+      ELDebug.Log("generating world...");
       foreach (WorldGenRoutine routine in routines)
       {
         routine.Run(map);
       }
 
+      ELDebug.Log("done!");
     }
 
   }

@@ -35,13 +35,16 @@ namespace SurviveCore.Engine
       }
 
       // initialise lua
-      lua = Warehouse.GetLua(properties.lua);
+      if (!string.IsNullOrWhiteSpace(properties.lua))
+      {
+        lua = Warehouse.GetLua(properties.lua);
 
-      // pass methods to lua
-      lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
-      lua.Globals["Move"] = (Func<float, float, bool>)Move;
-      lua.Globals["MoveToward"] = (Func<float, float, bool>)MoveToward;
-      lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
+        // pass methods to lua
+        lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
+        lua.Globals["Move"] = (Func<float, float, bool>)Move;
+        lua.Globals["MoveToward"] = (Func<float, float, bool>)MoveToward;
+        lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
+      }
 
     }
 

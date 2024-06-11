@@ -17,6 +17,8 @@ namespace SurviveCore.Engine
 
     public World()
     {
+      map = new TileMap(100, 100);
+
       entities = new List<Entity>();
       generator = new OverworldGenerator(); // default to overworld if not specified
 
@@ -24,18 +26,15 @@ namespace SurviveCore.Engine
 
     }
 
-    public World(GameInstance gameInstance, WorldGenerator generator)
+    public World(GameInstance gameInstance, int width, int height, WorldGenerator generator)
     {
+      map = new TileMap(width, height);
+
       entities = new List<Entity>();
       this.gameInstance = gameInstance;
       this.generator = generator;
 
       this.generator.Generate(map);
-    }
-
-    public void LoadContent(ContentManager content)
-    {
-      // load world's data
     }
 
     public void Update(int tick, float deltaTime)

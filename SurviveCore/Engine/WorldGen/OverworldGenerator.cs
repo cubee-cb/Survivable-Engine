@@ -9,6 +9,7 @@ namespace SurviveCore.Engine.WorldGen
   {
     public OverworldGenerator() : base()
     {
+      ELDebug.Log("running overworld generator");
       AddRoutine(new GM_FlatGrass());
     }
 

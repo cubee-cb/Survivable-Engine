@@ -61,6 +61,15 @@ namespace SurviveCore.Engine
 
     public static bool LoadTexture(string fileName)
     {
+      string internalName = string.Join('.', nameSpace, fileName);
+
+      // exit if the filename is blank
+      if (fileName == "")
+      {
+        ELDebug.Log("tried to load an empty texture filename in " + internalName, error: true);
+        return default;
+      }
+
       // if the file exists, create a temporary blank texture so the thing is invisible while it loads
       // if it doesn't, exit early instead. GetTexture should handle nonexistent assets and return the missing texture instead
       if (true)
@@ -99,6 +108,13 @@ namespace SurviveCore.Engine
     public static T GetJson<T>(string fileName)
     {
       string internalName = string.Join('.', nameSpace, fileName);
+
+      // exit if the filename is blank
+      if (fileName == "")
+      {
+        ELDebug.Log("tried to load an empty json filename in " + internalName, error: true);
+        return default;
+      }
 
       // try to load the file
       if (!jsonData.ContainsKey(internalName))
@@ -139,6 +155,13 @@ namespace SurviveCore.Engine
     public static Script GetLua(string fileName)
     {
       string internalName = string.Join('.', nameSpace, fileName);
+
+      // exit if the filename is blank
+      if (fileName == "")
+      {
+        ELDebug.Log("tried to load an empty lua filename in " + internalName, error: true);
+        return default;
+      }
 
       // try to load the file if it isn't already loaded
       if (!luaScripts.ContainsKey(internalName))

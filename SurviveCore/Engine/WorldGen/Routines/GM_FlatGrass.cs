@@ -8,6 +8,8 @@ namespace SurviveCore.Engine.WorldGen.Routines
   {
     public override void Run(TileMap map)
     {
+      ELDebug.Log("running gm_flatgrass routine");
+
       // create grass
       for (int ix = 0; ix < map.width; ix++)
       {

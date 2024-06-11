@@ -11,6 +11,8 @@ namespace SurviveCore.Engine.WorldGen
 {
   internal class GroundTile
   {
+    private const int TILE_THICKNESS = 16;
+
     private int elevation = 0;
 
     [JsonIgnore] GroundProperties properties;
@@ -26,7 +28,7 @@ namespace SurviveCore.Engine.WorldGen
       this.elevation = elevation;
 
       // initialise lua
-      lua = Warehouse.GetLua(properties.lua);
+      if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);
     }
 
 
@@ -34,7 +36,7 @@ namespace SurviveCore.Engine.WorldGen
     public void Draw(SpriteBatch spriteBatch, float tickProgress, Vector2 position)
     {
       // todo: handle spritesheets and multiple textures
-      spriteBatch.Draw(texture, position, Color.White);
+      spriteBatch.Draw(texture, position - new Vector2(0, 1) * TILE_THICKNESS, Color.White);
     }
 
 
