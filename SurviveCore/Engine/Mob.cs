@@ -2,7 +2,6 @@
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.JsonHandlers;
-using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -48,9 +47,6 @@ namespace SurviveCore.Engine
       if (!string.IsNullOrWhiteSpace(properties.lua))
       {
         lua = Warehouse.GetLua(properties.lua);
-
-        // register common methods
-        LuaCommon.Register(lua);
 
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;

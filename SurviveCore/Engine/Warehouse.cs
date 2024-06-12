@@ -12,8 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-
+using SurviveCore.Engine.Lua;
 using SurviveDesktop;
 
 namespace SurviveCore.Engine
@@ -290,6 +289,10 @@ namespace SurviveCore.Engine
 
         // execute lua script and put it into a Script object
         Script script = new Script(CoreModules.Preset_SoftSandbox);
+
+        // register common methods
+        LuaCommon.Register(script);
+
         script.DoString(luaString);
         return script;
       }
