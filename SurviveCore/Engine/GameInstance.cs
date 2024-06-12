@@ -78,6 +78,7 @@ namespace SurviveCore.Engine
 
     public void Update(float deltaTime)
     {
+
       activeWorld = worlds[activeWorldIndex];
 
       // run ticks to fill the time we've accumulated

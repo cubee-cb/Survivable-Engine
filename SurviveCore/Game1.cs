@@ -42,7 +42,7 @@ namespace SurviveCore
       gameInstances = new()
       {
         new GameInstance(EInstanceMode.Host, PlayerIndex.One, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        //new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
       };
@@ -66,6 +66,9 @@ namespace SurviveCore
     protected override void Update(GameTime gameTime)
     {
       float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+      // clean up finished sound effect instances
+      AudioManager.Cleanup();
 
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();

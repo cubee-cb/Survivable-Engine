@@ -2,6 +2,7 @@
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -48,8 +49,10 @@ namespace SurviveCore.Engine
       {
         lua = Warehouse.GetLua(properties.lua);
 
+        // register common methods
+        LuaCommon.Register(lua);
+
         // pass methods to lua
-        lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
         lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;

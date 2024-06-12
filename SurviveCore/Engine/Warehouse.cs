@@ -69,6 +69,21 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
+    /// Builds a list of all the namespaces that can be found by Warehouse, along with their locations on disk, so it knows what game and mod assets are installed.
+    /// This is useful in future to preload some definitions, like world types, biomes, and characters.
+    /// </summary>
+    public static void FindAllNamespaceLocations()
+    {
+    }
+
+    /// <summary>
+    /// Preloads all assets that can be found by Warehouse.
+    /// </summary>
+    public static void LoadAll()
+    {
+    }
+
+    /// <summary>
     /// set the namespace the warehouse is working in. this is the same as the game/mod assets folder name
     /// </summary>
     /// <param name="newNameSpace">the namespace</param>

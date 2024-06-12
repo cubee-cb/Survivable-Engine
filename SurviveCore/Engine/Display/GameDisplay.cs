@@ -158,6 +158,7 @@ namespace SurviveCore.Engine.Display
       if (flipX) effects = SpriteEffects.FlipHorizontally;
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
 
+      //todo: angleTurns is still radians instead of turns. FIX IT
       currentDisplayInstance.spriteBatch.Draw(texture, location, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
     }
 

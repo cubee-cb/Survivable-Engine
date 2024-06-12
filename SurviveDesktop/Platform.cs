@@ -12,6 +12,8 @@ namespace SurviveDesktop
   public static class Platform
   {
     public const string PLATFORM_NAME = "desktop";
+    public const int MAX_SFX_INSTANCES = 256;
+    //const string SAVE_NAME = "save.json";
 
     /// <summary>
     /// Load a text file from the root folder. i.e. pass @"Content/lua/textFile.lua".

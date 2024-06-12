@@ -1,8 +1,13 @@
 -- test ghost ai
 
+t = 1
+
 -- called every tick
 function AI(self)
   --DebugLog(self)
+
+  t = t + 1
+  --DebugLog(pos)
 
   --Move(1, 0, 10)
   local target = GetTarget({"player"})
@@ -11,6 +16,10 @@ function AI(self)
 
   --DebugLog("x target: " .. x)
   --DebugLog("y target: " .. y)
+
+  if (t % 60 == 59) then
+    PlaySound("mob_testghost_alert")
+  end
 
   MoveToward(x, y, 5)
 
