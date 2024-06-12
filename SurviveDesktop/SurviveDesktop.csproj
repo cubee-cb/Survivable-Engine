@@ -25,25 +25,34 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="assets\everlost\json\ground_grass.json">
+    <None Update="assetPacks\test\json\ground_grass.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\json\mob_testghost.json">
+    <None Update="assetPacks\test\json\mob_testghost.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\lua\mob_testghost.lua">
+    <None Update="assetPacks\test\json\worldgen_testislet.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\sfx\ground_grass_step.wav">
+    <None Update="assetPacks\test\lua\mob_testghost.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\sfx\mob_testghost_alert.wav">
+    <None Update="assetPacks\test\lua\worldgen_testislet.lua">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\spr\ground_grass.png">
+    <None Update="assetPacks\test\pack.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="assets\everlost\spr\mob_testghost.png">
+    <None Update="assetPacks\test\sfx\ground_grass_step.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assetPacks\test\sfx\mob_testghost_alert.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assetPacks\test\spr\ground_grass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assetPacks\test\spr\mob_testghost.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

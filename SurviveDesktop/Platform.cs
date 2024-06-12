@@ -71,5 +71,17 @@ namespace SurviveDesktop
       return File.Exists(path);
     }
 
+    /// <summary>
+    /// Return a list of all the folders in a path.
+    /// </summary>
+    /// <param name="path">The path to a folder.</param>
+    /// <returns>All the subfolders in that folder.</returns>
+    public static List<string> GetFolders(string path)
+    {
+      List<string> folders = new(Directory.GetDirectories(path));
+
+      return folders;
+    }
+
   }
 }

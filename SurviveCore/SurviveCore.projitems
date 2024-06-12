@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\AudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\AssetPackProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />

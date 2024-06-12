@@ -1,0 +1,13 @@
+{
+  "internalName": "test_pack",
+  "author": "default",
+  "version": "1.0",
+  "tags": [
+    "test"
+  ],
+
+  "nameSpace": "test", // default namespace to use for this pack, where the namespace is omitted. (e.g. referencing "mob_wanderer" instead of "pack.mob_wanderer"). namespace must be included when referring to this pack from other packs or in-game.
+  
+  // eof
+  "": ""
+}

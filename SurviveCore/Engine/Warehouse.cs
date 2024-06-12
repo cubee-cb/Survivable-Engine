@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.Lua;
 using SurviveDesktop;
 
@@ -23,7 +24,8 @@ namespace SurviveCore.Engine
     // paths are formatted as:                        /contentPath/nameSpace/TEXTURE_FOLDER/
     // for example, the default values would become:  /assets/default/spr/
     // paths are relative to the executable
-    private static string contentPath = "assets"; // the base path where assets will be stored
+    private static string CONTENT_PATH = "assetPacks"; // the base path where assets will be stored
+    private static string currentContentPath = CONTENT_PATH;
 
     private static string nameSpace = "default"; // the subfolder the assets are stored in, for modding purposes
 
@@ -45,6 +47,9 @@ namespace SurviveCore.Engine
     private static Dictionary<string, string> jsonData;
     private static Dictionary<string, string> luaScripts;
 
+    private static Dictionary<string, string> namespaceToFolder = new();
+    //private static Dictionary<string, string> folderToNamespace = new();
+
     private static GraphicsDevice graphicsDevice;
 
 
@@ -64,22 +69,56 @@ namespace SurviveCore.Engine
       music = new Dictionary<string, Song>();
       jsonData = new Dictionary<string, string>();
       luaScripts = new Dictionary<string, string>();
-
     }
 
     /// <summary>
     /// Builds a list of all the namespaces that can be found by Warehouse, along with their locations on disk, so it knows what game and mod assets are installed.
     /// This is useful in future to preload some definitions, like world types, biomes, and characters.
     /// </summary>
-    public static void FindAllNamespaceLocations()
+    public static List<string> FindAllPacks()
+    {
+      List<string> locations = new();
+
+      locations = Platform.GetFolders(string.Join('/', currentContentPath));
+
+      // load pack.json files
+      foreach (string folder in locations)
+      {
+        string packJsonPath = Path.Combine(folder, "pack.json");
+
+        if (Platform.Exists(packJsonPath))
+        {
+          AssetPackProperties properties = new(Platform.LoadContentFile(packJsonPath));
+
+          namespaceToFolder.Add(properties.nameSpace, folder);
+          //folderToNamespace.Add(folder, properties.nameSpace);
+
+          ELDebug.Log("found pack at " + packJsonPath + " with namespace " + properties.nameSpace);
+        }
+        //AssetPackProperties properties = new AssetPackProperties(Platform.GetStream());
+      }
+
+
+      return locations;
+    }
+
+    /// <summary>
+    /// Loads all assets that can be found by Warehouse.
+    /// </summary>
+    public static void LoadAll()
     {
     }
 
     /// <summary>
-    /// Preloads all assets that can be found by Warehouse.
+    /// Loads all assets that can be found by Warehouse from a specific folder.
     /// </summary>
-    public static void LoadAll()
+    public static void LoadAllFrom()
     {
+    }
+
+    private static string NamespaceToPath(string nameSpace)
+    {
+      return namespaceToFolder[nameSpace];
     }
 
     /// <summary>
@@ -135,7 +174,7 @@ namespace SurviveCore.Engine
       //Thread thread = new Thread(new ThreadStart(ThreadedLoadTexture));
 
       // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, TEXTURE_FOLDER, fileName + ".png");
+      string relativePath = Path.Join(NamespaceToPath(nameSpace), TEXTURE_FOLDER, fileName + ".png");
       if (!textures.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         Stream stream = Platform.GetStream(relativePath);
@@ -181,7 +220,7 @@ namespace SurviveCore.Engine
       //Thread thread = new Thread(new ThreadStart(ThreadedLoadTexture));
 
       // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, SOUND_FOLDER, fileName + ".wav");
+      string relativePath = Path.Join(NamespaceToPath(nameSpace), SOUND_FOLDER, fileName + ".wav");
       if (!sounds.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         Stream stream = Platform.GetStream(relativePath);
@@ -223,7 +262,7 @@ namespace SurviveCore.Engine
       }
 
       // try to load the file
-      string relativePath = string.Join('/', contentPath, nameSpace, JSON_FOLDER, fileName + ".json");
+      string relativePath = Path.Join(NamespaceToPath(nameSpace), JSON_FOLDER, fileName + ".json");
       if (!jsonData.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         // load json file content
@@ -270,7 +309,7 @@ namespace SurviveCore.Engine
       }
 
       // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, LUA_FOLDER, fileName + ".lua");
+      string relativePath = Path.Join(NamespaceToPath(nameSpace), LUA_FOLDER, fileName + ".lua");
       if (!luaScripts.ContainsKey(internalName) && Platform.Exists(relativePath))
       {
         // load lua file content

@@ -1,0 +1,14 @@
+{
+  // properties
+  "internalName": "worldgen_testislet",
+  "tags": [
+    "enemy",
+    "ghost"
+  ],
+
+  // lua
+  "lua": "worldgen_testislet",
+
+  // eof
+  "": ""
+}

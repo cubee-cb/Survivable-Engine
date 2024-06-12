@@ -40,7 +40,8 @@ namespace SurviveCore.Engine
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
-      Warehouse.SetNameSpace("everlost");
+      Warehouse.SetNameSpace("test");
+      Warehouse.FindAllPacks();
 
       tickRate = targetTickRate;
       tick = 0;
@@ -61,7 +62,7 @@ namespace SurviveCore.Engine
       }
 
       // create a test mob
-      Mob testMob = new("mob_testghost", tempWorld);
+      Mob testMob = new("test.mob_testghost", tempWorld);
       tempWorld.AddEntity(testMob);
 
       // tell camera to focus on this entity

@@ -16,18 +16,17 @@ So far, I've:
 - Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
-- Drawing with a camera offset.
-	- Monogame extended camera?
 - Add the player.
 - Add dynamic tiles.
 	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
 - Collisions with entities and tiles.
-- Inventories and items.
+- Items and inventories.
 - Slopes to move up the world ground.
 - Saving worlds and players.
 	- Should players be per-world as before like Stardew, or separate like Terraria?
-- Worldgen steps driven by Json.
-	- Currently they are just a bunch of classes, how to link them to Json?
+- Worldgen steps driven by Json and Lua.
+	- Json stores a reference to the Lua acript and some properties like name and description keys.
+	- Lua calls the routines and can do one-off routines on its own.
 - Multiple worlds/"dimensions" per-save with their own mobs and world properties.
 	- Portals with destination world/position. (may be doors or literal portals)
 	- Mob spawns, world generator.
