@@ -14,6 +14,8 @@ namespace SurviveCore.Engine
     {
       id = GetHashCode();
       networkManagerRef = networkManager;
+
+      networkManager.Register(this);
     }
 
     public abstract bool InterpretTicket(Ticket ticket);

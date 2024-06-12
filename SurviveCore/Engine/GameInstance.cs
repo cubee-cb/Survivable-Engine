@@ -104,6 +104,8 @@ namespace SurviveCore.Engine
         // update network
         if (tick % 10 == 0)
         {
+          ELDebug.Log("updating network");
+
           switch (instanceMode)
           {
             case EInstanceMode.Client:
