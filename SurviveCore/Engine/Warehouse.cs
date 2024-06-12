@@ -289,7 +289,7 @@ namespace SurviveCore.Engine
         string luaString = luaScripts[internalName];
 
         // execute lua script and put it into a Script object
-        Script script = new Script();
+        Script script = new Script(CoreModules.Preset_SoftSandbox);
         script.DoString(luaString);
         return script;
       }
