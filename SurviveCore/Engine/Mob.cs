@@ -2,6 +2,7 @@
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Networking;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -136,7 +137,16 @@ namespace SurviveCore.Engine
 
     }
 
+    public override bool InterpretTicket(Ticket ticket)
+    {
+      ELDebug.Log("yooo i got a ticket, lemme see what movie it's for... \"" + ticket + "\"? haven't heard of that one before.");
 
+      return true;
+    }
 
+    public override Ticket ScribeTicket()
+    {
+      return new Ticket("that time i got a mob ticket and was confused");
+    }
   }
 }

@@ -10,7 +10,7 @@ using SurviveCore.Engine.Display;
 
 namespace SurviveCore
 {
-  internal abstract class Entity : IdentifiableObject
+  internal abstract class Entity : SyncedObject
   {
     [JsonIgnore] World world;
 

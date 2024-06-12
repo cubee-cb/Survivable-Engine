@@ -12,11 +12,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\AudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Networking\ISynced.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Mob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Networking\NetworkManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Networking\Ticket.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\OverworldGenerator.cs" />
@@ -28,7 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\GameInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\World.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\IdentifiableObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\SyncedObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,8 @@
 An object-oriented rebuild of [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle)'s engine, which was originally internally known as Survive. 
 Built on Monogame 3.8.1 in Visual Studio 2022. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json) for Json and [MoonSharp](https://www.moonsharp.org/) for Lua scripting.
 
+At the moment this is an excuse to try a bunch of things I haven't done before, with the goal to build a somewhat robust engine to build my game on top of. We'll see how it goes!
+
 Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it.
 
 I've decided to put my early experiments up here for people to see what I'm up to, and if I do something stupid or miss something obvious, hopefully someone can help me out :)
@@ -16,8 +18,6 @@ So far, I've:
 - Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
-- Drawing with a camera offset.
-	- Monogame extended camera?
 - Add the player.
 - Add dynamic tiles.
 	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
