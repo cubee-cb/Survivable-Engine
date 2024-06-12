@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Networking;
 using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace SurviveCore.Engine
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
     Warehouse warehouse;
+    NetworkManager networkManager;
     Texture2D missingTex;
 
     List<Entity> cameraFocusEntities;
@@ -37,6 +39,8 @@ namespace SurviveCore.Engine
 
       // initialise display
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
+      networkManager = new NetworkManager();
+      networkManager.OpenStation("127.0.0.1", 42866);
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
@@ -61,7 +65,7 @@ namespace SurviveCore.Engine
       }
 
       // create a test mob
-      Mob testMob = new("mob_testghost", tempWorld);
+      Mob testMob = new("mob_testghost", tempWorld, networkManager);
       tempWorld.AddEntity(testMob);
 
       // tell camera to focus on this entity
@@ -96,6 +100,22 @@ namespace SurviveCore.Engine
         activeWorld.Update(tick, deltaTime);
 
         ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+
+        // update network
+        if (tick % 10 == 0)
+        {
+          switch (instanceMode)
+          {
+            case EInstanceMode.Client:
+              networkManager.HandOutTickets();
+              break;
+
+            case EInstanceMode.Host:
+            case EInstanceMode.Dedicated:
+              networkManager.ThrowTickets();
+              break;
+          }
+        }
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?

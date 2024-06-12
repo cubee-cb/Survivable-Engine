@@ -20,7 +20,7 @@ namespace SurviveCore.Engine
     // lua scripts
     [JsonIgnore] private Script lua;
 
-    public Mob(string id, World world) : base(id, world)
+    public Mob(string id, World world, NetworkManager networkManager) : base(id, world, networkManager)
     {
 
       // set initial properties

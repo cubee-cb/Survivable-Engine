@@ -8,10 +8,12 @@ namespace SurviveCore.Engine
   internal abstract class SyncedObject : ISynced
   {
     private int id;
+    private NetworkManager networkManagerRef;
 
-    public SyncedObject()
+    public SyncedObject(NetworkManager networkManager)
     {
       id = GetHashCode();
+      networkManagerRef = networkManager;
     }
 
     public abstract bool InterpretTicket(Ticket ticket);

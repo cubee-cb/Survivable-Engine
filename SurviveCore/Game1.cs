@@ -42,8 +42,8 @@ namespace SurviveCore
       gameInstances = new()
       {
         new GameInstance(EInstanceMode.Host, PlayerIndex.One, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
       };
 

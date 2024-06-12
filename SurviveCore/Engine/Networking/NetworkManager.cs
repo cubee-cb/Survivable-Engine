@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 namespace SurviveCore.Engine.Networking
@@ -12,13 +13,24 @@ namespace SurviveCore.Engine.Networking
     public NetworkManager()
     {
       syncedObjects = new();
+      caughtTickets = new();
     }
+
+    public void OpenStation(string IPAddress, int port)
+    {
+      // lies. LIES!
+      ELDebug.Log("opening station at " + IPAddress + ":" + port);
+    }
+
 
     public void Register(ISynced syncedObject)
     {
       syncedObjects.Add(syncedObject.GetNetworkID(), syncedObject);
     }
 
+    /// <summary>
+    /// Scatter tickets out to the clients.
+    /// </summary>
     public void ThrowTickets()
     {
       foreach (KeyValuePair<int, ISynced> kvp in syncedObjects)
@@ -28,13 +40,18 @@ namespace SurviveCore.Engine.Networking
         Ticket ticket = syncedObject.ScribeTicket();
         ticket.SignTicket(syncedObject.GetNetworkID());
 
+        // lies. LIES!
+        ELDebug.Log("sent ticket " + ticket.ToString());
 
       }
 
       // send
     }
 
-    public void CatchTickets()
+    /// <summary>
+    /// Give caught tickets to their owners.
+    /// </summary>
+    public void HandOutTickets()
     {
       // get received tickets
       foreach (Ticket ticket in caughtTickets)

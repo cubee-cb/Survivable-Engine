@@ -7,6 +7,7 @@ using System.Text;
 
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Networking;
 
 namespace SurviveCore
 {
@@ -28,7 +29,7 @@ namespace SurviveCore
     /// <summary>
     /// 
     /// </summary>
-    public Entity(string id, World world) : base()
+    public Entity(string id, World world, NetworkManager networkManager) : base(networkManager)
     {
       this.world = world;
 
@@ -48,7 +49,7 @@ namespace SurviveCore
     /// 
     /// </summary>
     /// <param name="spawnLocation"></param>
-    public Entity(Vector2 spawnLocation) : base()
+    public Entity(Vector2 spawnLocation, NetworkManager networkManager) : base(networkManager)
     {
       position = spawnLocation;
     }

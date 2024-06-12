@@ -22,12 +22,12 @@ namespace SurviveCore.Engine.Networking
 
     public int GetSigner()
     {
-      return this.ownerID;
+      return ownerID;
     }
 
     public override string ToString()
     {
-      return "Ticket: " + message;
+      return "Ticket (for " + ownerID + "): " + message;
     }
 
   }
