@@ -1,0 +1,21 @@
+simultaneously build content in the new and old engines,
+while slowly building the new engine up to the point the old one is at.
+- can build new engine while still building content.
+- can choose which engine to continue forward with later, based on the strengths of each.
+- now maintaining two different codebases for the same project. (minecraft java/bedrock situation)
+
+continue the game in the old engine and slowly port over implementations from the new one,
+so it gets better over time.
+- gets the game done faster, most of the work is just content and fixing unfinished functionality.
+- don't HAVE to finish the new engine, as long as it helps improve the game.
+- final project will be spaghetti still.
+- new engine loses the "Survive Engine" relation, since it's not the engine used in the game.
+
+move everything to the new engine and reimplement everything to be
+functionally identical or better.
+- easy modding.
+- fresh, new codebase with better implementation of everything.
+- much nicer to build content, since it's designed to be data-driven first. (to a fault?)
+- modding shouldn't be the focus when there's no gameplay.
+- is it TOO data-driven? we're hardly using the content pipeline, everything's raw files.
+- new project, burnout, new project, burnout, new project, burnout. see the issue?

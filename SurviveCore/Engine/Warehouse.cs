@@ -23,7 +23,7 @@ namespace SurviveCore.Engine
     // paths are formatted as:                        /contentPath/nameSpace/TEXTURE_FOLDER/
     // for example, the default values would become:  /assets/default/spr/
     // paths are relative to the executable
-    private static string contentPath = "assets"; // the base path where assets will be stored
+    private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
     private static string nameSpace = "default"; // the subfolder the assets are stored in, for modding purposes
 

@@ -40,7 +40,7 @@ namespace SurviveCore.Engine
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
-      Warehouse.SetNameSpace("everlost");
+      Warehouse.SetNameSpace("test");
 
       tickRate = targetTickRate;
       tick = 0;

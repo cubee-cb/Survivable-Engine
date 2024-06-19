@@ -27,7 +27,7 @@ namespace SurviveCore.Engine
       health = properties.maxHealth;
 
       // load assets
-      if (properties.textureSheetName != null) texture = Warehouse.GetTexture(properties.textureSheetName);
+      texture = Warehouse.GetTexture(properties.textureSheetName);
       if (properties.sounds != null)
       {
         foreach (string fileName in properties.sounds)

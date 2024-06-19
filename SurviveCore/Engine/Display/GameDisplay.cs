@@ -149,6 +149,11 @@ namespace SurviveCore.Engine.Display
 
     public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0)
     {
+      if (texture == null)
+      {
+        ELDebug.Log("a null texture was passed to Draw. did you forget to add a texture reference to a json file?", error: true);
+        return;
+      }
       if (colour == null) colour = Color.White;
       location -= currentDisplayInstance.cameraPosition;
 

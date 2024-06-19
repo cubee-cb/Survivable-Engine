@@ -24,24 +24,15 @@
     <PackageReference Include="MoonSharp" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    
-    <!--
-    <None Update="assetPacks\test\json\ground_grass.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    -->
 
-    <!-- include asset packs folder  -->
+  <!-- include asset packs folder  -->
+  <ItemGroup>
     <Content Include="$(ProjectDir)assetPacks\**\*.*"
               CopyToOutputDirectory="PreserveNewest"
               CopyToPublishDirectory="PreserveNewest">
       <Link>assetPacks/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
-
-    <None Update="assetPacks\test\sfx\mob_testghost_alert.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
 
   <Import Project="..\SurviveCore\SurviveCore.projitems" Label="Shared" />
 </Project>
