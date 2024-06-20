@@ -126,7 +126,8 @@ namespace SurviveCore.Engine.Display
       int internalOffsetY = (height - targetInternalHeight) / 2;
 
       // draw the layers
-      spriteBatch.Draw(renderGameWorld, new Rectangle(internalOffsetX, internalOffsetY, targetInternalWidth, targetInternalHeight), Color.White);
+      Rectangle pixelRect = new Rectangle(internalOffsetX, internalOffsetY, targetInternalWidth, targetInternalHeight);
+      spriteBatch.Draw(renderGameWorld, pixelRect, Color.White);
 
       spriteBatch.Draw(renderUI, display.Bounds, Color.White);
       spriteBatch.Draw(renderOverlay, display.Bounds, Color.White);
