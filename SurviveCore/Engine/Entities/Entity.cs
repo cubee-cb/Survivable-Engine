@@ -9,10 +9,12 @@ using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Items;
 
-namespace SurviveCore
+namespace SurviveCore.Engine.Entities
 {
   internal abstract class Entity : IdentifiableObject
   {
+
+
     [JsonIgnore] World world;
 
     private string id;
@@ -22,6 +24,7 @@ namespace SurviveCore
     protected Vector2 position;
     protected Vector2 velocity;
     protected FacingDirection direction = FacingDirection.Right;
+    protected SpriteRotationType rotationType = SpriteRotationType.None;
 
     protected float health;
 
@@ -78,7 +81,6 @@ namespace SurviveCore
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(float tickProgress)
     {
-
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
       GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), GetVisualPosition(tickProgress));
@@ -107,24 +109,47 @@ namespace SurviveCore
       // todo: check for collisions with objects this object is allowed to collide with
 
       position += delta;
+
+      direction = GetFacingDirection(delta);
+
       return delta;
     }
 
-    public enum FacingDirection
+    /// <summary>
+    /// Gets a FacingDirection based on a vector and the object's rotation type.
+    /// </summary>
+    /// <param name="facingVector">The direction vector to face along.</param>
+    /// <returns>A FacingDirection.</returns>
+    protected FacingDirection GetFacingDirection(Vector2 facingVector)
     {
-      Right = 0,
-      RightDown = 1,
-      DownRight = 1,
-      Down = 2,
-      DownLeft = 3,
-      LeftDown = 3,
-      Left = 4,
-      LeftUp = 5,
-      UpLeft = 5,
-      Up = 6,
-      UpRight = 7,
-      RightUp = 7
+
+      double angle = Math.Atan2(facingVector.Y, facingVector.X) / (Math.PI * 2);
+      angle = Math.Floor(angle * correspondingDirection[rotationType].Length);
+      if (angle < 0) angle += correspondingDirection[rotationType].Length;
+
+      //ELDebug.Log("angle: " + angle + " / " + correspondingDirection[(int)angle]);
+
+      return correspondingDirection[rotationType][(int)angle];
     }
 
+
+
+
+    // dictionary of the appropriate facing directions corresponding to each rotation type
+    private readonly Dictionary<SpriteRotationType, FacingDirection[]> correspondingDirection = new() {
+      {
+        SpriteRotationType.EightWay,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.RightDown,
+            FacingDirection.Down,
+            FacingDirection.LeftDown,
+            FacingDirection.Left,
+            FacingDirection.LeftUp,
+            FacingDirection.Up,
+            FacingDirection.RightUp
+        }
+      }
+    };
   }
 }

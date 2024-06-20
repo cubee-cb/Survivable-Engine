@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;

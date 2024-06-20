@@ -12,6 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\AudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\EFacingDirection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\ESpriteRotationType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\DroppedItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Input\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Inventory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Item.cs" />
@@ -22,8 +26,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Player.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\Mob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Player.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\OverworldGenerator.cs" />
@@ -31,7 +35,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\Routines\WorldGenRoutine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\TileMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\WorldGenerator.cs" />
-    <Compile Include="..\SurviveCore\Engine\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\GameInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\World.cs" />

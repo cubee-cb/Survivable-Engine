@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SurviveCore.Engine
+namespace SurviveCore.Engine.Entities
 {
   [MoonSharpUserData]
   internal class Mob : Entity

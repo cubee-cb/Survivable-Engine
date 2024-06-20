@@ -11,7 +11,7 @@ namespace SurviveCore.Engine.Items
   internal class Item : IdentifiableObject
   {
 
-    [JsonIgnore] ItemProperties properties;
+    [JsonIgnore] public ItemProperties properties;
     [JsonIgnore] private readonly Texture2D texture;
     [JsonIgnore] private readonly Script lua;
 

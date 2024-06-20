@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SurviveCore.Engine
+namespace SurviveCore.Engine.Entities
 {
   internal class Player : Entity
   {
@@ -61,23 +61,26 @@ namespace SurviveCore.Engine
       base.Update(tick, deltaTime);
 
       // movmement
+      velocity = Vector2.Zero;
       float speed = input.Action("run") ? properties.movementSpeedRun : properties.movementSpeedWalk;
       if (input.Action("left"))
       {
-        TryMove(new Vector2(-speed, 0));
+        velocity.X = -speed;
       }
       if (input.Action("right"))
       {
-        TryMove(new Vector2(speed, 0));
+        velocity.X = speed;
       }
       if (input.Action("up"))
       {
-        TryMove(new Vector2(0, -speed));
+        velocity.Y = -speed;
       }
       if (input.Action("down"))
       {
-        TryMove(new Vector2(0, speed));
+        velocity.Y = speed;
       }
+
+      TryMove(velocity);
 
       /*/ run ai and tick scripts each tick
       if (lua != null)

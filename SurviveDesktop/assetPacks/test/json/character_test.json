@@ -9,6 +9,14 @@
     "character_test_hurt"
   ],
 
+  "rotationType": "CardinalFlip",
+  "animationLayout": [
+    "Down",
+    "Up",
+    "Right",
+    "Death"
+  ],
+
   // stats
   "maxHealth": 10,
   "regenerationPerSecond": 1,

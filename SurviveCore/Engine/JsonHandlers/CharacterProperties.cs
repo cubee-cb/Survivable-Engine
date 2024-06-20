@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SurviveCore.Engine.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,6 +13,9 @@ namespace SurviveCore.Engine.JsonHandlers
     public string internalName = "player_default";
     public List<string> tags = new();
     public List<string> sounds = new();
+
+    public SpriteRotationType rotationType;
+    public List<string> animationLayout = new();
 
     // stats
     public int maxHealth = 10;

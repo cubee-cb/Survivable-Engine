@@ -10,6 +10,13 @@
     "mob_testghost_alert"
   ],
 
+  "rotationType": "CardinalFlip",
+  "animationLayout": [
+    "Down",
+    "Up",
+    "Right"
+  ],
+
   // stats
   "maxHealth": 10,
   "inventorySize": 0,

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
