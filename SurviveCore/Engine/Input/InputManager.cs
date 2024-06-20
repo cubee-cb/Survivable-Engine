@@ -45,30 +45,37 @@ namespace SurviveCore.Engine.Input
     }
 
     /// <summary>
-    /// 
+    /// Checks the provided action to see if any of its assigned inputs are pressed.
     /// </summary>
     /// <param name="action">The action to check.</param>
     /// <param name="justPressed">If true, return if the key was JUST pressed rather than if it is currently pressed.</param>
-    /// <returns></returns>
-    public bool CheckInputAction(string action, bool justPressed)
+    /// <returns>Whether the key was pressed.</returns>
+    public bool Action(string action, bool justPressed = false)
     {
       // check keyboard
-      if (keyboardState != null)
+      if (keyboardBindings.ContainsKey(action))
       {
-        foreach (KeyValuePair<string, List<Keys>> kvp in keyboardBindings)
+        foreach (Keys key in keyboardBindings[action])
         {
-          foreach (Keys key in kvp.Value)
+          if (keyboardState.IsKeyDown(key))
           {
-            if (keyboardState.IsKeyDown(key))
-            {
-              return true;
-            }
+            return true;
+          }
+        }
+      }
+
+      // check controller buttons
+      if (controllerBindings.ContainsKey(action))
+      {
+        foreach (Buttons button in controllerBindings[action])
+        {
+          if (gamePadState.IsButtonDown(button))
+          {
+            return true;
           }
         }
 
       }
-
-      // check controller buttons
 
       return false;
     }

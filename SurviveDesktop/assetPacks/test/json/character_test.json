@@ -1,17 +1,22 @@
 {
   // properties
-  "internalName": "ground_grass",
-  "textureSheetName": "ground_grass",
+  "internalName": "character_test",
+  "textureSheetName": "character_test",
   "tags": [
-    "grass",
-    "growsTrees"
+    "placeholder"
   ],
   "sounds": [
-    "ground_grass_step"
+    "character_test_hurt"
   ],
 
   // stats
-  //"maxHealth": 10,
+  "maxHealth": 10,
+  "regenerationPerSecond": 1,
+
+  "movementSpeedWalk": 4,
+  "movementSpeedRun": 8,
+
+  "inventorySize": 32,
 
   // lua
   //"lua": "",

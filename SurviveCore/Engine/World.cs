@@ -43,6 +43,7 @@ namespace SurviveCore.Engine
 
     public void Update(int tick, float deltaTime)
     {
+      playerRef.Update(tick, deltaTime);
 
       // update world's entities
       //todo: create a partitioning system so only entities near the camera get updated
@@ -64,6 +65,7 @@ namespace SurviveCore.Engine
         entity.Draw(tickProgress);
       }
 
+      playerRef.Draw(tickProgress);
 
     }
 

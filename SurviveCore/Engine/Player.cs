@@ -63,7 +63,26 @@ namespace SurviveCore.Engine
     {
       base.Update(tick, deltaTime);
 
-      /*/ run mob's ai and tick scripts each tick
+      // movmement
+      float speed = input.Action("run") ? properties.movementSpeedRun : properties.movementSpeedWalk;
+      if (input.Action("left"))
+      {
+        TryMove(new Vector2(-speed, 0));
+      }
+      if (input.Action("right"))
+      {
+        TryMove(new Vector2(speed, 0));
+      }
+      if (input.Action("up"))
+      {
+        TryMove(new Vector2(0, -speed));
+      }
+      if (input.Action("down"))
+      {
+        TryMove(new Vector2(0, speed));
+      }
+
+      /*/ run ai and tick scripts each tick
       if (lua != null)
       {
         DynValue resAI = lua.Call(lua.Globals["AI"]);

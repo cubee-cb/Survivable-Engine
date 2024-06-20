@@ -23,7 +23,7 @@ namespace SurviveCore.Engine
 
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
-    InputManager input = new();
+    InputManager input;
     Warehouse warehouse;
     Texture2D missingTex;
 
@@ -39,8 +39,9 @@ namespace SurviveCore.Engine
       this.instanceMode = instanceMode;
       this.playerIndex = playerIndex;
 
-      // initialise display
+      // initialise display and input
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
+      input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
@@ -72,6 +73,7 @@ namespace SurviveCore.Engine
       // tell camera to focus on this entity
       cameraFocusEntities = new()
       {
+        player,
         testMob
       };
 
@@ -98,10 +100,8 @@ namespace SurviveCore.Engine
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
-        input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
+        input.UpdateInputs();
 
-
-        player.Update(tick, deltaTime);
         activeWorld.Update(tick, deltaTime);
 
         ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
@@ -127,12 +127,14 @@ namespace SurviveCore.Engine
         // draw to the game world layer
         display.SetDisplayLayer(EGameDisplayLayer.Game);
         display.Begin();
-        // move camera to follow targete entities
+        // move camera to follow targeted entities
         //todo: average position of all targeted entities. never let index 0 go off-screen
-        display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
+        if(cameraFocusEntities.Count > 0)display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
 
         // pass tick progress to draw, so objects can visually smooth to their new location
         activeWorld.Draw(tickProgress); // eqiv. to (deltaTimeAcc / targetDeltaTime)
+
+        display.Camera(Vector2.Zero);
 
         /*/ debug things
         for (int i = 0; i < 500; i++)
