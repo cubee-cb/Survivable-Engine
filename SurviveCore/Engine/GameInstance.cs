@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Input;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
@@ -21,9 +23,11 @@ namespace SurviveCore.Engine
 
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
+    InputManager input = new();
     Warehouse warehouse;
     Texture2D missingTex;
 
+    Player player;
     List<Entity> cameraFocusEntities;
 
     private List<World> worlds;
@@ -57,7 +61,8 @@ namespace SurviveCore.Engine
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        //tempWorld.AddEntity(new Player(playerIndex, tempWorld));
+        player = new("character_test", input, tempWorld);
+        tempWorld.SetPlayerRef(player);
       }
 
       // create a test mob
@@ -93,6 +98,10 @@ namespace SurviveCore.Engine
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
+        input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
+
+
+        player.Update(tick, deltaTime);
         activeWorld.Update(tick, deltaTime);
 
         ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");

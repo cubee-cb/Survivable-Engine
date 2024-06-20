@@ -10,6 +10,7 @@ namespace SurviveCore.Engine
   //todo: we could probably make a new class for each world type, but that's probably best left for the games/mods
   internal class World
   {
+    Player playerRef;
     TileMap map;
     WorldGenerator generator;
     List<Entity> entities;
@@ -33,6 +34,11 @@ namespace SurviveCore.Engine
       this.generator = generator;
 
       this.generator.Generate(map);
+    }
+
+    public void SetPlayerRef(Player player)
+    {
+      playerRef = player;
     }
 
     public void Update(int tick, float deltaTime)

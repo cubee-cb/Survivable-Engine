@@ -12,10 +12,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\AudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Input\InputManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
+    <Compile Include="..\SurviveCore\Engine\JsonHandlers\CharacterProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Mob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
