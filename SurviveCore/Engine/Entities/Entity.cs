@@ -23,8 +23,11 @@ namespace SurviveCore.Engine.Entities
     private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
-    protected FacingDirection direction = FacingDirection.Right;
-    protected SpriteRotationType rotationType = SpriteRotationType.None;
+    [JsonIgnore] protected FacingDirection direction = FacingDirection.Down;
+    [JsonIgnore] protected SpriteRotationType rotationType = SpriteRotationType.None;
+
+    [JsonIgnore] protected Rectangle spriteRect = new(0, 0, 16, 16);
+    [JsonIgnore] public int feetOffsetY = 2;
 
     protected float health;
 
@@ -83,7 +86,8 @@ namespace SurviveCore.Engine.Entities
     {
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), GetVisualPosition(tickProgress));
+      Rectangle clippingRect = new(spriteRect.Size * spriteRect.Location, spriteRect.Size);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - spriteRect.Size.ToVector2() / 2f + Vector2.UnitY * feetOffsetY);
 
     }
 
@@ -106,6 +110,7 @@ namespace SurviveCore.Engine.Entities
     /// <returns>Actual distance the entity moved.</returns>
     public virtual Vector2 TryMove(Vector2 delta)
     {
+      if (delta == Vector2.Zero) return Vector2.Zero;
       // todo: check for collisions with objects this object is allowed to collide with
 
       position += delta;
@@ -122,21 +127,97 @@ namespace SurviveCore.Engine.Entities
     /// <returns>A FacingDirection.</returns>
     protected FacingDirection GetFacingDirection(Vector2 facingVector)
     {
-
       double angle = Math.Atan2(facingVector.Y, facingVector.X) / (Math.PI * 2);
-      angle = Math.Floor(angle * correspondingDirection[rotationType].Length);
-      if (angle < 0) angle += correspondingDirection[rotationType].Length;
+      angle = Math.Floor(angle * correspondingDirection.Length);
+      if (angle < 0) angle += correspondingDirection.Length;
 
       //ELDebug.Log("angle: " + angle + " / " + correspondingDirection[(int)angle]);
 
-      return correspondingDirection[rotationType][(int)angle];
+      return correspondingDirection[(int)angle];
     }
 
 
 
+    private FacingDirection[] correspondingDirection =
+      new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.RightDown,
+            FacingDirection.Down,
+            FacingDirection.LeftDown,
+            FacingDirection.Left,
+            FacingDirection.LeftUp,
+            FacingDirection.Up,
+            FacingDirection.RightUp
+      };
 
     // dictionary of the appropriate facing directions corresponding to each rotation type
-    private readonly Dictionary<SpriteRotationType, FacingDirection[]> correspondingDirection = new() {
+    private readonly Dictionary<SpriteRotationType, FacingDirection[]> AAAAAAcorrespondingDirection = new() {
+      {
+        SpriteRotationType.None,
+        new FacingDirection[] {
+            FacingDirection.Right
+        }
+      },
+      {
+        SpriteRotationType.TwoWayFlip,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.Left,
+        }
+      },
+      {
+        SpriteRotationType.TwoWay,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.Left,
+        }
+      },
+      {
+        SpriteRotationType.CardinalFlip,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.Down,
+            FacingDirection.Left,
+            FacingDirection.Up,
+        }
+      },
+        {
+        SpriteRotationType.Cardinal,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.Down,
+            FacingDirection.Left,
+            FacingDirection.Up,
+        }
+      },
+      {
+        SpriteRotationType.DiagonalFlip,
+        new FacingDirection[] {
+            FacingDirection.RightDown,
+            FacingDirection.LeftDown,
+            FacingDirection.LeftUp,
+            FacingDirection.RightUp
+        }
+      },
+        {
+        SpriteRotationType.Diagonal,
+        new FacingDirection[] {
+            FacingDirection.RightDown,
+            FacingDirection.LeftDown,
+            FacingDirection.LeftUp,
+            FacingDirection.RightUp
+        }
+      },
+      {
+        SpriteRotationType.EightWayFlip,
+        new FacingDirection[] {
+            FacingDirection.Right,
+            FacingDirection.RightDown,
+            FacingDirection.Down,
+            FacingDirection.Up,
+            FacingDirection.RightUp
+        }
+      },
       {
         SpriteRotationType.EightWay,
         new FacingDirection[] {
@@ -149,7 +230,11 @@ namespace SurviveCore.Engine.Entities
             FacingDirection.Up,
             FacingDirection.RightUp
         }
-      }
+      },
+
     };
+
+
+
   }
 }

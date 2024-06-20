@@ -26,6 +26,8 @@ namespace SurviveCore.Engine.Entities
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
+      properties.spriteDimensions.TryGetValue("width", out spriteRect.Width);
+      properties.spriteDimensions.TryGetValue("height", out spriteRect.Height);
       if (properties.sounds != null)
       {
         foreach (string fileName in properties.sounds)
@@ -63,6 +65,8 @@ namespace SurviveCore.Engine.Entities
 
       }
 
+      // set the sprite corresponding to the facing direction of the mob
+      spriteRect.Location = new Point(0, properties.animationLayout.IndexOf(direction.ToString()));
     }
 
     //                           //
