@@ -13,9 +13,14 @@ namespace SurviveCore.Engine.JsonHandlers
     public List<string> tags = new();
     public List<string> sounds = new();
 
+    public int framesX = 1; // used to animate the item over time
+    public int framesY = 1; // used for the charging animation of charged items
+
     // stats
     public SwingType swingType = SwingType.slash;
     public HoldType holdType = HoldType.none;
+
+    public float chargeDuration = 0;
 
 
     public List<ItemComponent> components = new();

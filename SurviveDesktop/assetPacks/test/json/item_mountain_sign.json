@@ -8,6 +8,8 @@
   "sounds": [
     "item_mountain_sign_whack"
   ],
+  "framesX": 1,
+  "framesY": 1,
 
   // stats
   "swingType": "slash",

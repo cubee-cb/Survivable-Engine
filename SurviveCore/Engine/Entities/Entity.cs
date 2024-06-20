@@ -103,6 +103,11 @@ namespace SurviveCore.Engine.Entities
       return Vector2.Lerp(lastPosition, position, tickProgress);
     }
 
+    public virtual Inventory GetInventory()
+    {
+      return inventory;
+    }
+
     /// <summary>
     /// Try to move in a direction. If a collision is detected, the entity will only move as far is it can and the amount it moved will be returned.
     /// </summary>

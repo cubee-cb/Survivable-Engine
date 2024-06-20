@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
+using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
@@ -77,6 +78,11 @@ namespace SurviveCore.Engine
         player,
         testMob
       };
+
+      player.GetInventory().PlaceItem(0, new Item("item_mountain_sign"));
+      player.GetInventory().PlaceItem(1, new Item("item_mountain_sign"));
+      player.GetInventory().PlaceItem(2, new Item("item_mountain_sign"));
+      player.GetInventory().PlaceItem(3, new Item("item_mountain_sign"));
 
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
@@ -151,6 +157,9 @@ namespace SurviveCore.Engine
         display.SetDisplayLayer(EGameDisplayLayer.UI);
         display.Begin();
         display.Camera(Vector2.Zero);
+
+        // draw player's inventory
+        player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
 
         /*/ debug things
         for (int i = 0; i < 500; i++)
