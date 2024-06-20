@@ -21,7 +21,7 @@ namespace SurviveCore.Engine.JsonHandlers
     public List<ItemComponent> components = new();
 
     // lua
-    //public string lua;
+    public string lua;
 
 
 

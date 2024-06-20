@@ -7,6 +7,7 @@ using System.Text;
 
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Items;
 
 namespace SurviveCore
 {
@@ -14,12 +15,17 @@ namespace SurviveCore
   {
     [JsonIgnore] World world;
 
+    private string id;
+
     // should these be vector3? thinking we want to support elevations
     private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
+    protected FacingDirection direction = FacingDirection.Right;
 
     protected float health;
+
+    protected Inventory inventory;
 
     [JsonIgnore] protected Texture2D texture;
     //protected EntityProperties properties;
@@ -48,7 +54,7 @@ namespace SurviveCore
     /// 
     /// </summary>
     /// <param name="spawnLocation"></param>
-    public Entity(Vector2 spawnLocation) : base()
+    public Entity(string id, Vector2 spawnLocation) : base()
     {
       position = spawnLocation;
     }
@@ -104,6 +110,21 @@ namespace SurviveCore
       return delta;
     }
 
+    public enum FacingDirection
+    {
+      Right = 0,
+      RightDown = 1,
+      DownRight = 1,
+      Down = 2,
+      DownLeft = 3,
+      LeftDown = 3,
+      Left = 4,
+      LeftUp = 5,
+      UpLeft = 5,
+      Up = 6,
+      UpRight = 7,
+      RightUp = 7
+    }
 
   }
 }

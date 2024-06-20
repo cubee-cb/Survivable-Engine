@@ -15,7 +15,6 @@ namespace SurviveCore.Engine
     [JsonIgnore] CharacterProperties properties;
 
     [JsonIgnore] private InputManager input;
-    List<int> inventory;
 
     // lua scripts
     //[JsonIgnore] private Script lua;
@@ -38,12 +37,10 @@ namespace SurviveCore.Engine
         }
       }
 
-      // create inventory (temoporary; will use Item class when implemented)
-      inventory = new List<int>();
-      for (int i = 0; i < properties.inventorySize; i++)
-      {
-        inventory.Add(0);
-      }
+      // create inventory
+      inventory = new(properties.inventorySize);
+
+
 
       /*/ initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
