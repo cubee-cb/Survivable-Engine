@@ -15,7 +15,7 @@ namespace SurviveCore.Engine.Lua
     public static void Register(Script lua)
     {
       // debug/logging
-      lua.Globals["DebugLog"] = (Func<object, bool, bool>)ELDebug.Log;
+      lua.Globals["DebugLog"] = (Func<object, bool>)Log;
 
       // audio
       lua.Globals["PlaySound"] = (Func<string, bool>)PlaySound;
@@ -37,6 +37,12 @@ namespace SurviveCore.Engine.Lua
     private static bool PlaySound(string soundFile, string key)
     {
       return AudioManager.PlaySound(soundFile, key) != null;
+    }
+
+    private static bool Log(object thingToLog)
+    {
+      ELDebug.Log(thingToLog);
+      return false;
     }
 
 
