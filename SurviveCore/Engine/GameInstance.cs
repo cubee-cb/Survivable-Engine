@@ -19,6 +19,7 @@ namespace SurviveCore.Engine
     EInstanceMode instanceMode;
     PlayerIndex playerIndex;
 
+    private int targetTickRate;
     private int tickRate;
     private int tick;
     private float deltaTimeAccumulated;
@@ -49,6 +50,7 @@ namespace SurviveCore.Engine
       warehouse = new Warehouse(contentManager, graphicsDevice);
       Warehouse.SetNameSpace("test");
 
+      this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
       tick = 0;
       deltaTimeAccumulated = 0;
@@ -92,6 +94,14 @@ namespace SurviveCore.Engine
 
     public void Update(float deltaTime)
     {
+      if (ELDebug.Key(Keys.L))
+      {
+        tickRate = targetTickRate / 2;
+      }
+      else
+      {
+        tickRate = targetTickRate;
+      }
 
       activeWorld = worlds[activeWorldIndex];
 
