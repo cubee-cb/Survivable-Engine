@@ -94,14 +94,11 @@ namespace SurviveCore.Engine
 
     public void Update(float deltaTime)
     {
-      if (ELDebug.Key(Keys.L))
-      {
-        tickRate = targetTickRate / 2;
-      }
-      else
-      {
-        tickRate = targetTickRate;
-      }
+      // tickrate modifier keys
+      tickRate = targetTickRate;
+      if (ELDebug.Key(Keys.J)) tickRate /= 8;
+      if (ELDebug.Key(Keys.K)) tickRate *= 8;
+      if (ELDebug.Key(Keys.L)) tickRate *= 16;
 
       activeWorld = worlds[activeWorldIndex];
 
@@ -121,7 +118,7 @@ namespace SurviveCore.Engine
 
         activeWorld.Update(tick, deltaTime);
 
-        ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
