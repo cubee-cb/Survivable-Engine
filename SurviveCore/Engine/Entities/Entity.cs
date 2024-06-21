@@ -103,8 +103,9 @@ namespace SurviveCore.Engine.Entities
 
       clippingRect.Location = new Point(frameX, spriteY) * clippingRect.Size;
 
-      // draw
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - clippingRect.Size.ToVector2() / 2f + Vector2.UnitY * feetOffsetY);
+      // draw, with the bottom of the sprite as its centre (minus its foot offset)
+      Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height - feetOffsetY);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset);
 
     }
 

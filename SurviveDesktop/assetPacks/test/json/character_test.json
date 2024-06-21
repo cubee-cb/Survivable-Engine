@@ -11,7 +11,7 @@
   "hitbox": {"width": 4, "height": 2},
 
   "rotationType": "Cardinal",
-  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 4},
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 2},
   "animationLayout": [
     "-"
   ],

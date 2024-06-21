@@ -9,10 +9,10 @@
   "sounds": [
     "mob_testghost_alert"
   ],
-  "hitbox": {"width": 10, "height": 10},
+  "hitbox": {"width": 10, "height": 8},
 
   "rotationType": "Cardinal",
-  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 4},
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 3},
   "animationLayout": [
     "-"
   ],
