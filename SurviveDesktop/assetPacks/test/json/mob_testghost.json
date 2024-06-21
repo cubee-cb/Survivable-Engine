@@ -9,15 +9,12 @@
   "sounds": [
     "mob_testghost_alert"
   ],
-  "feetOffsetY": 4,
   "hitbox": {"width": 10, "height": 10},
 
-  "rotationType": "CardinalFlip",
-  "spriteDimensions": {"width": 16, "height": 16},
+  "rotationType": "Cardinal",
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 4},
   "animationLayout": [
-    "Down",
-    "Up",
-    "Right"
+    "-"
   ],
 
   // stats

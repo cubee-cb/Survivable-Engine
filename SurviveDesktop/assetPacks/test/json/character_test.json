@@ -8,16 +8,12 @@
   "sounds": [
     "character_test_hurt"
   ],
-  "feetOffsetY": 4,
   "hitbox": {"width": 4, "height": 2},
 
-  "rotationType": "CardinalFlip",
-  "spriteDimensions": {"width": 16, "height": 16},
+  "rotationType": "Cardinal",
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 4},
   "animationLayout": [
-    "Down",
-    "Up",
-    "Right",
-    "Death"
+    "-"
   ],
 
   // stats
