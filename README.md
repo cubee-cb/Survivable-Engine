@@ -16,9 +16,6 @@ So far, I've:
 - Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
-- Drawing with a camera offset.
-	- Monogame extended camera?
-- Add the player.
 - Add dynamic tiles.
 	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
 - Collisions with entities and tiles.
@@ -39,3 +36,7 @@ Notable milestones to-do:
 	- May have dependencies before availability. May optionally need to be fulfilled specifically after being made available, or can be completed beforehand without applying effects until later.
 
 
+Controls:
+- Arrow Keys / ESDF - move
+- Left Shift - run
+- J, K, L - Adjust tickrate (/8, x8, x16)
