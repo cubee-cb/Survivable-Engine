@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\MatchCondition.cs" />
     <Compile Include="..\SurviveCore\Engine\JsonHandlers\CharacterProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />

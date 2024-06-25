@@ -28,6 +28,10 @@ namespace SurviveCore.Engine.Entities
       rotationType = properties.rotationType;
       spriteDimensions = properties.spriteDimensions;
       health = properties.maxHealth;
+      tags = properties.tags;
+
+      // manually add a tag that says this object is a player
+      tags.Add("player");
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
@@ -101,6 +105,12 @@ namespace SurviveCore.Engine.Entities
       spriteRect.Location = a;
       ELDebug.Log(a + " / " + direction);
       //*/
+    }
+
+    public override float GetStrength()
+    {
+      //todo: return attack power
+      return properties.maxHealth;
     }
 
 

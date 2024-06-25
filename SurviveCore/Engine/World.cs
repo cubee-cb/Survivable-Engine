@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.WorldGen;
@@ -20,7 +21,7 @@ namespace SurviveCore.Engine
     {
       map = new TileMap(100, 100);
 
-      entities = new List<Entity>();
+      entities = new();
       generator = new OverworldGenerator(); // default to overworld if not specified
 
       generator.Generate(map);
@@ -31,7 +32,7 @@ namespace SurviveCore.Engine
     {
       map = new TileMap(width, height);
 
-      entities = new List<Entity>();
+      entities = new();
       this.generator = generator;
 
       this.generator.Generate(map);
@@ -84,6 +85,101 @@ namespace SurviveCore.Engine
     public TileMap GetMap()
     {
       return map;
+    }
+
+    public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)
+    {
+      // get list of targets matching the tag
+      List<Entity> validTargets = new();
+      foreach (Entity entity in entities)
+      {
+        if (entity.GetTags().Contains(tag))
+        {
+          validTargets.Add(entity);
+        }
+      }
+      if (playerRef.GetTags().Contains(tag)) validTargets.Add(playerRef);
+
+      // return null if there's no valid targets
+      if (validTargets.Count == 0) return null;
+
+      // find one entity matching the match condition
+      Entity returnEntity = validTargets[0];
+      switch (condition)
+      {
+        // a random one
+        default:
+        case MatchCondition.Random:
+          returnEntity = validTargets[Game1.rnd.Next(validTargets.Count)];
+          return returnEntity;
+
+        case MatchCondition.Nearest:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's closer
+            if (Vector2.Distance(entity.GetPosition(), callingEntity.GetPosition()) < Vector2.Distance(returnEntity.GetPosition(), callingEntity.GetPosition()))
+            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+
+        case MatchCondition.Farthest:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's further
+            if (Vector2.Distance(entity.GetPosition(), callingEntity.GetPosition()) > Vector2.Distance(returnEntity.GetPosition(), callingEntity.GetPosition()))            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+
+        case MatchCondition.Strongest:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's more powerful
+            if (entity.GetStrength() > returnEntity.GetStrength())
+            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+
+        case MatchCondition.Weakest:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's weaker
+            if (entity.GetStrength() < returnEntity.GetStrength())
+            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+
+        case MatchCondition.MostDurable:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's more durable
+            if (entity.GetDurability() > returnEntity.GetDurability())
+            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+
+        case MatchCondition.MostFragile:
+          foreach (Entity entity in validTargets)
+          {
+            // select this entity if it's less durable
+            if (entity.GetDurability() < returnEntity.GetDurability())
+            {
+              returnEntity = entity;
+            }
+          }
+          return returnEntity;
+      }
+
+
     }
 
 

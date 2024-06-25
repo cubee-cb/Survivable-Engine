@@ -16,6 +16,7 @@ namespace SurviveCore.Engine.Entities
     public DroppedItem(Item item, World world) : base(item.properties.internalName, world)
     {
       itemData = item;
+      tags = item.properties.tags;
 
       velocity.X = (float)(Game1.rnd.NextDouble() * 2 - 1) * 3;
       velocity.Y = (float)(Game1.rnd.NextDouble() * 2 - 4);

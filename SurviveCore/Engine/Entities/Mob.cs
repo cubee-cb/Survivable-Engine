@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
+using SurviveCore.Engine;
 using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace SurviveCore.Engine.Entities
       rotationType = properties.rotationType;
       spriteDimensions = properties.spriteDimensions;
       health = properties.maxHealth;
+      tags = properties.tags;
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
@@ -47,7 +49,7 @@ namespace SurviveCore.Engine.Entities
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
-        lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
+        lua.Globals["GetTarget"] = (Func<string, string, Table>)GetTarget;
       }
 
     }
@@ -65,6 +67,12 @@ namespace SurviveCore.Engine.Entities
 
       }
 
+    }
+
+    public override float GetStrength()
+    {
+      //todo: return attack power
+      return properties.maxHealth;
     }
 
     //                           //
@@ -97,8 +105,14 @@ namespace SurviveCore.Engine.Entities
     /// <returns>Whether the move was successful or not.</returns>
     private bool MoveToward(float x, float y, float speed)
     {
-      Vector2 moveVector = new Vector2(Math.Sign(x - position.X), Math.Sign(y - position.Y));
+      Vector2 moveVector = new(x - position.X, y - position.Y);
       moveVector.Normalize();
+
+      if (Single.IsNaN(moveVector.X) || Single.IsNaN(moveVector.Y))
+      {
+        ELDebug.Log("tried to move toward same position --> normalised vector became NaN.");
+        return false;
+      }
 
       float movedDistance = TryMove(moveVector * speed).Length();
 
@@ -110,25 +124,25 @@ namespace SurviveCore.Engine.Entities
     /// </summary>
     /// <param name="tags">A list of tags to match.</param>
     /// <returns>The position of the target</returns>
-    private Table GetTarget(Table tags)
+    private Table GetTarget(string tag, string condition)
     {
-      /*/ todo:
-       * add priority selection (closest, random, strongest, same if possible)
-       * find targets
-       * filter out current target
-       * choose one
-       * return its position
-      //*/
+      MatchCondition matchCondition = (MatchCondition)Enum.Parse(typeof(MatchCondition), condition);
 
-      // find target matching tags
-      foreach (string tag in tags.Values.AsObjects())
+      Entity foundEntity = world.FindEntityWithTag(this, tag, matchCondition);
+
+      Vector2 target = GetPosition();
+      if (foundEntity != null)
       {
-        //ELDebug.Log(tag);
+        target = foundEntity.GetPosition();
       }
 
-      Vector2 target = new Vector2(Game1.rnd.Next(0, 512), Game1.rnd.Next(0, 512));
+      // build table
+      Table tbl = new(lua);
+      tbl.Set("x", DynValue.NewNumber(target.X));
+      tbl.Set("y", DynValue.NewNumber(target.Y));
+      tbl.Set("valid", DynValue.NewBoolean(foundEntity != null));
 
-      return new Table(lua, DynValue.NewNumber(target.X), DynValue.NewNumber(target.Y));
+      return tbl;
 
     }
 

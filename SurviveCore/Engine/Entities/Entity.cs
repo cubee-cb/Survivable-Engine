@@ -15,10 +15,11 @@ namespace SurviveCore.Engine.Entities
   {
 
 
-    [JsonIgnore] World world;
+    [JsonIgnore] protected World world;
 
     private string id;
-    private int t;
+    [JsonIgnore] protected List<string> tags = new();
+    protected int t;
 
     // should these be vector3? thinking we want to support elevations
     private Vector2 lastPosition;
@@ -124,6 +125,21 @@ namespace SurviveCore.Engine.Entities
     public virtual Inventory GetInventory()
     {
       return inventory;
+    }
+
+    public virtual List<string> GetTags()
+    {
+      return tags;
+    }
+
+    public virtual float GetDurability()
+    {
+      return health;
+    }
+
+    public virtual float GetStrength()
+    {
+      return health;
     }
 
     /// <summary>
