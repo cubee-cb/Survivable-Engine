@@ -39,8 +39,8 @@ namespace SurviveCore.Engine.Items
         }
       }
 
-      frameWidth = texture.Width / properties.framesX;
-      frameHeight = texture.Height / properties.framesY;
+      frameWidth = texture.Width / (int)MathF.Max(properties.framesX, 1);
+      frameHeight = texture.Height / (int)MathF.Max(properties.framesY, 1);
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);

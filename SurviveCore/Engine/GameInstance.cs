@@ -49,7 +49,6 @@ namespace SurviveCore.Engine
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
       warehouse.LoadAll();
-      Warehouse.SetNameSpace("test");
 
       this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
@@ -67,12 +66,12 @@ namespace SurviveCore.Engine
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        player = new("character_test", input, tempWorld);
+        player = new("test.test", input, tempWorld);
         tempWorld.SetPlayerRef(player);
       }
 
       // create a test mob
-      Mob testMob = new("mob_testghost", tempWorld);
+      Mob testMob = new("test.testghost", tempWorld);
       tempWorld.AddEntity(testMob);
 
       // tell camera to focus on this entity
@@ -81,12 +80,12 @@ namespace SurviveCore.Engine
         player,
         testMob
       };
-
-      player.GetInventory().PlaceItem(0, new Item("item_mountain_sign"));
-      player.GetInventory().PlaceItem(1, new Item("item_mountain_sign"));
-      player.GetInventory().PlaceItem(2, new Item("item_mountain_sign"));
-      player.GetInventory().PlaceItem(3, new Item("item_mountain_sign"));
-
+      /*/
+      player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(1, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(2, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(3, new Item("test.mountain_sign"));
+      //*/
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 

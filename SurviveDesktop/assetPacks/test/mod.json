@@ -1,9 +1,9 @@
 {
   // properties
   "internalName": "test mod",
-  "namespace": "test",
+  "nameSpace": "test",
   "revision": 1,
-  
+
   "tags": [
     "placeholder"
   ],

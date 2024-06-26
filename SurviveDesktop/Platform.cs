@@ -19,7 +19,7 @@ namespace SurviveDesktop
     //const string SAVE_NAME = "save.json";
 
     /// <summary>
-    /// Load a text file from the root folder. i.e. pass @"Content/lua/textFile.lua".
+    /// Load a text file from the game root. i.e. pass @"Content/lua/textFile.lua".
     /// </summary>
     /// <param name="path">The path to a file.</param>
     /// <returns>The content of the file as a string.</returns>
@@ -42,6 +42,27 @@ namespace SurviveDesktop
       else
       {
         ELDebug.Log("couldn't open stream: file \"" + path + "\" does not exist or is inaccessible.", error: true);
+        return "<error>";
+      }
+    }
+
+    /// <summary>
+    /// Load a text file from the drive root. i.e. pass @"/home/user/game/lua/textFile.lua".
+    /// </summary>
+    /// <param name="path">The absolute path to a file.</param>
+    /// <returns>The content of the file as a string.</returns>
+    public static string LoadFileDirectly(string path)
+    {
+      if (Exists(path))
+      {
+        string fileContents = File.ReadAllText(path);
+
+        return fileContents;
+      }
+
+      else
+      {
+        ELDebug.Log("couldn't open file: \"" + path + "\" does not exist or is inaccessible.", error: true);
         return "<error>";
       }
     }
