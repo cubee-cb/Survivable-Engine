@@ -10,18 +10,25 @@ function AI(self)
   --DebugLog(pos)
 
   --Move(1, 0, 10)
-  local target = GetTarget({"player"})
-  local x = target[1]
-  local y = target[2]
+  local target = GetTarget("player", "Nearest")
+  local x = target.x
+  local y = target.y
+  local targetIsValid = target.valid
 
   --DebugLog("x target: " .. x)
   --DebugLog("y target: " .. y)
 
-  if (t % 60 == 59) then
-    PlaySound("mob_testghost_alert")
-  end
+  -- move toward target if one is found
+  if (targetIsValid) then
+	  MoveToward(x or 0, y or 0, 1)
 
-  MoveToward(x, y, 5)
+  -- complain loudly if not
+  else
+	  if (t % 10 == 9) then
+		  PlaySound("*.mob_testghost_alert")
+      DebugLog("no target!!")
+	  end
+  end
 
 end
 

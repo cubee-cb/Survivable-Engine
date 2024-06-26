@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.Lua;
 using SurviveDesktop;
 
@@ -25,7 +26,7 @@ namespace SurviveCore.Engine
     // paths are relative to the executable
     private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
-    private static string nameSpace = "default"; // the subfolder the assets are stored in, for modding purposes
+    private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
 
     private const string TEXTURE_FOLDER = "spr";
     private const string SOUND_FOLDER = "sfx";
@@ -45,13 +46,37 @@ namespace SurviveCore.Engine
     private static Dictionary<string, string> jsonData;
     private static Dictionary<string, string> luaScripts;
 
+    private const string FOLDER_CHARACTER = "character";
+    private const string FOLDER_GROUND = "ground";
+    private const string FOLDER_TILE = "tile";
+    private const string FOLDER_DIMENSION = "dimension";
+    private const string FOLDER_BIOME = "biome";
+    private const string FOLDER_ITEM = "item";
+    private const string FOLDER_MOB = "mob";
+    readonly static private List<string> contentTypeSubfolders = new()
+    {
+      FOLDER_CHARACTER,
+      FOLDER_GROUND,
+      FOLDER_TILE,
+      FOLDER_DIMENSION,
+      FOLDER_BIOME,
+      FOLDER_ITEM,
+      FOLDER_MOB
+    };
+
+    private static List<string> contentPaths = new()
+    {
+      Path.Combine(Platform.BASE_FOLDER, contentPath),
+      Path.Combine(Platform.EXTERNAL_FOLDER, contentPath)
+    };
+
     private static GraphicsDevice graphicsDevice;
 
 
     public Warehouse(ContentManager content, GraphicsDevice outerGraphicsDevice)
     {
       // load fallback content, used when an asset cannot be found
-      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/mod assets.
+      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/pack assets.
       missingTexture = content.Load<Texture2D>("spr/missing");
       missingSound = content.Load<SoundEffect>("sfx/missing");
       missingMusic = content.Load<Song>("music/missing");
@@ -68,27 +93,95 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
-    /// Builds a list of all the namespaces that can be found by Warehouse, along with their locations on disk, so it knows what game and mod assets are installed.
-    /// This is useful in future to preload some definitions, like world types, biomes, and characters.
-    /// </summary>
-    public static void FindAllNamespaceLocations()
-    {
-    }
-
-    /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
     public static void LoadAll()
     {
+      //todo: make this an async task or something, so the game window can show a loading screen
+
+      ELDebug.Log("loading content packs");
+      foreach (string contentPath in contentPaths)
+      {
+        // skip if the directory doesn't exist
+        if (!Directory.Exists(contentPath)) continue;
+
+        // find all pack folders that have pack.json
+        List<string> packPaths = new(Directory.GetDirectories(contentPath));
+
+        foreach (string packPath in packPaths)
+        {
+          ELDebug.Log("checking " + packPath);
+
+          // skip this pack if the pack.json doesn't exist
+          if (!Platform.Exists(Path.Combine(packPath, "pack.json"))) continue;
+
+          // load pack.json
+          ModProperties packProps = new(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
+          ELDebug.Log("found pack: " + packProps);
+
+          nameSpace = packProps.nameSpace;
+
+          // load content from folders
+          foreach (string contentType in contentTypeSubfolders)
+          {
+            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), contentType, LoadTexture);
+            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), contentType, LoadSoundEffect);
+            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), contentType, LoadSong);
+            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), contentType, LoadJson);
+            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), contentType, LoadLua);
+          }
+
+          //todo: each object should update all internal references with the namespace
+          // if they don't, it won't know which namespace the file is from if it's omitted
+          // alternatively, perform a "best-guess" by loading the first matching name from any namespace.
+
+          // how to handle the different types? character, item, etc.
+          // they're all in the same list, what if we have a tile and item both called Furnace?
+          // whichever is loaded last will take precedence, overwriting the first one
+
+        }
+
+
+
+
+      }
+
+      ELDebug.Log("=======================================");
     }
 
-    /// <summary>
-    /// set the namespace the warehouse is working in. this is the same as the game/mod assets folder name
-    /// </summary>
-    /// <param name="newNameSpace">the namespace</param>
-    public static void SetNameSpace(string newNameSpace)
+    public static void UnloadAll()
     {
-      nameSpace = newNameSpace;
+      // existing objects will turn black rather than missing texture due to storing their own
+      // texture reference after loading
+      ELDebug.Log("unloading all asset packs");
+
+      foreach (KeyValuePair<string, Texture2D> kvp in textures)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded texture " + kvp.Key);
+      }
+      textures.Clear();
+
+      foreach (KeyValuePair<string, SoundEffect> kvp in sounds)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded sound effect " + kvp.Key);
+      }
+      sounds.Clear();
+
+      foreach (KeyValuePair<string, Song> kvp in music)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded music track " + kvp.Key);
+      }
+      music.Clear();
+
+      jsonData.Clear();
+      ELDebug.Log("cleared json data");
+
+      luaScripts.Clear();
+      ELDebug.Log("cleared lua scripts");
+
     }
 
     /// <summary>
@@ -98,13 +191,17 @@ namespace SurviveCore.Engine
     /// <returns></returns>
     private static string BuildInternalName(string fileName)
     {
+      // get just the filename
+      //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
+      fileName = Path.GetFileNameWithoutExtension(fileName);
+
       // if the filename has a namespace, use that.
       if (fileName.Contains(NAMESPACE_SEPARATOR))
       {
         return fileName;
       }
       // if it's missing a namespace, use the active namespace.
-      // handy for if you want to easily change the mod's namespace later for whatever reason.
+      // handy for if you want to easily change the pack's namespace later for whatever reason.
       else
       {
         return string.Join(NAMESPACE_SEPARATOR, nameSpace, fileName);
@@ -112,39 +209,70 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
-    /// Gets a texture from the stored assets, and tries to load it if it can't find it.
+    /// Scans a folder for files, and passes their path to the loadMethod().
     /// </summary>
-    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .png</param>
-    /// <returns>The texture that was found, or the missing texture if not.</returns>
-    public static Texture2D GetTexture(string fileName)
+    /// <param name="loadMethod">The method to use to import the asset when found.</param>
+    public static void LoadAssetsInFolder(string basePath, string subfolder, Func<string, string> loadMethod)
     {
-      string internalName = BuildInternalName(fileName);
+      string path = Path.Join(basePath, subfolder);
+      // skip this folder if it doesn't exist
+      if (!Directory.Exists(path)) return;
 
-      // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      // try to load all the files in the folder
+      foreach (string file in Directory.GetFiles(path))
       {
-        ELDebug.Log(internalName + " contains an empty texture reference.", error: true);
-        return missingTexture;
+        try
+        {
+          string internalName = loadMethod(file);
+          
+          // the loadMethod handles its own output
+          //ELDebug.Log("loaded " + subfolder + " " + internalName);
+        }
+        catch
+        {
+          ELDebug.Log(" failed to load " + subfolder + " " + basePath + ". wrong file type?", error: true);
+        }
       }
+    }
 
-      // if the file exists, create a temporary blank texture so the thing is invisible while it loads
-      // if it doesn't, exit early instead. GetTexture should handle nonexistent assets and return the missing texture instead
+    private static string LoadTexture(string filePath)
+    {
+      string internalName = BuildInternalName(filePath);
 
-      // make a thread to load files in the background?
-      // need to figure out how threads work
-      //Thread thread = new Thread(new ThreadStart(ThreadedLoadTexture));
-
-      // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, TEXTURE_FOLDER, fileName + ".png");
-      if (!textures.ContainsKey(internalName) && Platform.Exists(relativePath))
+      if (Platform.Exists(filePath))
       {
-        Stream stream = Platform.GetStream(relativePath);
+        FileStream stream = new(filePath, FileMode.Open);
         Texture2D loadedTexture = Texture2D.FromStream(graphicsDevice, stream);
         stream.DisposeAsync();
 
-        textures.Add(internalName, loadedTexture);
+        // replace loaded asset if it already exists
+        if (textures.ContainsKey(internalName))
+        {
+          textures[internalName] = loadedTexture;
+        }
+        else
+        {
+          textures.Add(internalName, loadedTexture);
+        }
 
-        ELDebug.Log("loaded texture file " + internalName);
+        ELDebug.Log("loaded texture file: " + internalName);
+      }
+
+      return internalName;
+    }
+
+    /// <summary>
+    /// Gets a texture from the stored assets.
+    /// </summary>
+    /// <param name="fileName">Name of the texture to get.</param>
+    /// <returns>The texture that was found, or the missing texture if not.</returns>
+    public static Texture2D GetTexture(string internalName)
+    {
+      // exit if the filename is blank
+      if (string.IsNullOrWhiteSpace(internalName))
+      {
+        ELDebug.Log("got an empty texture reference", error: true);
+        return missingTexture;
       }
 
       // find the loaded texture and return it
@@ -154,85 +282,110 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain texture at " + relativePath, error: true);
+        ELDebug.Log("failed to obtain texture " + internalName, error: true);
         return missingTexture;
       }
     }
 
 
-    /// <summary>
-    /// Gets a sound effect from the stored assets, and tries to load it if it can't find it.
-    /// </summary>
-    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .wav</param>
-    /// <returns>The sound that was found, or the missing sound if not.</returns>
-    public static SoundEffect GetSoundEffect(string fileName)
+    private static string LoadSoundEffect(string filePath)
     {
-      string internalName = BuildInternalName(fileName);
+      string internalName = BuildInternalName(filePath);
 
-      // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      if (Platform.Exists(filePath))
       {
-        ELDebug.Log(internalName + " contains an empty sound reference.", error: true);
-        return missingSound;
-      }
-
-      // make a thread to load files in the background?
-      // need to figure out how threads work
-      //Thread thread = new Thread(new ThreadStart(ThreadedLoadTexture));
-
-      // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, SOUND_FOLDER, fileName + ".wav");
-      if (!sounds.ContainsKey(internalName) && Platform.Exists(relativePath))
-      {
-        Stream stream = Platform.GetStream(relativePath);
+        FileStream stream = new(filePath, FileMode.Open);
         SoundEffect loadedSound = SoundEffect.FromStream(stream);
         stream.DisposeAsync();
 
-        sounds.Add(internalName, loadedSound);
+        // replace loaded asset if it already exists
+        if (sounds.ContainsKey(internalName))
+        {
+          sounds[internalName] = loadedSound;
+        }
+        else
+        {
+          sounds.Add(internalName, loadedSound);
+        }
 
         ELDebug.Log("loaded sound file " + internalName);
       }
 
-      // find the loaded texture and return it
+      return internalName;
+    }
+
+    /// <summary>
+    /// Gets a sound effect from the stored assets.
+    /// </summary>
+    /// <param name="fileName">Name of the sound to load.</param>
+    /// <returns>The sound that was found, or the missing sound if not.</returns>
+    public static SoundEffect GetSoundEffect(string internalName)
+    {
+      // exit if the filename is blank
+      if (string.IsNullOrWhiteSpace(internalName))
+      {
+        ELDebug.Log("got an empty sound reference", error: true);
+        return missingSound;
+      }
+
+      // find the loaded sound and return it
       if (sounds.ContainsKey(internalName))
       {
         return sounds[internalName];
       }
       else
       {
-        ELDebug.Log("failed to obtain sound at " + relativePath, error: true);
+        ELDebug.Log("failed to obtain sound " + internalName, error: true);
         return missingSound;
       }
     }
 
-    /// <summary>
-    /// Gets a json file and turns it into an object, and loads it if it isn't already.
-    /// </summary>
-    /// <typeparam name="T">The type to deserialise the json file to.</typeparam>
-    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .json</param>
-    /// <returns>An object deserialised from the json, based on the type provided to the function.</returns>
-    public static T GetJson<T>(string fileName)
+    private static string LoadJson(string filePath)
     {
-      string internalName = BuildInternalName(fileName);
+      string internalName = BuildInternalName(filePath);
 
-      // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
-      {
-        ELDebug.Log(internalName + " contains an empty json reference.", error: true);
-        return default;
-      }
-
-      // try to load the file
-      string relativePath = string.Join('/', contentPath, nameSpace, JSON_FOLDER, fileName + ".json");
-      if (!jsonData.ContainsKey(internalName) && Platform.Exists(relativePath))
+      if (Platform.Exists(filePath))
       {
         // load json file content
-        string jsonString = Platform.LoadContentFile(relativePath);
+        // plus a quick, hacky way of handling namespace wildcards
+        // wildcard is replaced with the current namespace, typically the pack's namespace
+        // example, with two packs "foo" and "bar":
+        // foo may refer to its content as either "foo.thing" or "*.thing"
+        // if bar references "*.thing", it gets "bar.thing" unless it specifies "foo.thing"
+        // if foo wants to become "xyzzy", it can do so without breaking its own content -
+        // - as long as it uses "*.thing" instead of "foo.thing".
+        // however, bar needs to be updated to continue using "xyzzy.thing".
+        string jsonString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
 
-        // add it to the loaded json dictionary
-        jsonData.Add(internalName, jsonString);
+        // replace loaded asset if it already exists
+        if (jsonData.ContainsKey(internalName))
+        {
+          jsonData[internalName] = jsonString;
+        }
+        else
+        {
+          jsonData.Add(internalName, jsonString);
+        }
 
         ELDebug.Log("loaded json file " + internalName);
+      }
+
+      return internalName;
+    }
+
+    /// <summary>
+    /// Gets a json file and turns it into an object.
+    /// </summary>
+    /// <typeparam name="T">The type to deserialise the json file to.</typeparam>
+    /// <param name="fileName">Name of the file to load.</param>
+    /// <returns>An object deserialised from the json, based on the type provided to the function.</returns>
+    public static T GetJson<T>(string internalName)
+    {
+      // exit if the filename is blank
+      if (string.IsNullOrWhiteSpace(internalName))
+      {
+        ELDebug.Log("got an empty json reference", error: true);
+        return default;
       }
 
       // find the loaded json, process, and return it
@@ -241,45 +394,58 @@ namespace SurviveCore.Engine
         string jsonString = jsonData[internalName];
 
         T thing = JsonConvert.DeserializeObject<T>(jsonString);
+
         return thing;
       }
 
       else
       {
-        ELDebug.Log("failed to obtain json file at " + relativePath, error: true);
+        ELDebug.Log("failed to obtain json file " + internalName, error: true);
         return default;
       }
 
     }
 
-    /// <summary>
-    /// Gets a Lua file and turns it into an object, and loads it if it isn't already.
-    /// The script is run once to define functions.
-    /// </summary>
-    /// <param name="fileName">Name of the file to load, excluding the extension. Extension is implied to be .lua</param>
-    /// <returns>A Script built based on the file contents.</returns>
-    public static Script GetLua(string fileName)
+
+    private static string LoadLua(string filePath)
     {
-      string internalName = BuildInternalName(fileName);
+      string internalName = BuildInternalName(filePath);
 
-      // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
-      {
-        ELDebug.Log(internalName + " contains an empty lua reference.", error: true);
-        return default;
-      }
-
-      // try to load the file if it isn't already loaded
-      string relativePath = string.Join('/', contentPath, nameSpace, LUA_FOLDER, fileName + ".lua");
-      if (!luaScripts.ContainsKey(internalName) && Platform.Exists(relativePath))
+      if (Platform.Exists(filePath))
       {
         // load lua file content
-        string luaString = Platform.LoadContentFile(relativePath);
+        // also process lua namespaces, in case it wants to reference external files
+        string luaString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
 
-        // add it to the loaded json dictionary
-        luaScripts.Add(internalName, luaString);
+        // replace loaded asset if it already exists
+        if (luaScripts.ContainsKey(internalName))
+        {
+          luaScripts[internalName] = luaString;
+        }
+        else
+        {
+          luaScripts.Add(internalName, luaString);
+        }
 
         ELDebug.Log("loaded lua file " + internalName);
+      }
+
+      return internalName;
+    }
+
+    /// <summary>
+    /// Gets a Lua file and turns it into an object.
+    /// The script is immediately run once to define functions and initialise variables.
+    /// </summary>
+    /// <param name="fileName">Name of the file to load.</param>
+    /// <returns>A Script built based on the file contents.</returns>
+    public static Script GetLua(string internalName)
+    {
+      // exit if the filename is blank
+      if (string.IsNullOrWhiteSpace(internalName))
+      {
+        ELDebug.Log("got an empty lua reference", error: true);
+        return default;
       }
 
       // find the loaded lua, process, and return it
@@ -288,18 +454,28 @@ namespace SurviveCore.Engine
         string luaString = luaScripts[internalName];
 
         // execute lua script and put it into a Script object
-        Script script = new Script(CoreModules.Preset_SoftSandbox);
+        Script script = new(CoreModules.Preset_SoftSandbox);
 
         // register common methods
         LuaCommon.Register(script);
 
-        script.DoString(luaString);
+
+        try
+        {
+          script.DoString(luaString);
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+          return default;
+        }
+
         return script;
       }
 
       else
       {
-        ELDebug.Log("failed to obtain lua file at " + relativePath, error: true);
+        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
         return default;
       }
 

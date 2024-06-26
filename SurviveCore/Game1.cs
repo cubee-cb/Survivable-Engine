@@ -29,6 +29,9 @@ namespace SurviveCore
       // uncomment these to uncap the framerate
       _graphics.SynchronizeWithVerticalRetrace = false;
       IsFixedTimeStep = false;
+
+      // change this for other games
+      //Warehouse.SetGameFolder("surviveEngine");
     }
 
 

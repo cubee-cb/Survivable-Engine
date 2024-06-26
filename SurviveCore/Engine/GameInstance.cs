@@ -1,7 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Entities;
+using SurviveCore.Engine.Input;
+using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
@@ -15,15 +19,18 @@ namespace SurviveCore.Engine
     EInstanceMode instanceMode;
     PlayerIndex playerIndex;
 
+    private int targetTickRate;
     private int tickRate;
     private int tick;
     private float deltaTimeAccumulated;
 
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
+    InputManager input;
     Warehouse warehouse;
     Texture2D missingTex;
 
+    Player player;
     List<Entity> cameraFocusEntities;
 
     private List<World> worlds;
@@ -35,13 +42,15 @@ namespace SurviveCore.Engine
       this.instanceMode = instanceMode;
       this.playerIndex = playerIndex;
 
-      // initialise display
+      // initialise display and input
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
+      input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
-      Warehouse.SetNameSpace("test");
+      Warehouse.LoadAll();
 
+      this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
       tick = 0;
       deltaTimeAccumulated = 0;
@@ -57,19 +66,25 @@ namespace SurviveCore.Engine
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        //tempWorld.AddEntity(new Player(playerIndex, tempWorld));
+        player = new("test.test", input, tempWorld);
+        tempWorld.SetPlayerRef(player);
       }
 
       // create a test mob
-      Mob testMob = new("mob_testghost", tempWorld);
-      tempWorld.AddEntity(testMob);
+      tempWorld.AddEntity(new Mob("test.testghost", tempWorld));
+      tempWorld.AddEntity(new Mob("test.chaser", tempWorld));
 
       // tell camera to focus on this entity
       cameraFocusEntities = new()
       {
-        testMob
+        player
       };
-
+      //
+      player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(1, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(2, new Item("test.mountain_sign"));
+      player.GetInventory().PlaceItem(3, new Item("test.mountain_sign"));
+      //*/
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 
@@ -78,6 +93,20 @@ namespace SurviveCore.Engine
 
     public void Update(float deltaTime)
     {
+      // tickrate modifier keys
+      tickRate = targetTickRate;
+      if (ELDebug.Key(Keys.J)) tickRate /= 8;
+      if (ELDebug.Key(Keys.K)) tickRate *= 8;
+      if (ELDebug.Key(Keys.L)) tickRate *= 16;
+
+      // dangerous keys (hold right control to activate)
+      // unload all asset packs ([U]nload)
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U)) Warehouse.UnloadAll();
+      // load all asset packs ([I]nitialise)
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I)) Warehouse.LoadAll();
+
+
+
 
       activeWorld = worlds[activeWorldIndex];
 
@@ -93,9 +122,11 @@ namespace SurviveCore.Engine
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
+        input.UpdateInputs();
+
         activeWorld.Update(tick, deltaTime);
 
-        ELDebug.Log("ping! total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        //ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
@@ -118,12 +149,14 @@ namespace SurviveCore.Engine
         // draw to the game world layer
         display.SetDisplayLayer(EGameDisplayLayer.Game);
         display.Begin();
-        // move camera to follow targete entities
+        // move camera to follow targeted entities
         //todo: average position of all targeted entities. never let index 0 go off-screen
-        display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
+        if(cameraFocusEntities.Count > 0)display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
 
         // pass tick progress to draw, so objects can visually smooth to their new location
         activeWorld.Draw(tickProgress); // eqiv. to (deltaTimeAcc / targetDeltaTime)
+
+        display.Camera(Vector2.Zero);
 
         /*/ debug things
         for (int i = 0; i < 500; i++)
@@ -139,6 +172,9 @@ namespace SurviveCore.Engine
         display.SetDisplayLayer(EGameDisplayLayer.UI);
         display.Begin();
         display.Camera(Vector2.Zero);
+
+        // draw player's inventory
+        player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
 
         /*/ debug things
         for (int i = 0; i < 500; i++)

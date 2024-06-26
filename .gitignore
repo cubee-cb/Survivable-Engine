@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# everlost content pack folder (it'll be in its own private repo) and everlost-related files
+[Ee]verlost/
+*[Ee]verlost*

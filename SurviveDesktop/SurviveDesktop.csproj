@@ -27,9 +27,7 @@
 
   <!-- include asset packs folder  -->
   <ItemGroup>
-    <Content Include="$(ProjectDir)assetPacks\**\*.*"
-              CopyToOutputDirectory="PreserveNewest"
-              CopyToPublishDirectory="PreserveNewest">
+    <Content Include="$(ProjectDir)assetPacks\**\*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest">
       <Link>assetPacks/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
   </ItemGroup>
