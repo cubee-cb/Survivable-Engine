@@ -99,6 +99,11 @@ namespace SurviveCore.Engine.Entities
       Vector2 moveVector = new Vector2(x, y);
       moveVector.Normalize();
 
+      if (Single.IsNaN(moveVector.X) || Single.IsNaN(moveVector.Y))
+      {
+        return false;
+      }
+
       float movedDistance = TryMove(moveVector * speed).Length();
 
       return movedDistance >= moveVector.Length();
@@ -118,7 +123,7 @@ namespace SurviveCore.Engine.Entities
 
       if (Single.IsNaN(moveVector.X) || Single.IsNaN(moveVector.Y))
       {
-        ELDebug.Log("tried to move toward same position --> normalised vector became NaN.");
+        //ELDebug.Log("tried to move toward same position --> normalised vector became NaN.");
         return false;
       }
 
