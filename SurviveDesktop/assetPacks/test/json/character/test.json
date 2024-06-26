@@ -1,12 +1,12 @@
 {
   // properties
-  "internalName": "character_test",
-  "textureSheetName": "character_test",
+  "internalName": "test",
+  "textureSheetName": "test",
   "tags": [
     "placeholder"
   ],
   "sounds": [
-    "character_test_hurt"
+    "test_hurt"
   ],
   "hitbox": {"width": 4, "height": 2},
 

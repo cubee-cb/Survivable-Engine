@@ -13,6 +13,9 @@ namespace SurviveDesktop
   {
     public const string PLATFORM_NAME = "desktop";
     public const int MAX_SFX_INSTANCES = 256;
+
+    public static string BASE_FOLDER = AppDomain.CurrentDomain.BaseDirectory;
+    public static string EXTERNAL_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "pxlshk", "surviveEngine");
     //const string SAVE_NAME = "save.json";
 
     /// <summary>

@@ -1,0 +1,13 @@
+{
+  // properties
+  "internalName": "test mod",
+  "namespace": "test",
+  "revision": 1,
+  
+  "tags": [
+    "placeholder"
+  ],
+
+  // eof
+  "": ""
+}

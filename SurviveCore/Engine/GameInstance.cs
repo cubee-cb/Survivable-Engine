@@ -48,6 +48,7 @@ namespace SurviveCore.Engine
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
+      warehouse.LoadAll();
       Warehouse.SetNameSpace("test");
 
       this.targetTickRate = targetTickRate;

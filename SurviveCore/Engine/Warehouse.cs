@@ -45,6 +45,24 @@ namespace SurviveCore.Engine
     private static Dictionary<string, string> jsonData;
     private static Dictionary<string, string> luaScripts;
 
+
+    readonly private List<string> contentTypeSubfolders = new()
+    {
+      "character",
+      "ground",
+      "tile",
+      "dimension",
+      "biome",
+      "item",
+      "mob"
+    };
+
+    private static List<string> contentPaths = new()
+    {
+      Path.Combine(Platform.BASE_FOLDER, contentPath),
+      Path.Combine(Platform.EXTERNAL_FOLDER, contentPath)
+    };
+
     private static GraphicsDevice graphicsDevice;
 
 
@@ -78,8 +96,29 @@ namespace SurviveCore.Engine
     /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
-    public static void LoadAll()
+    public void LoadAll()
     {
+
+      foreach (string contentPath in contentPaths)
+      {
+        // skip if the directory doesn't exist
+        if (!Directory.Exists(contentPath)) continue;
+
+        // find all mod folders that have mod.json
+        List<string> modPaths = new(Directory.GetDirectories(contentPath));
+
+        foreach (string modPath in modPaths)
+        {
+          ELDebug.Log(modPath);
+
+        }
+
+
+
+
+      }
+
+      ELDebug.Log("=======================================");
     }
 
     /// <summary>

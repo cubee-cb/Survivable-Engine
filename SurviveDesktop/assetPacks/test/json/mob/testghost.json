@@ -1,13 +1,13 @@
 {
   // properties
-  "internalName": "mob_testghost",
-  "textureSheetName": "mob_testghost",
+  "internalName": "testghost",
+  "textureSheetName": "testghost",
   "tags": [
     "enemy",
     "ghost"
   ],
   "sounds": [
-    "mob_testghost_alert"
+    "testghost_alert"
   ],
   "hitbox": {"width": 10, "height": 8},
 
@@ -22,7 +22,7 @@
   "inventorySize": 0,
 
   // lua
-  "lua": "mob_testghost",
+  "lua": "testghost",
 
   // eof
   "": ""
