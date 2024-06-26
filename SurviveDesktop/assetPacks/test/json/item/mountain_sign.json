@@ -1,0 +1,23 @@
+{
+  // properties
+  "internalName": "mountain_sign",
+  "textureSheetName": "*.mountain_sign",
+  "tags": [
+    "mace"
+  ],
+  "sounds": [
+    "*.mountain_sign_whack"
+  ],
+  "framesX": 1,
+  "framesY": 1,
+
+  // stats
+  "swingType": "slash",
+  "holdType": "none",
+
+  // lua
+  //"lua": "",
+
+  // eof
+  "": ""
+}

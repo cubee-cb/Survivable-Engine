@@ -164,7 +164,8 @@ namespace SurviveCore.Engine.Display
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
 
       //todo: angleTurns is still radians instead of turns. FIX IT
-      currentDisplayInstance.spriteBatch.Draw(texture, location, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
+      // why do i need a +0.5f offset to have the sprites render correctly? i dunno.
+      currentDisplayInstance.spriteBatch.Draw(texture, Vector2.Floor(location) + Vector2.One * 0.5f, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
     }
 
   }

@@ -1,20 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
+using SurviveCore.Engine;
 using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SurviveCore.Engine
+namespace SurviveCore.Engine.Entities
 {
   [MoonSharpUserData]
   internal class Mob : Entity
   {
 
     [JsonIgnore] MobProperties properties;
-
-    List<int> inventory;
 
     // lua scripts
     [JsonIgnore] private Script lua;
@@ -24,7 +23,10 @@ namespace SurviveCore.Engine
 
       // set initial properties
       properties = Warehouse.GetJson<MobProperties>(id);
+      rotationType = properties.rotationType;
+      spriteDimensions = properties.spriteDimensions;
       health = properties.maxHealth;
+      tags = properties.tags;
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
@@ -36,12 +38,8 @@ namespace SurviveCore.Engine
         }
       }
 
-      // create inventory (temoporary; will use Item class when implemented)
-      inventory = new List<int>();
-      for (int i = 0; i < properties.inventorySize; i++)
-      {
-        inventory.Add(0);
-      }
+      // create inventory
+      inventory = new(properties.inventorySize);
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
@@ -51,7 +49,9 @@ namespace SurviveCore.Engine
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
-        lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
+        lua.Globals["GetTarget"] = (Func<string, string, Table>)GetTarget;
+        lua.Globals["DistanceTo"] = (Func<float, float, float>)DistanceTo;
+        lua.Globals["SnapPosition"] = (Func<float, float, bool>)SnapPosition;
       }
 
     }
@@ -63,12 +63,24 @@ namespace SurviveCore.Engine
       // run mob's ai and tick scripts each tick
       if (lua != null)
       {
-        DynValue resAI = lua.Call(lua.Globals["AI"]);
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals["AI"]);
 
-        DynValue resTick = lua.Call(lua.Globals["Tick"]);
-
+          DynValue resTick = lua.Call(lua.Globals["Tick"]);
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
       }
 
+    }
+
+    public override float GetStrength()
+    {
+      //todo: return attack power
+      return properties.maxHealth;
     }
 
     //                           //
@@ -101,8 +113,14 @@ namespace SurviveCore.Engine
     /// <returns>Whether the move was successful or not.</returns>
     private bool MoveToward(float x, float y, float speed)
     {
-      Vector2 moveVector = new Vector2(Math.Sign(x - position.X), Math.Sign(y - position.Y));
+      Vector2 moveVector = new(x - position.X, y - position.Y);
       moveVector.Normalize();
+
+      if (Single.IsNaN(moveVector.X) || Single.IsNaN(moveVector.Y))
+      {
+        ELDebug.Log("tried to move toward same position --> normalised vector became NaN.");
+        return false;
+      }
 
       float movedDistance = TryMove(moveVector * speed).Length();
 
@@ -110,29 +128,56 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
+    /// Gets the distance from the mob to the specified coordinates.
+    /// </summary>
+    /// <param name="x">Target X position.</param>
+    /// <param name="y">Target X position.</param>
+    /// <returns>The distance to the target.</returns>
+    private float DistanceTo(float x, float y)
+    {
+      return Vector2.Distance(position, new Vector2(x, y));
+    }
+
+    /// <summary>
+    /// Snap the mob to the specified coordinates, avoiding colliders.
+    /// </summary>
+    /// <param name="x">X position to snap to.</param>
+    /// <param name="y">Y position to snap to.</param>
+    /// <returns>True if unobstructed.</returns>
+    private bool SnapPosition(float x, float y)
+    {
+      //todo: avoid colliders
+      position.X = x;
+      position.Y = y;
+
+      //todo: return false if there was a collider in the way
+      return true;
+    }
+
+    /// <summary>
     /// Get a target matching certain tags. If multiple are found, a random one is chosen other than the current target.
     /// </summary>
     /// <param name="tags">A list of tags to match.</param>
     /// <returns>The position of the target</returns>
-    private Table GetTarget(Table tags)
+    private Table GetTarget(string tag, string condition)
     {
-      /*/ todo:
-       * add priority selection (closest, random, strongest, same if possible)
-       * find targets
-       * filter out current target
-       * choose one
-       * return its position
-      //*/
+      MatchCondition matchCondition = (MatchCondition)Enum.Parse(typeof(MatchCondition), condition);
 
-      // find target matching tags
-      foreach (string tag in tags.Values.AsObjects())
+      Entity foundEntity = world.FindEntityWithTag(this, tag, matchCondition);
+
+      Vector2 target = GetPosition();
+      if (foundEntity != null)
       {
-        //ELDebug.Log(tag);
+        target = foundEntity.GetPosition();
       }
 
-      Vector2 target = new Vector2(Game1.rnd.Next(0, 512), Game1.rnd.Next(0, 512));
+      // build table
+      Table tbl = new(lua);
+      tbl.Set("x", DynValue.NewNumber(target.X));
+      tbl.Set("y", DynValue.NewNumber(target.Y));
+      tbl.Set("valid", DynValue.NewBoolean(foundEntity != null));
 
-      return new Table(lua, DynValue.NewNumber(target.X), DynValue.NewNumber(target.Y));
+      return tbl;
 
     }
 

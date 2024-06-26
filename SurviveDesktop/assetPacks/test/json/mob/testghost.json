@@ -1,0 +1,29 @@
+{
+  // properties
+  "internalName": "testghost",
+  "textureSheetName": "*.testghost",
+  "tags": [
+    "enemy",
+    "ghost"
+  ],
+  "sounds": [
+    "*.testghost_alert"
+  ],
+  "hitbox": {"width": 10, "height": 8},
+
+  "rotationType": "Cardinal",
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 3},
+  "animationLayout": [
+    "-"
+  ],
+
+  // stats
+  "maxHealth": 10,
+  "inventorySize": 0,
+
+  // lua
+  "lua": "*.testghost",
+
+  // eof
+  "": ""
+}

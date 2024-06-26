@@ -15,7 +15,7 @@ namespace SurviveCore.Engine.WorldGen.Routines
       {
         for (int iy = 0; iy < map.height; iy++)
         {
-          map.Plot(ix, iy, new GroundTile("ground_grass", Game1.rnd.Next(0, 2)));
+          map.Plot(ix, iy, new GroundTile("test.grass", Game1.rnd.Next(0, 2)));
         }
       }
 

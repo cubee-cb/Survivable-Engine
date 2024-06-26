@@ -1,13 +1,13 @@
 {
   // properties
-  "internalName": "ground_grass",
-  "textureSheetName": "ground_grass",
+  "internalName": "grass",
+  "textureSheetName": "*.grass",
   "tags": [
     "grass",
     "growsTrees"
   ],
   "sounds": [
-    "ground_grass_step"
+    "*.grass_step"
   ],
 
   // stats
