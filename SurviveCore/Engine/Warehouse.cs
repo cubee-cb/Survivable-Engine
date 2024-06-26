@@ -53,7 +53,7 @@ namespace SurviveCore.Engine
     private const string FOLDER_BIOME = "biome";
     private const string FOLDER_ITEM = "item";
     private const string FOLDER_MOB = "mob";
-    readonly private List<string> contentTypeSubfolders = new()
+    readonly static private List<string> contentTypeSubfolders = new()
     {
       FOLDER_CHARACTER,
       FOLDER_GROUND,
@@ -63,8 +63,6 @@ namespace SurviveCore.Engine
       FOLDER_ITEM,
       FOLDER_MOB
     };
-
-    readonly private Dictionary<string, string> nameSpaceToDirectory = new();
 
     private static List<string> contentPaths = new()
     {
@@ -97,7 +95,7 @@ namespace SurviveCore.Engine
     /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
-    public void LoadAll()
+    public static void LoadAll()
     {
       //todo: make this an async task or something, so the game window can show a loading screen
 
@@ -119,9 +117,6 @@ namespace SurviveCore.Engine
           ELDebug.Log("found mod: " + modProps);
 
           nameSpace = modProps.nameSpace;
-
-          // add namespace directory
-          nameSpaceToDirectory.Add(nameSpace, modPath);
 
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
@@ -149,6 +144,41 @@ namespace SurviveCore.Engine
       }
 
       ELDebug.Log("=======================================");
+    }
+
+    public static void UnloadAll()
+    {
+      // existing objects will turn black rather than missing texture due to storing their own
+      // texture reference after loading
+      ELDebug.Log("unloading all asset packs");
+
+      foreach (KeyValuePair<string, Texture2D> kvp in textures)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded texture " + kvp.Key);
+      }
+      textures.Clear();
+
+      foreach (KeyValuePair<string, SoundEffect> kvp in sounds)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded sound effect " + kvp.Key);
+      }
+      sounds.Clear();
+
+      foreach (KeyValuePair<string, Song> kvp in music)
+      {
+        kvp.Value.Dispose();
+        ELDebug.Log("unloaded music track " + kvp.Key);
+      }
+      music.Clear();
+
+      jsonData.Clear();
+      ELDebug.Log("cleared json data");
+
+      luaScripts.Clear();
+      ELDebug.Log("cleared lua scripts");
+
     }
 
     /// <summary>

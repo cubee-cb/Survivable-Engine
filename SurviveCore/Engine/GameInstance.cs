@@ -48,7 +48,7 @@ namespace SurviveCore.Engine
 
       // initialise warehouse
       warehouse = new Warehouse(contentManager, graphicsDevice);
-      warehouse.LoadAll();
+      Warehouse.LoadAll();
 
       this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
@@ -99,6 +99,15 @@ namespace SurviveCore.Engine
       if (ELDebug.Key(Keys.J)) tickRate /= 8;
       if (ELDebug.Key(Keys.K)) tickRate *= 8;
       if (ELDebug.Key(Keys.L)) tickRate *= 16;
+
+      // dangerous keys (hold right control to activate)
+      // unload all asset packs ([U]nload)
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U)) Warehouse.UnloadAll();
+      // load all asset packs ([I]nitialise)
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I)) Warehouse.LoadAll();
+
+
+
 
       activeWorld = worlds[activeWorldIndex];
 
