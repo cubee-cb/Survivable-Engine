@@ -459,7 +459,17 @@ namespace SurviveCore.Engine
         // register common methods
         LuaCommon.Register(script);
 
-        script.DoString(luaString);
+
+        try
+        {
+          script.DoString(luaString);
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+          return default;
+        }
+
         return script;
       }
 

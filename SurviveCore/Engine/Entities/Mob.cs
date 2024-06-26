@@ -50,6 +50,8 @@ namespace SurviveCore.Engine.Entities
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
         lua.Globals["GetTarget"] = (Func<string, string, Table>)GetTarget;
+        lua.Globals["DistanceTo"] = (Func<float, float, float>)DistanceTo;
+        lua.Globals["SnapPosition"] = (Func<float, float, bool>)SnapPosition;
       }
 
     }
@@ -61,10 +63,16 @@ namespace SurviveCore.Engine.Entities
       // run mob's ai and tick scripts each tick
       if (lua != null)
       {
-        DynValue resAI = lua.Call(lua.Globals["AI"]);
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals["AI"]);
 
-        DynValue resTick = lua.Call(lua.Globals["Tick"]);
-
+          DynValue resTick = lua.Call(lua.Globals["Tick"]);
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
       }
 
     }
@@ -117,6 +125,33 @@ namespace SurviveCore.Engine.Entities
       float movedDistance = TryMove(moveVector * speed).Length();
 
       return movedDistance >= moveVector.Length();
+    }
+
+    /// <summary>
+    /// Gets the distance from the mob to the specified coordinates.
+    /// </summary>
+    /// <param name="x">Target X position.</param>
+    /// <param name="y">Target X position.</param>
+    /// <returns>The distance to the target.</returns>
+    private float DistanceTo(float x, float y)
+    {
+      return Vector2.Distance(position, new Vector2(x, y));
+    }
+
+    /// <summary>
+    /// Snap the mob to the specified coordinates, avoiding colliders.
+    /// </summary>
+    /// <param name="x">X position to snap to.</param>
+    /// <param name="y">Y position to snap to.</param>
+    /// <returns>True if unobstructed.</returns>
+    private bool SnapPosition(float x, float y)
+    {
+      //todo: avoid colliders
+      position.X = x;
+      position.Y = y;
+
+      //todo: return false if there was a collider in the way
+      return true;
     }
 
     /// <summary>

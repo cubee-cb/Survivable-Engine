@@ -1,0 +1,27 @@
+{
+  // properties
+  "internalName": "*.chaser",
+  "textureSheetName": "*.chaser",
+  "tags": [
+    "enemy"
+  ],
+  "sounds": [
+  ],
+  "hitbox": {"width": 10, "height": 8},
+
+  "rotationType": "Cardinal",
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 3},
+  "animationLayout": [
+    "-"
+  ],
+
+  // stats
+  "maxHealth": 10,
+  "inventorySize": 0,
+
+  // lua
+  "lua": "*.chaser",
+
+  // eof
+  "": ""
+}

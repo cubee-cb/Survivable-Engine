@@ -71,14 +71,13 @@ namespace SurviveCore.Engine
       }
 
       // create a test mob
-      Mob testMob = new("test.testghost", tempWorld);
-      tempWorld.AddEntity(testMob);
+      tempWorld.AddEntity(new Mob("test.testghost", tempWorld));
+      tempWorld.AddEntity(new Mob("test.chaser", tempWorld));
 
       // tell camera to focus on this entity
       cameraFocusEntities = new()
       {
-        player,
-        testMob
+        player
       };
       //
       player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
@@ -127,7 +126,7 @@ namespace SurviveCore.Engine
 
         activeWorld.Update(tick, deltaTime);
 
-        ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        //ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
