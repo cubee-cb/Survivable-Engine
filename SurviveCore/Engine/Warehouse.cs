@@ -26,7 +26,7 @@ namespace SurviveCore.Engine
     // paths are relative to the executable
     private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
-    private static string nameSpace = "default"; // the subfolder the assets are stored in, for modding purposes
+    private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
 
     private const string TEXTURE_FOLDER = "spr";
     private const string SOUND_FOLDER = "sfx";
@@ -76,7 +76,7 @@ namespace SurviveCore.Engine
     public Warehouse(ContentManager content, GraphicsDevice outerGraphicsDevice)
     {
       // load fallback content, used when an asset cannot be found
-      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/mod assets.
+      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/pack assets.
       missingTexture = content.Load<Texture2D>("spr/missing");
       missingSound = content.Load<SoundEffect>("sfx/missing");
       missingMusic = content.Load<Song>("music/missing");
@@ -99,33 +99,36 @@ namespace SurviveCore.Engine
     {
       //todo: make this an async task or something, so the game window can show a loading screen
 
+      ELDebug.Log("loading content packs");
       foreach (string contentPath in contentPaths)
       {
         // skip if the directory doesn't exist
         if (!Directory.Exists(contentPath)) continue;
 
-        // find all mod folders that have mod.json
-        List<string> modPaths = new(Directory.GetDirectories(contentPath));
+        // find all pack folders that have pack.json
+        List<string> packPaths = new(Directory.GetDirectories(contentPath));
 
-        foreach (string modPath in modPaths)
+        foreach (string packPath in packPaths)
         {
-          // skip this mod if the mod.json doesn't exist
-          if (!Platform.Exists(Path.Combine(modPath, "mod.json"))) continue;
+          ELDebug.Log("checking " + packPath);
 
-          // load mod.json
-          ModProperties modProps = new(Platform.LoadFileDirectly(Path.Combine(modPath, "mod.json")));
-          ELDebug.Log("found mod: " + modProps);
+          // skip this pack if the pack.json doesn't exist
+          if (!Platform.Exists(Path.Combine(packPath, "pack.json"))) continue;
 
-          nameSpace = modProps.nameSpace;
+          // load pack.json
+          ModProperties packProps = new(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
+          ELDebug.Log("found pack: " + packProps);
+
+          nameSpace = packProps.nameSpace;
 
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
-            LoadAssetsInFolder(Path.Join(modPath, TEXTURE_FOLDER), contentType, LoadTexture);
-            LoadAssetsInFolder(Path.Join(modPath, SOUND_FOLDER), contentType, LoadSoundEffect);
-            //LoadAssetsInFolder(Path.Join(modPath, MUSIC_FOLDER), contentType, LoadSong);
-            LoadAssetsInFolder(Path.Join(modPath, JSON_FOLDER), contentType, LoadJson);
-            LoadAssetsInFolder(Path.Join(modPath, LUA_FOLDER), contentType, LoadLua);
+            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), contentType, LoadTexture);
+            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), contentType, LoadSoundEffect);
+            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), contentType, LoadSong);
+            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), contentType, LoadJson);
+            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), contentType, LoadLua);
           }
 
           //todo: each object should update all internal references with the namespace
@@ -189,7 +192,7 @@ namespace SurviveCore.Engine
     private static string BuildInternalName(string fileName)
     {
       // get just the filename
-      //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities mod authors commit?
+      //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
       fileName = Path.GetFileNameWithoutExtension(fileName);
 
       // if the filename has a namespace, use that.
@@ -198,7 +201,7 @@ namespace SurviveCore.Engine
         return fileName;
       }
       // if it's missing a namespace, use the active namespace.
-      // handy for if you want to easily change the mod's namespace later for whatever reason.
+      // handy for if you want to easily change the pack's namespace later for whatever reason.
       else
       {
         return string.Join(NAMESPACE_SEPARATOR, nameSpace, fileName);
@@ -345,8 +348,8 @@ namespace SurviveCore.Engine
       {
         // load json file content
         // plus a quick, hacky way of handling namespace wildcards
-        // wildcard is replaced with the current namespace, typically the mod's namespace
-        // example, with two mods "foo" and "bar":
+        // wildcard is replaced with the current namespace, typically the pack's namespace
+        // example, with two packs "foo" and "bar":
         // foo may refer to its content as either "foo.thing" or "*.thing"
         // if bar references "*.thing", it gets "bar.thing" unless it specifies "foo.thing"
         // if foo wants to become "xyzzy", it can do so without breaking its own content -
