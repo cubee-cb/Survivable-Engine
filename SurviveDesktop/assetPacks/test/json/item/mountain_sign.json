@@ -1,12 +1,12 @@
 {
   // properties
   "internalName": "mountain_sign",
-  "textureSheetName": "mountain_sign",
+  "textureSheetName": "*.mountain_sign",
   "tags": [
     "mace"
   ],
   "sounds": [
-    "mountain_sign_whack"
+    "*.mountain_sign_whack"
   ],
   "framesX": 1,
   "framesY": 1,

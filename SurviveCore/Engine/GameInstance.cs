@@ -80,7 +80,7 @@ namespace SurviveCore.Engine
         player,
         testMob
       };
-      /*/
+      //
       player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
       player.GetInventory().PlaceItem(1, new Item("test.mountain_sign"));
       player.GetInventory().PlaceItem(2, new Item("test.mountain_sign"));

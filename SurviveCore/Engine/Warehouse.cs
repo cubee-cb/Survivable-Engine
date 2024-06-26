@@ -99,6 +99,7 @@ namespace SurviveCore.Engine
     /// </summary>
     public void LoadAll()
     {
+      //todo: make this an async task or something, so the game window can show a loading screen
 
       foreach (string contentPath in contentPaths)
       {
@@ -232,16 +233,14 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the texture to get.</param>
     /// <returns>The texture that was found, or the missing texture if not.</returns>
-    public static Texture2D GetTexture(string fileName)
+    public static Texture2D GetTexture(string internalName)
     {
       // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("empty texture reference in " + fileName, error: true);
+        ELDebug.Log("got an empty texture reference", error: true);
         return missingTexture;
       }
-
-      string internalName = BuildInternalName(fileName);
 
       // find the loaded texture and return it
       if (textures.ContainsKey(internalName))
@@ -250,7 +249,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain texture " + fileName, error: true);
+        ELDebug.Log("failed to obtain texture " + internalName, error: true);
         return missingTexture;
       }
     }
@@ -287,14 +286,12 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the sound to load.</param>
     /// <returns>The sound that was found, or the missing sound if not.</returns>
-    public static SoundEffect GetSoundEffect(string fileName)
+    public static SoundEffect GetSoundEffect(string internalName)
     {
-      string internalName = BuildInternalName(fileName);
-
       // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("empty sound reference in " + fileName, error: true);
+        ELDebug.Log("got an empty sound reference", error: true);
         return missingSound;
       }
 
@@ -305,7 +302,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain sound " + fileName, error: true);
+        ELDebug.Log("failed to obtain sound " + internalName, error: true);
         return missingSound;
       }
     }
@@ -317,7 +314,15 @@ namespace SurviveCore.Engine
       if (Platform.Exists(filePath))
       {
         // load json file content
-        string jsonString = Platform.LoadFileDirectly(filePath);
+        // plus a quick, hacky way of handling namespace wildcards
+        // wildcard is replaced with the current namespace, typically the mod's namespace
+        // example, with two mods "foo" and "bar":
+        // foo may refer to its content as either "foo.thing" or "*.thing"
+        // if bar references "*.thing", it gets "bar.thing" unless it specifies "foo.thing"
+        // if foo wants to become "xyzzy", it can do so without breaking its own content -
+        // - as long as it uses "*.thing" instead of "foo.thing".
+        // however, bar needs to be updated to continue using "xyzzy.thing".
+        string jsonString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
 
         // replace loaded asset if it already exists
         if (jsonData.ContainsKey(internalName))
@@ -341,16 +346,14 @@ namespace SurviveCore.Engine
     /// <typeparam name="T">The type to deserialise the json file to.</typeparam>
     /// <param name="fileName">Name of the file to load.</param>
     /// <returns>An object deserialised from the json, based on the type provided to the function.</returns>
-    public static T GetJson<T>(string fileName)
+    public static T GetJson<T>(string internalName)
     {
       // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("empty json reference in " + fileName, error: true);
+        ELDebug.Log("got an empty json reference", error: true);
         return default;
       }
-
-      string internalName = BuildInternalName(fileName);
 
       // find the loaded json, process, and return it
       if (jsonData.ContainsKey(internalName))
@@ -358,12 +361,13 @@ namespace SurviveCore.Engine
         string jsonString = jsonData[internalName];
 
         T thing = JsonConvert.DeserializeObject<T>(jsonString);
+
         return thing;
       }
 
       else
       {
-        ELDebug.Log("failed to obtain json file " + fileName, error: true);
+        ELDebug.Log("failed to obtain json file " + internalName, error: true);
         return default;
       }
 
@@ -376,8 +380,9 @@ namespace SurviveCore.Engine
 
       if (Platform.Exists(filePath))
       {
-        // load json file content
-        string luaString = Platform.LoadFileDirectly(filePath);
+        // load lua file content
+        // also process lua namespaces, in case it wants to reference external files
+        string luaString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
 
         // replace loaded asset if it already exists
         if (luaScripts.ContainsKey(internalName))
@@ -401,16 +406,14 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the file to load.</param>
     /// <returns>A Script built based on the file contents.</returns>
-    public static Script GetLua(string fileName)
+    public static Script GetLua(string internalName)
     {
       // exit if the filename is blank
-      if (string.IsNullOrWhiteSpace(fileName))
+      if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("empty lua reference in " + fileName, error: true);
+        ELDebug.Log("got an empty lua reference", error: true);
         return default;
       }
-
-      string internalName = BuildInternalName(fileName);
 
       // find the loaded lua, process, and return it
       if (luaScripts.ContainsKey(internalName))
@@ -418,7 +421,7 @@ namespace SurviveCore.Engine
         string luaString = luaScripts[internalName];
 
         // execute lua script and put it into a Script object
-        Script script = new Script(CoreModules.Preset_SoftSandbox);
+        Script script = new(CoreModules.Preset_SoftSandbox);
 
         // register common methods
         LuaCommon.Register(script);
@@ -429,7 +432,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain lua file " + fileName, error: true);
+        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
         return default;
       }
 
