@@ -37,6 +37,26 @@ namespace SurviveCore.Engine.WorldGen
       return true;
     }
 
+    public bool Plot(Vector2 position, GroundTile tile)
+    {
+      return Plot((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT, tile);
+    }
+
+    public GroundTile Get(int x, int y)
+    {
+      if (x < 0 || x >= width || y < 0 || y >= height)
+      {
+        return null;
+      }
+
+      return map[x, y];
+    }
+
+    public GroundTile Get(Vector2 position)
+    {
+      return Get((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT);
+    }
+
     public void Draw(float tickProgress)
     {
       for (int ix = 0; ix < width; ix++)
@@ -44,7 +64,7 @@ namespace SurviveCore.Engine.WorldGen
         for (int iy = 0; iy < height; iy++)
         {
           GroundTile tile = map[ix, iy];
-          tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
+          tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
         }
       }
 

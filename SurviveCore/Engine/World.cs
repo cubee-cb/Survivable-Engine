@@ -77,6 +77,17 @@ namespace SurviveCore.Engine
       return map;
     }
 
+    /// <summary>
+    /// Get the elevation of the tile at the specified position, in pixels.
+    /// </summary>
+    /// <param name="position">The position to get the elevation of.</param>
+    /// <returns>The elevation at the specified position.</returns>
+    public int GetStandingTileElevation(Vector2 position)
+    {
+      GroundTile tile = map.Get(position);
+      return tile != null? tile.GetElevation(pixels: true) : 0;
+    }
+
     public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)
     {
       // get list of targets matching the tag

@@ -148,17 +148,29 @@ namespace SurviveCore.Engine.Display
       currentDisplayInstance = display;
     }
 
-    public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0)
+    /// <summary>
+    /// Draw a texture to the currently active display instance.
+    /// </summary>
+    /// <param name="texture">Texture to draw with.</param>
+    /// <param name="clippingArea">Clipping rectangle for the texture.</param>
+    /// <param name="location">Position to display the sprite at.</param>
+    /// <param name="colour">Colour to render with.</param>
+    /// <param name="flipX">Flip horizontally.</param>
+    /// <param name="flipY">Flip vertically.</param>
+    /// <param name="angleTurns">Angle from 0-1.</param>
+    /// <param name="visualOffsetY">Visual offset. Doesn't affect depth.</param>
+    /// <param name="depth">Depth to render at.</param>
+    public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0, float visualOffsetY = 0, float depth = -1)
     {
       if (texture == null)
       {
-        ELDebug.Log("a null texture was passed to Draw. did you forget to add a texture reference to a json file?", error: true);
+        ELDebug.Log("a null texture was passed to Draw.", error: true);
         return;
       }
       if (colour == null) colour = Color.White;
       location -= currentDisplayInstance.cameraPosition;
 
-      float depth = 0f;
+      if (depth == -1) depth = 1 - (location.Y / currentDisplayInstance.internalHeight);
       float scale = 1f;
       SpriteEffects effects = SpriteEffects.None;
       if (flipX) effects = SpriteEffects.FlipHorizontally;
@@ -166,7 +178,7 @@ namespace SurviveCore.Engine.Display
 
       //todo: angleTurns is still radians instead of turns. FIX IT
       // why do i need a +0.5f offset to have the sprites render correctly? i dunno.
-      currentDisplayInstance.spriteBatch.Draw(texture, Vector2.Floor(location) + Vector2.One * 0.5f, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
+      currentDisplayInstance.spriteBatch.Draw(texture, Vector2.Floor(location) + Vector2.One * 0.5f + Vector2.UnitY * visualOffsetY, clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, scale, effects, depth);
     }
 
   }

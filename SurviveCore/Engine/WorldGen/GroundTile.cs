@@ -41,12 +41,21 @@ namespace SurviveCore.Engine.WorldGen
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);
     }
 
+    /// <summary>
+    /// Return the elevation of this tile's top
+    /// </summary>
+    /// <param name="pixels">If true, return the elevation in pixels rather than the tile's thickness units.</param>
+    /// <returns></returns>
+    public int GetElevation(bool pixels = false)
+    {
+      return pixels? elevation * TILE_THICKNESS : elevation;
+    }
 
 
     public void Draw(float tickProgress, Vector2 position)
     {
       // todo: handle spritesheets and multiple textures
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), position - new Vector2(0, elevation) * TILE_THICKNESS);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TILE_THICKNESS - 16), colour: elevation == 0 ? Color.LightGray : Color.White);
     }
 
 

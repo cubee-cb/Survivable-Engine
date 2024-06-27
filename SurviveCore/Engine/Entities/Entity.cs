@@ -104,9 +104,10 @@ namespace SurviveCore.Engine.Entities
 
       clippingRect.Location = new Point(frameX, spriteY) * clippingRect.Size;
 
-      // draw, with the bottom of the sprite as its centre (minus its foot offset)
-      Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height - feetOffsetY);
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset);
+      // draw, with the bottom of the sprite as its centre
+      Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height);
+      float myElevation = world.GetStandingTileElevation(position);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset, visualOffsetY: feetOffsetY - myElevation);
 
     }
 
