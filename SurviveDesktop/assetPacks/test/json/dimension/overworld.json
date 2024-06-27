@@ -1,0 +1,14 @@
+{
+  // properties
+  "internalName": "overworld",
+  "area": [100, 100],
+
+  // these are called in the listed order, top to bottom
+  "generationRoutines": [
+    //"*.overworld_biomes",
+    "*.flatgrass"
+  ],
+
+  // eof
+  "": ""
+}

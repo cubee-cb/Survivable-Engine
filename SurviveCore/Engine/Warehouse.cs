@@ -53,6 +53,7 @@ namespace SurviveCore.Engine
     private const string FOLDER_BIOME = "biome";
     private const string FOLDER_ITEM = "item";
     private const string FOLDER_MOB = "mob";
+    private const string FOLDER_WORLDGEN = "worldgen";
     readonly static private List<string> contentTypeSubfolders = new()
     {
       FOLDER_CHARACTER,
@@ -61,7 +62,8 @@ namespace SurviveCore.Engine
       FOLDER_DIMENSION,
       FOLDER_BIOME,
       FOLDER_ITEM,
-      FOLDER_MOB
+      FOLDER_MOB,
+      FOLDER_WORLDGEN
     };
 
     private static List<string> contentPaths = new()
