@@ -12,7 +12,6 @@ namespace SurviveCore.Engine
   //todo: we could probably make a new class for each world type, but that's probably best left for the games/mods
   internal class World
   {
-    Player playerRef;
     TileMap map;
     WorldGenerator generator;
     List<Entity> entities;
@@ -38,15 +37,8 @@ namespace SurviveCore.Engine
       this.generator.Generate(map);
     }
 
-    public void SetPlayerRef(Player player)
-    {
-      playerRef = player;
-    }
-
     public void Update(int tick, float deltaTime)
     {
-      playerRef.Update(tick, deltaTime);
-
       // update world's entities
       //todo: create a partitioning system so only entities near the camera get updated
       foreach (Entity entity in entities)
@@ -66,8 +58,6 @@ namespace SurviveCore.Engine
       {
         entity.Draw(tickProgress);
       }
-
-      playerRef.Draw(tickProgress);
 
     }
 
@@ -98,7 +88,6 @@ namespace SurviveCore.Engine
           validTargets.Add(entity);
         }
       }
-      if (playerRef.GetTags().Contains(tag)) validTargets.Add(playerRef);
 
       // return null if there's no valid targets
       if (validTargets.Count == 0) return null;

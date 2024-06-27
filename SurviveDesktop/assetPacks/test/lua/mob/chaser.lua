@@ -1,4 +1,4 @@
--- test ghost ai
+-- test chaser ai
 
 t = 1
 target = null

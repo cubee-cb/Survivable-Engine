@@ -67,7 +67,7 @@ namespace SurviveCore.Engine
       if (instanceMode != EInstanceMode.Dedicated)
       {
         player = new("test.test", input, tempWorld);
-        tempWorld.SetPlayerRef(player);
+        tempWorld.AddEntity(player);
       }
 
       // create a test mob
