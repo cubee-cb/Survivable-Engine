@@ -151,7 +151,11 @@ namespace SurviveCore.Engine
         display.Begin();
         // move camera to follow targeted entities
         //todo: average position of all targeted entities. never let index 0 go off-screen
-        if(cameraFocusEntities.Count > 0)display.Camera(cameraFocusEntities[0].GetVisualPosition(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
+        if (cameraFocusEntities.Count > 0)
+        {
+          Entity followEntity = cameraFocusEntities[0];
+          display.Camera(followEntity.GetVisualPosition(tickProgress) - Vector2.UnitY * followEntity.GetElevation() - new Vector2(display.internalWidth, display.internalHeight) / 2);
+        }
 
         // pass tick progress to draw, so objects can visually smooth to their new location
         activeWorld.Draw(tickProgress); // eqiv. to (deltaTimeAcc / targetDeltaTime)
