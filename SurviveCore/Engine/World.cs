@@ -38,6 +38,20 @@ namespace SurviveCore.Engine
       this.generator.Generate(map);
     }
 
+    public void UpdateAssets()
+    {
+      //generator.UpdateAssets();
+
+      //todo: update the world's properties when they have them.
+
+      map.UpdateAssets();
+
+      foreach (Entity entity in entities)
+      {
+        entity.UpdateAssets();
+      }
+    }
+
     public void Update(int tick, float deltaTime)
     {
       // update world's entities

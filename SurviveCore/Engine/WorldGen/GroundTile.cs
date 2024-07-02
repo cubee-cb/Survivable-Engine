@@ -8,38 +8,40 @@ using System.Collections.Generic;
 using System.Text;
 using SurviveCore.Engine.JsonHandlers;
 using static SurviveCore.Engine.JsonHandlers.GroundProperties;
+using SurviveCore.Engine.Items;
 
 namespace SurviveCore.Engine.WorldGen
 {
   internal class GroundTile
   {
+    private string id;
     private const int TILE_THICKNESS = 16;
 
     private int elevation = 0;
 
     [JsonIgnore] GroundProperties properties;
-    [JsonIgnore] private readonly Texture2D texture;
-    [JsonIgnore] private readonly Script lua;
+    [JsonIgnore] private Texture2D texture;
+    [JsonIgnore] private Script lua;
 
     public GroundTile(string id, int elevation)
     {
+      this.id = id;
+      this.elevation = elevation;
 
+      UpdateAssets();
+    }
+
+    public void UpdateAssets()
+    {
       // set initial properties
       properties = Warehouse.GetJson<GroundProperties>(id);
-      this.elevation = elevation;
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
-      if (properties.sounds != null)
-      {
-        foreach (string fileName in properties.sounds)
-        {
-          Warehouse.GetSoundEffect(fileName);
-        }
-      }
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);
+
     }
 
     /// <summary>

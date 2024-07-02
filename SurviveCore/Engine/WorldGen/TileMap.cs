@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,13 @@ namespace SurviveCore.Engine.WorldGen
 
       map = new GroundTile[width, height];
 
+    }
+    public void UpdateAssets()
+    {
+      foreach (GroundTile tile in map)
+      {
+        tile.UpdateAssets();
+      }
     }
 
     public bool Plot(int x, int y, GroundTile tile)

@@ -101,9 +101,17 @@ namespace SurviveCore.Engine
 
       // dangerous keys (hold right control to activate)
       // unload all asset packs ([U]nload)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U)) Warehouse.UnloadAll();
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U))
+      {
+        Warehouse.UnloadAll();
+        UpdateAssets();
+      }
       // load all asset packs ([I]nitialise)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I)) Warehouse.LoadAll();
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I))
+      {
+        Warehouse.LoadAll();
+        UpdateAssets();
+      }
 
 
 
@@ -205,6 +213,15 @@ namespace SurviveCore.Engine
 
       return null;
     }
+
+    private void UpdateAssets()
+    {
+      foreach (World world in worlds)
+      {
+        world.UpdateAssets();
+      }
+    }
+
 
   }
 }

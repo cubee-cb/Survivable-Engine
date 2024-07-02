@@ -23,6 +23,11 @@ namespace SurviveCore.Engine.Entities
     {
       this.input = input;
 
+      UpdateAssets();
+    }
+
+    public override void UpdateAssets()
+    {
       // set initial properties
       properties = Warehouse.GetJson<CharacterProperties>(id);
       rotationType = properties.rotationType;
@@ -35,18 +40,9 @@ namespace SurviveCore.Engine.Entities
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
-      if (properties.sounds != null)
-      {
-        foreach (string fileName in properties.sounds)
-        {
-          Warehouse.GetSoundEffect(fileName);
-        }
-      }
 
       // create inventory
       inventory = new(properties.inventorySize);
-
-
 
       /*/ initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
@@ -59,7 +55,6 @@ namespace SurviveCore.Engine.Entities
         lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
       }
       //*/
-
     }
 
     public override void Update(int tick, float deltaTime)

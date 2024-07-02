@@ -385,7 +385,7 @@ namespace SurviveCore.Engine
       if (string.IsNullOrWhiteSpace(internalName))
       {
         ELDebug.Log("got an empty json reference", error: true);
-        return default;
+        return JsonConvert.DeserializeObject<T>("{}");
       }
 
       // find the loaded json, process, and return it
@@ -401,7 +401,7 @@ namespace SurviveCore.Engine
       else
       {
         ELDebug.Log("failed to obtain json file " + internalName, error: true);
-        return default;
+        return JsonConvert.DeserializeObject<T>("{}");
       }
 
     }

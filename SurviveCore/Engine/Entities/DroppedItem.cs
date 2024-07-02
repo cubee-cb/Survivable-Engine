@@ -20,6 +20,13 @@ namespace SurviveCore.Engine.Entities
 
       velocity.X = (float)(Game1.rnd.NextDouble() * 2 - 1) * 3;
       velocity.Y = (float)(Game1.rnd.NextDouble() * 2 - 4);
+
+      UpdateAssets();
+    }
+
+    public override void UpdateAssets()
+    {
+      itemData.UpdateAssets();
     }
 
     public override void Update(int tick, float deltaTime)

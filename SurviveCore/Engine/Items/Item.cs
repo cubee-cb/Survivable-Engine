@@ -12,10 +12,11 @@ namespace SurviveCore.Engine.Items
 {
   internal class Item : IdentifiableObject
   {
+    public string id;
 
     [JsonIgnore] public ItemProperties properties;
-    [JsonIgnore] private readonly Texture2D texture;
-    [JsonIgnore] private readonly Script lua;
+    [JsonIgnore] private Texture2D texture;
+    [JsonIgnore] private Script lua;
 
     [JsonIgnore] private int t = 0;
 
@@ -25,7 +26,12 @@ namespace SurviveCore.Engine.Items
 
     public Item(string id)
     {
+      this.id = id;
+      UpdateAssets();
+    }
 
+    public void UpdateAssets()
+    {
       // set initial properties
       properties = Warehouse.GetJson<ItemProperties>(id);
 
@@ -44,7 +50,9 @@ namespace SurviveCore.Engine.Items
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);
+
     }
+
 
     /// <summary>
     /// 
@@ -64,9 +72,11 @@ namespace SurviveCore.Engine.Items
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(Vector2 position, float tickProgress)
     {
+      float localTick = t + tickProgress;
+
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
-      Rectangle clippingRect = new(frameWidth * (t / 10 % properties.framesX), frameHeight * currentFrame, frameWidth, frameHeight);
+      Rectangle clippingRect = new(frameWidth * (int)(localTick / 10 % properties.framesX), frameHeight * currentFrame, frameWidth, frameHeight);
       GameDisplay.Draw(texture, clippingRect, position);
 
     }

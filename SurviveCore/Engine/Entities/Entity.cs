@@ -13,11 +13,9 @@ namespace SurviveCore.Engine.Entities
 {
   internal abstract class Entity : IdentifiableObject
   {
-
-
     [JsonIgnore] protected World world;
 
-    private string id;
+    protected string id;
     [JsonIgnore] protected List<string> tags = new();
     protected int t;
 
@@ -47,6 +45,7 @@ namespace SurviveCore.Engine.Entities
     /// </summary>
     public Entity(string id, World world) : base()
     {
+      this.id = id;
       this.world = world;
 
       position = Vector2.Zero;
@@ -69,6 +68,12 @@ namespace SurviveCore.Engine.Entities
     {
       position = spawnLocation;
     }
+
+    /// <summary>
+    /// Called when this object should re-obtain its assets.
+    /// </summary>
+    /// <param name="id">The string id of the object. Handled on a per-subclass basis.</param>
+    public abstract void UpdateAssets();
 
     /// <summary>
     /// 
@@ -97,12 +102,15 @@ namespace SurviveCore.Engine.Entities
       int frameX = (int)MathF.Floor(t % 20 / 10f);
 
       // set up clipping rectangle
-      Rectangle clippingRect = new();
-      spriteDimensions.TryGetValue("width", out clippingRect.Width);
-      spriteDimensions.TryGetValue("height", out clippingRect.Height);
-      spriteDimensions.TryGetValue("feetOffsetY", out feetOffsetY);
+      Rectangle clippingRect = new(0, 0, 16, 16);
+      if (spriteDimensions != null)
+      {
+        spriteDimensions.TryGetValue("width", out clippingRect.Width);
+        spriteDimensions.TryGetValue("height", out clippingRect.Height);
+        spriteDimensions.TryGetValue("feetOffsetY", out feetOffsetY);
+      }
 
-      clippingRect.Location = new Point(frameX, spriteY) * clippingRect.Size;
+      clippingRect.Location = new Point(frameX, (int)MathF.Max(spriteY, 0)) * clippingRect.Size;
 
       // draw, with the bottom of the sprite as its centre
       Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height);

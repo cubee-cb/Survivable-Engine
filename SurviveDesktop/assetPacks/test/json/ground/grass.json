@@ -6,12 +6,9 @@
     "grass",
     "growsTrees"
   ],
-  "sounds": [
-    "*.grass_step"
-  ],
 
   // stats
-  "slope": "None",
+  //"slope": "None",
   //"maxHealth": 10,
 
   // lua
