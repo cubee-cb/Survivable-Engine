@@ -15,7 +15,12 @@ namespace SurviveCore.Engine.WorldGen.Routines
       {
         for (int iy = 0; iy < map.height; iy++)
         {
-          map.Plot(ix, iy, new GroundTile("test.grass", Game1.rnd.Next(0, 2)));
+          string tile = "test.grass";
+          int elevation = 0;
+          if (ix == 4 && iy > 3) tile = "test.grass_slope_horizontal";
+          if (iy == 3 && ix < 4) tile = "test.grass_slope_vertical";
+          if (ix > 4 || iy < 3) elevation = 1;
+          map.Plot(ix, iy, new GroundTile(tile, elevation));
         }
       }
 

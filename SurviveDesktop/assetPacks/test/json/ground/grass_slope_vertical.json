@@ -1,17 +1,16 @@
 {
   // properties
-  "internalName": "grass",
-  "textureSheetName": "*.grass",
+  "internalName": "grass_slope_vertical",
+  "textureSheetName": "*.grass_slope_vertical",
   "tags": [
-    "grass",
-    "growsTrees"
+    "grass"
   ],
   "sounds": [
     "*.grass_step"
   ],
 
   // stats
-  "slope": "None",
+  "slope": "Vertical",
   //"maxHealth": 10,
 
   // lua

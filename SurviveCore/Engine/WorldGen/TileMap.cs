@@ -9,8 +9,8 @@ namespace SurviveCore.Engine.WorldGen
 {
   internal class TileMap
   {
-    const int TILE_WIDTH = 16;
-    const int TILE_HEIGHT = 16;
+    public const int TILE_WIDTH = 16;
+    public const int TILE_HEIGHT = 16;
 
     readonly public int width;
     readonly public int height;

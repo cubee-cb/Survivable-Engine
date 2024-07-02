@@ -14,6 +14,7 @@ namespace SurviveCore.Engine.JsonHandlers
     public List<string> sounds = new();
 
     // stats
+    public SlopeType slope = SlopeType.None;
     //public int elevation = 0;
     //public int elevation = 0;
 
@@ -41,6 +42,13 @@ namespace SurviveCore.Engine.JsonHandlers
 
       this = JsonConvert.DeserializeObject<GroundProperties>(jsonObject);
 
+    }
+
+    public enum SlopeType
+    {
+      None = 0,
+      Horizontal = 1,
+      Vertical = 2,
     }
 
   }

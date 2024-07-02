@@ -3,10 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
-using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SurviveCore.Engine.JsonHandlers;
+using static SurviveCore.Engine.JsonHandlers.GroundProperties;
 
 namespace SurviveCore.Engine.WorldGen
 {
@@ -51,14 +52,19 @@ namespace SurviveCore.Engine.WorldGen
       return pixels? elevation * TILE_THICKNESS : elevation;
     }
 
+    public SlopeType GetSlope()
+    {
+      return properties.slope;
+    }
+
 
     public void Draw(float tickProgress, Vector2 position)
     {
       // todo: handle spritesheets and multiple textures
-      GameDisplay.Draw(texture, new Rectangle(0, 16, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White, scaleBox: new(1, elevation + 1));
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White, scaleBox: new(1, elevation + 1));
 
       // top face
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 16, colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);
     }
 
 
