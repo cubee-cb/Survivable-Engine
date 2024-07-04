@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Items;
+using SurviveCore.Engine.WorldGen;
 
 namespace SurviveCore.Engine.Entities
 {
@@ -146,6 +147,11 @@ namespace SurviveCore.Engine.Entities
       return tags;
     }
 
+    public a GetHitbox()
+    {
+      return hitbox;
+    }
+
     public virtual float GetDurability()
     {
       return health;
@@ -166,11 +172,23 @@ namespace SurviveCore.Engine.Entities
       if (delta == Vector2.Zero) return Vector2.Zero;
       // todo: check for collisions with objects this object is allowed to collide with
 
+      // ground tile collisions
+      delta = world.HandleEntityMovement(this, delta);
+
       position += delta;
 
       direction = GetFacingDirection(delta);
 
       return delta;
+    }
+
+    public void SetX(float x)
+    {
+      position.X = x;
+    }
+    public void SetY(float y)
+    {
+      position.Y = y;
     }
 
     /// <summary>

@@ -92,6 +92,53 @@ namespace SurviveCore.Engine
       return map;
     }
 
+    public Vector2 HandleEntityMovement(Entity entity, Vector2 delta)
+    {
+      // ground tiles
+      GroundTile tileCurrent = map.Get(entity.GetPosition());
+      GroundTile checkTile;
+
+      // right
+      if (delta.X > 0)
+      {
+        checkTile = map.Get(entity.GetPosition() + entity.GetHitbox().Width());
+
+        if (checkTile != null)
+        {
+          if (checkTile.GetSlope() != SlopeType.None && checkTile.GetElevation() != tileCurrent.GetElevation())
+          {
+            delta.X = 0;
+            //entity.SetX(TileMap.SnapPosition(entity.GetPosition()).X + TileMap.TILE_WIDTH);
+          }
+        }
+      }
+
+      // left
+      else
+      {
+        checkTile = map.Get(entity.GetPosition() - Vector2.UnitX * TileMap.TILE_WIDTH);
+
+        if (checkTile != null)
+        {
+          if (checkTile.GetSlope() != SlopeType.None && checkTile.GetElevation() != tileCurrent.GetElevation())
+          {
+            delta.X = 0;
+            //entity.SetX(TileMap.SnapPosition(entity.GetPosition()).X);
+          }
+        }
+      }
+
+      /*/todo: tile/entity collision
+      foreach (Entity otherEntity in world.GetCollidingEntities(this))
+      {
+        // get entity's hitbox and eject self from it based on velocity.
+        ResolveCollision(otherEntity.hitboxOrWhatever);
+      }
+      //*/
+
+      return delta;
+    }
+
     /// <summary>
     /// Get the elevation of the tile at the specified position, in pixels. Adapts to slopes.
     /// </summary>

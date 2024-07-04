@@ -78,6 +78,13 @@ namespace SurviveCore.Engine.WorldGen
 
     }
 
+    public static Vector2 SnapPosition(Vector2 position)
+    {
+      position.X = MathF.Floor(position.X / TILE_WIDTH) * TILE_WIDTH;
+      position.Y = MathF.Floor(position.Y / TILE_HEIGHT) * TILE_HEIGHT;
+      return position;
+    }
+
 
 
   }
