@@ -41,7 +41,7 @@ namespace SurviveDesktop
 
       else
       {
-        ELDebug.Log("couldn't open stream: file \"" + path + "\" does not exist or is inaccessible.", error: true);
+        ELDebug.Log("couldn't open stream: file \"" + path + "\" does not exist or is inaccessible.", ELDebug.Category.ERROR);
         return "<error>";
       }
     }
@@ -62,7 +62,7 @@ namespace SurviveDesktop
 
       else
       {
-        ELDebug.Log("couldn't open file: \"" + path + "\" does not exist or is inaccessible.", error: true);
+        ELDebug.Log("couldn't open file: \"" + path + "\" does not exist or is inaccessible.", ELDebug.Category.ERROR);
         return "<error>";
       }
     }
@@ -80,7 +80,7 @@ namespace SurviveDesktop
       }
       else
       {
-        ELDebug.Log("couldn't open stream: file \"" + path + "\" does not exist or is inaccessible.", error: true);
+        ELDebug.Log("couldn't open stream: file \"" + path + "\" does not exist or is inaccessible.", ELDebug.Category.ERROR);
         return null;
       }
     }

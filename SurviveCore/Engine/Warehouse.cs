@@ -129,7 +129,7 @@ namespace SurviveCore.Engine
           {
             if (gameProps != null)
             {
-              ELDebug.Log("warning: multiple game packs. the first detected one will take precendence!");
+              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible!", category: ELDebug.Category.Warning);
             }
             else
             {
@@ -248,7 +248,7 @@ namespace SurviveCore.Engine
         }
         catch
         {
-          ELDebug.Log(" failed to load " + subfolder + " " + basePath + ". wrong file type?", error: true);
+          ELDebug.Log(" failed to load " + subfolder + " " + basePath + ". wrong file type?", category: ELDebug.Category.ERROR);
         }
       }
     }
@@ -289,7 +289,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty texture reference", error: true);
+        ELDebug.Log("got an empty texture reference", category: ELDebug.Category.Warning);
         return missingTexture;
       }
 
@@ -300,7 +300,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain texture " + internalName, error: true);
+        ELDebug.Log("failed to obtain texture " + internalName, category: ELDebug.Category.Warning);
         return missingTexture;
       }
     }
@@ -342,7 +342,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty sound reference", error: true);
+        ELDebug.Log("got an empty sound reference", category: ELDebug.Category.Warning);
         return missingSound;
       }
 
@@ -353,7 +353,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain sound " + internalName, error: true);
+        ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
         return missingSound;
       }
     }
@@ -402,7 +402,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty json reference", error: true);
+        ELDebug.Log("got an empty json reference", category: ELDebug.Category.Warning);
         return JsonConvert.DeserializeObject<T>("{}");
       }
 
@@ -418,7 +418,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain json file " + internalName, error: true);
+        ELDebug.Log("failed to obtain json file " + internalName, category: ELDebug.Category.Warning);
         return JsonConvert.DeserializeObject<T>("{}");
       }
 
@@ -462,7 +462,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty lua reference", error: true);
+        ELDebug.Log("got an empty lua reference", category: ELDebug.Category.Warning);
         return default;
       }
 
@@ -484,7 +484,7 @@ namespace SurviveCore.Engine
         }
         catch (Exception e)
         {
-          ELDebug.Log("LUA error: \n" + e);
+          ELDebug.Log("LUA error: \n" + e, ELDebug.Category.ERROR);
           return default;
         }
 
@@ -493,7 +493,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
+        ELDebug.Log("failed to obtain lua file " + internalName, category: ELDebug.Category.Warning);
         return default;
       }
 

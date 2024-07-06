@@ -164,7 +164,7 @@ namespace SurviveCore.Engine.Display
     {
       if (texture == null)
       {
-        ELDebug.Log("a null texture was passed to Draw.", error: true);
+        ELDebug.Log("a null texture was passed to Draw.", ELDebug.Category.Warning);
         return;
       }
       if (colour == null) colour = Color.White;

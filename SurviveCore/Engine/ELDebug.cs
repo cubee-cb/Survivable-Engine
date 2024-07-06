@@ -14,10 +14,10 @@ namespace SurviveCore.Engine
     /// <param name="output">Object to print out.</param>
     /// <param name="error">Whether this log string should count as an error, or simply log info.</param>
     [Conditional("DEBUG")] // may revert this, and have a bool to toggle it for logging purposes later.
-    public static void Log(object output, bool error = false)
+    public static void Log(object output, Category category = Category.Log)
     {
       if (output == null) output = "<null>";
-      Debug.WriteLine(output.ToString(), error? "[ERROR]" : "[log]");
+      Debug.WriteLine(output.ToString(), '[' + category.ToString() + ']');
     }
 
     /// <summary>
@@ -28,6 +28,13 @@ namespace SurviveCore.Engine
     public static bool Key(Keys key)
     {
       return Keyboard.GetState().IsKeyDown(key);
+    }
+
+    public enum Category
+    {
+      Log,
+      ERROR,
+      Warning
     }
 
 
