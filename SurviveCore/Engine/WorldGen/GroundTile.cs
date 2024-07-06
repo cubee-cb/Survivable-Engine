@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Text;
 using SurviveCore.Engine.JsonHandlers;
 using static SurviveCore.Engine.JsonHandlers.GroundProperties;
-using SurviveCore.Engine.Items;
 
 namespace SurviveCore.Engine.WorldGen
 {

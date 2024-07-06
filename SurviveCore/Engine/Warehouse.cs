@@ -119,7 +119,7 @@ namespace SurviveCore.Engine
           if (!Platform.Exists(Path.Combine(packPath, "pack.json"))) continue;
 
           // load pack.json
-          ModProperties packProps = new(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
+          ModProperties packProps = JsonConvert.DeserializeObject<ModProperties>(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
           ELDebug.Log("found pack: " + packProps);
 
           nameSpace = packProps.nameSpace;

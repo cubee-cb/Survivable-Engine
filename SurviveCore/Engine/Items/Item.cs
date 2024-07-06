@@ -37,13 +37,6 @@ namespace SurviveCore.Engine.Items
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
-      if (properties.sounds != null)
-      {
-        foreach (string fileName in properties.sounds)
-        {
-          Warehouse.GetSoundEffect(fileName);
-        }
-      }
 
       frameWidth = texture.Width / (int)MathF.Max(properties.framesX, 1);
       frameHeight = texture.Height / (int)MathF.Max(properties.framesY, 1);

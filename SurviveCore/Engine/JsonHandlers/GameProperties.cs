@@ -24,9 +24,9 @@ namespace SurviveCore.Engine.JsonHandlers
     {
     }
 
-    public GameProperties(GameProperties source)
+    public void ReplaceData(GameProperties source)
     {
-      // set the following to source's fields if they aren't null, otherside back to themselves
+      // set the following to source's fields if they aren't null, otherwise back to themselves
       internalName = source.internalName ?? internalName;
       tags = source.tags ?? tags;
       startingDimension = source.startingDimension ?? startingDimension;
