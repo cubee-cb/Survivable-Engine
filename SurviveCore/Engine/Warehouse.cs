@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
@@ -64,6 +65,8 @@ namespace SurviveCore.Engine
       FOLDER_MOB
     };
 
+    private static GameProperties gameProps = null;
+
     private static List<string> contentPaths = new()
     {
       Path.Combine(Platform.BASE_FOLDER, contentPath),
@@ -120,6 +123,21 @@ namespace SurviveCore.Engine
           ELDebug.Log("found pack: " + packProps);
 
           nameSpace = packProps.nameSpace;
+
+          // check if this mod is a game
+          if (Platform.Exists(Path.Combine(packPath, "game.json")))
+          {
+            if (gameProps != null)
+            {
+              ELDebug.Log("warning: multiple game packs. the first detected one will take precendence!");
+            }
+            else
+            {
+              string i = Platform.LoadFileDirectly(Path.Combine(packPath, "game.json"));
+              gameProps = JsonConvert.DeserializeObject<GameProperties>(i);
+              ELDebug.Log("this is a game pack, using game data for \"" + gameProps.internalName + '"');
+            }
+          }
 
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)

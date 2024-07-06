@@ -1,0 +1,12 @@
+{
+  // properties
+  "internalName": "test game",
+  "tags": [
+    "testgame"
+  ],
+  
+  "startingDimension": "test",
+
+  // eof
+  "": ""
+}

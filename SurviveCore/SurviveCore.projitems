@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Input\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Inventory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Item.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GameProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
