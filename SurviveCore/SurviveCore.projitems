@@ -33,7 +33,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\OverworldGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\Routines\GM_FlatGrass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\Routines\WorldGenRoutine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\TileMap.cs" />

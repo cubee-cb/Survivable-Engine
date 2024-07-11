@@ -11,7 +11,7 @@ using static SurviveCore.Engine.JsonHandlers.GroundProperties;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal class GroundTile
+  public class GroundTile
   {
     private string id;
     private const int TILE_THICKNESS = 16;

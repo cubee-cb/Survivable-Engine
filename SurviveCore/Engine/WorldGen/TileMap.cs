@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal class TileMap
+  public class TileMap
   {
     public const int TILE_WIDTH = 16;
     public const int TILE_HEIGHT = 16;
@@ -72,7 +72,7 @@ namespace SurviveCore.Engine.WorldGen
         for (int iy = 0; iy < height; iy++)
         {
           GroundTile tile = map[ix, iy];
-          tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
+          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
         }
       }
 

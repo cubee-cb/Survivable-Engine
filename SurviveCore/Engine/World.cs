@@ -22,7 +22,7 @@ namespace SurviveCore.Engine
       map = new TileMap(100, 100);
 
       entities = new();
-      generator = new OverworldGenerator(); // default to overworld if not specified
+      generator = new WorldGenerator("none"); // default to overworld if not specified
 
       generator.Generate(map);
 

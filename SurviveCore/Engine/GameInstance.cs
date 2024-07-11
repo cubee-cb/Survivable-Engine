@@ -59,7 +59,8 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      World tempWorld = new(10, 10, new OverworldGenerator());
+      //todo: use world generator specified by the active game pack
+      World tempWorld = new(10, 10, new WorldGenerator("test.flatgrass"));
 
       //tempWorld.AddActor(new SimpleWalker());
 
