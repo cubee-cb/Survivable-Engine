@@ -30,6 +30,9 @@ namespace SurviveCore.Engine.WorldGen
       UpdateAssets();
     }
 
+    /// <summary>
+    /// Re-obtain the assets for this tile.
+    /// </summary>
     public void UpdateAssets()
     {
       // set initial properties
@@ -53,6 +56,19 @@ namespace SurviveCore.Engine.WorldGen
       return pixels? elevation * TILE_THICKNESS : elevation;
     }
 
+    /// <summary>
+    /// Set the elevation of this tile.
+    /// </summary>
+    /// <param name="newElevation">The elevation to change to.</param>
+    public void SetElevation(int newElevation)
+    {
+      elevation = newElevation;
+    }
+
+    /// <summary>
+    /// Get the slope of this tile.
+    /// </summary>
+    /// <returns>Slope value.</returns>
     public SlopeType GetSlope()
     {
       return properties.slope;

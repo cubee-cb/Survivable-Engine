@@ -6,8 +6,6 @@ using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.Items;
-using SurviveCore.Engine.JsonHandlers;
-using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -59,10 +57,8 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      //todo: use world generator specified by the active game pack
-      World tempWorld = new(10, 10, new WorldGenerator("test.flatgrass"));
-
-      //tempWorld.AddActor(new SimpleWalker());
+      //todo: use dimension specified by the active game pack
+      World tempWorld = new("test.testmap");
 
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
@@ -71,7 +67,7 @@ namespace SurviveCore.Engine
         tempWorld.AddEntity(player);
       }
 
-      // create a test mob
+      // create test mobs
       tempWorld.AddEntity(new Mob("test.testghost", tempWorld));
       tempWorld.AddEntity(new Mob("test.chaser", tempWorld));
 

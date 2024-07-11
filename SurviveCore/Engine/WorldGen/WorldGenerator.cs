@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
-using SurviveCore.Engine.WorldGen.Routines;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,6 +42,7 @@ namespace SurviveCore.Engine.WorldGen
 
       // register methods to the script
       routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
+      routine.Globals["SetElevation"] = (Func<int, int, int, bool>)SetElevation;
 
       //todo: create a conversion for TileMap<->Array and for TileEntities
       worldgenRoutines.Add(scriptID, routine);
@@ -69,21 +69,16 @@ namespace SurviveCore.Engine.WorldGen
         {
           ELDebug.Log("running routine \"" + kvp.Key + "\"");
 
-          //todo: for some reason, the routine turns null as soon as this line tries to execute
-          ELDebug.Log(routine.ToString());
-
           DynValue generate = routine.Globals.Get("Generate");
-          ELDebug.Log(generate);
           if (generate != null)
           {
             DynValue outVal = routine.Call(generate, 0, 0, map.width, map.height);
           }
-          ELDebug.Log(generate);
         }
       }
 
       activeMap = null;
-      ELDebug.Log("done!");
+      ELDebug.Log("finished generation!");
     }
 
 
@@ -94,8 +89,13 @@ namespace SurviveCore.Engine.WorldGen
 
     public bool Plot(int x, int y, string tileID)
     {
-      //todo: 
-      return activeMap.Plot(new Vector2(x, y), new GroundTile(tileID, 0));
+      //todo: i forgor
+      return activeMap.Plot(new Vector2(x * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT), new GroundTile(tileID, 0));
+    }
+
+    public bool SetElevation(int x, int y, int elevation)
+    {
+      return activeMap.SetElevation(new Vector2(x * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT), elevation);
     }
 
 

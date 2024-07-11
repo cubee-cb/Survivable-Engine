@@ -5,20 +5,24 @@ function Generate(x, y, w, h)
   y = y or 0
   w = w or 16
   h = h or 16
- 
+
   for ix = x, x + w do
     for iy = y, y + h do
       Plot(ix, iy, "*.grass")
+
     end
   end
 
-  -- place a ground tile at tile coords
+  -- place a ground tile at tile coords.
   --Plot(ix, iy, "*.grass")
 
-  -- place a tile entity on the ground at tile coords. accepts decimal positions, snaps to pixels
+  -- set the elevation of an existing tile at the tile coords.
+  --SetElevation(ix, iy, elevation)
+
+  --todo / place a tile entity on the ground at tile coords. accepts decimal positions, snaps to pixels
   --PlaceTile(ix, iy, "*.rock")
 
-  -- use to call the Generate function from other lua files
+  --todo / use to call the Generate function from other lua files
   --Call("*.scatter_trees")
 
 end
