@@ -13,6 +13,8 @@ namespace SurviveCore.Engine.JsonHandlers
 
     // stats
     public string startingDimension = "dimension_default";
+    public string startingPlayer = "character_default";
+    public List<string> startingInventory = new();
 
 
     // lua
@@ -29,7 +31,13 @@ namespace SurviveCore.Engine.JsonHandlers
       // set the following to source's fields if they aren't null, otherwise back to themselves
       internalName = source.internalName ?? internalName;
       tags = source.tags ?? tags;
+
+      // stats
       startingDimension = source.startingDimension ?? startingDimension;
+      startingPlayer = source.startingPlayer ?? startingPlayer;
+      startingInventory = source.startingInventory ?? startingInventory;
+
+
     }
 
   }

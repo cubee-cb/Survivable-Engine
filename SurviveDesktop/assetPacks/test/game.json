@@ -5,7 +5,14 @@
     "testgame"
   ],
   
-  "startingDimension": "test",
+  "startingDimension": "*.testmap",
+
+  "startingPlayer": "*.test",
+
+  "startingInventory": [
+    "*.mountain_sign",
+    "*.mountain_sign"
+  ],
 
   // eof
   "": ""

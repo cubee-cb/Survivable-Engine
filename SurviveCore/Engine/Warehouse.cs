@@ -131,12 +131,13 @@ namespace SurviveCore.Engine
           {
             if (gameProps != null)
             {
-              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible!", category: ELDebug.Category.Warning);
+              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
             }
             else
             {
-              string i = Platform.LoadFileDirectly(Path.Combine(packPath, "game.json"));
-              gameProps = JsonConvert.DeserializeObject<GameProperties>(i);
+              //string i = Platform.LoadFileDirectly(Path.Combine(packPath, "game.json"));
+              //gameProps = JsonConvert.DeserializeObject<GameProperties>(i);
+              gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
               ELDebug.Log("this is a game pack, using game data for \"" + gameProps.internalName + '"');
             }
           }
@@ -144,6 +145,10 @@ namespace SurviveCore.Engine
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
+            //todo: i think these should load differently, like "test.dimension.overworld"
+            // the subfolders currently have no meaning outside of organisation
+            // as it is you can't tell the difference between item "apple", tile "apple", and weapon "apple" for example
+
             LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), contentType, LoadTexture);
             LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), contentType, LoadSoundEffect);
             //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), contentType, LoadSong);
@@ -500,6 +505,15 @@ namespace SurviveCore.Engine
       }
 
     }
+
+    public static GameProperties GetGameProps()
+    {
+      return gameProps;
+    }
+
+
+
+
 
   }
 }

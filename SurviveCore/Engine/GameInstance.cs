@@ -6,6 +6,7 @@ using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.Items;
+using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +36,8 @@ namespace SurviveCore.Engine
     private int activeWorldIndex = 0;
     World activeWorld;
 
+    GameProperties gameProps;
+
     public GameInstance(EInstanceMode instanceMode, PlayerIndex playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
     {
       this.instanceMode = instanceMode;
@@ -48,6 +51,8 @@ namespace SurviveCore.Engine
       warehouse = new Warehouse(contentManager, graphicsDevice);
       Warehouse.LoadAll();
 
+      gameProps = Warehouse.GetGameProps();
+
       this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
       tick = 0;
@@ -57,13 +62,12 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      //todo: use dimension specified by the active game pack
-      World tempWorld = new("test.testmap");
+      World tempWorld = new(gameProps.startingDimension);
 
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        player = new("test.test", input, tempWorld);
+        player = new(gameProps.startingPlayer, input, tempWorld);
         tempWorld.AddEntity(player);
       }
 
@@ -76,12 +80,14 @@ namespace SurviveCore.Engine
       {
         player
       };
-      //
-      player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(1, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(2, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(3, new Item("test.mountain_sign"));
-      //*/
+
+      foreach (string itemID in gameProps.startingInventory)
+      {
+        //todo: make this entry use actual ItemsProperties in json?
+        // so games can start players off with modified and custom items, say a damaged axe or something
+        player.GetInventory().AddItem(new Item(itemID));
+      }
+
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 
