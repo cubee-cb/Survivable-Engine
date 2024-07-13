@@ -136,10 +136,8 @@ namespace SurviveCore.Engine
             }
             else
             {
-              //string i = Platform.LoadFileDirectly(Path.Combine(packPath, "game.json"));
-              //gameProps = JsonConvert.DeserializeObject<GameProperties>(i);
               gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
-              ELDebug.Log("this is a game pack, using game data for \"" + gameProps.internalName + '"');
+              ELDebug.Log("this is a game pack, using it for game data");
             }
           }
 

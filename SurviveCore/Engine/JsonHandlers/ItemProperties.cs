@@ -8,7 +8,6 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string textureSheetName = "item_default";
-    public string internalName = "item_default";
     public List<string> tags = new();
 
     public int framesX = 1; // used to animate the item over time
@@ -35,7 +34,6 @@ namespace SurviveCore.Engine.JsonHandlers
 
       // descriptions
       textureSheetName = source.textureSheetName ?? textureSheetName;
-      internalName = source.internalName ?? internalName;
       tags = source.tags ?? tags;
 
       // stats

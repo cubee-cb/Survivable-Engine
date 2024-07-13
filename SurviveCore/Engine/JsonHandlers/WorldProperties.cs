@@ -8,7 +8,6 @@ namespace SurviveCore.Engine.JsonHandlers
   public class WorldProperties
   {
 
-    public string internalName = "entity_default";
     public Dictionary<string, int> area;
     public List<string> tags = new();
 
@@ -30,7 +29,6 @@ namespace SurviveCore.Engine.JsonHandlers
       // set the following to source's fields if they aren't null, otherwise back to themselves
 
       // descriptions
-      internalName = source.internalName ?? internalName;
       area = source.area ?? area;
       tags = source.tags ?? tags;
 

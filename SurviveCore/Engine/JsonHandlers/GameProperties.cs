@@ -8,7 +8,6 @@ namespace SurviveCore.Engine.JsonHandlers
   public class GameProperties
   {
     // descriptions
-    public string internalName = "test_game";
     public List<string> tags = new();
 
     // stats
@@ -29,7 +28,6 @@ namespace SurviveCore.Engine.JsonHandlers
     public void ReplaceData(GameProperties source)
     {
       // set the following to source's fields if they aren't null, otherwise back to themselves
-      internalName = source.internalName ?? internalName;
       tags = source.tags ?? tags;
 
       // stats
