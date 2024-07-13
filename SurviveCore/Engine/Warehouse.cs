@@ -28,6 +28,7 @@ namespace SurviveCore.Engine
     private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
     private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
+    private static string currentCategory = "default";
 
     private const string TEXTURE_FOLDER = "spr";
     private const string SOUND_FOLDER = "sfx";
@@ -149,11 +150,13 @@ namespace SurviveCore.Engine
             // the subfolders currently have no meaning outside of organisation
             // as it is you can't tell the difference between item "apple", tile "apple", and weapon "apple" for example
 
-            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), contentType, LoadTexture);
-            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), contentType, LoadSoundEffect);
-            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), contentType, LoadSong);
-            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), contentType, LoadJson);
-            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), contentType, LoadLua);
+            currentCategory = contentType;
+
+            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), LoadTexture);
+            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), LoadSoundEffect);
+            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), LoadSong);
+            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), LoadJson);
+            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), LoadLua);
           }
 
           //todo: each object should update all internal references with the namespace
@@ -220,26 +223,16 @@ namespace SurviveCore.Engine
       //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
       fileName = Path.GetFileNameWithoutExtension(fileName);
 
-      // if the filename has a namespace, use that.
-      if (fileName.Contains(NAMESPACE_SEPARATOR))
-      {
-        return fileName;
-      }
-      // if it's missing a namespace, use the active namespace.
-      // handy for if you want to easily change the pack's namespace later for whatever reason.
-      else
-      {
-        return string.Join(NAMESPACE_SEPARATOR, nameSpace, fileName);
-      }
+      return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, fileName);
     }
 
     /// <summary>
     /// Scans a folder for files, and passes their path to the loadMethod().
     /// </summary>
     /// <param name="loadMethod">The method to use to import the asset when found.</param>
-    public static void LoadAssetsInFolder(string basePath, string subfolder, Func<string, string> loadMethod)
+    public static void LoadAssetsInFolder(string basePath, Func<string, string> loadMethod)
     {
-      string path = Path.Join(basePath, subfolder);
+      string path = Path.Join(basePath, currentCategory);
       // skip this folder if it doesn't exist
       if (!Directory.Exists(path)) return;
 
@@ -255,7 +248,7 @@ namespace SurviveCore.Engine
         }
         catch
         {
-          ELDebug.Log(" failed to load " + subfolder + " " + basePath + ". wrong file type?", category: ELDebug.Category.ERROR);
+          ELDebug.Log(" failed to load " + basePath + " for category " + currentCategory + ". wrong file type?", category: ELDebug.Category.ERROR);
         }
       }
     }

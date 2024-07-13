@@ -1,12 +1,11 @@
 {
   // properties
-  "internalName": "grass_slope_vertical",
-  "textureSheetName": "*.grass_slope_vertical",
+  "textureSheetName": "*.ground.grass_slope_vertical",
   "tags": [
     "grass"
   ],
   "sounds": [
-    "*.grass_step"
+    "*.ground.grass_step"
   ],
 
   // stats

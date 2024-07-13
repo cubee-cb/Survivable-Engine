@@ -1,6 +1,5 @@
 {
   // properties
-  "internalName": "testmap",
   "area": {"width": 32, "height": 32},
 
   "tags": [
@@ -9,7 +8,7 @@
 
   // these are called in the listed order, top to bottom
   "generationRoutines": [
-    "*.testmap"
+    "*.worldgen.testmap"
     //{"routine": "*.testmap", "x": 0, "y": 0, "width": 32, "height": 32}
   ],
 

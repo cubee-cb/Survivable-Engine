@@ -8,7 +8,7 @@ function Generate(x, y, w, h)
 
   for ix = x, x + w do
     for iy = y, y + h do
-      Plot(ix, iy, "*.grass")
+      Plot(ix, iy, "*.ground.grass")
 
     end
   end

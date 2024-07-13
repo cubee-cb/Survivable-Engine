@@ -1,17 +1,16 @@
 {
   // properties
-  "internalName": "test game",
   "tags": [
     "testgame"
   ],
   
-  "startingDimension": "*.testmap",
+  "startingDimension": "*.dimension.testmap",
 
-  "startingPlayer": "*.test",
+  "startingPlayer": "*.character.test",
 
   "startingInventory": [
-    "*.mountain_sign",
-    "*.mountain_sign"
+    "*.item.mountain_sign",
+    "*.item.mountain_sign"
   ],
 
   // eof

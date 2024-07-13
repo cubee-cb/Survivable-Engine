@@ -1,7 +1,6 @@
 {
   // properties
-  "internalName": "*.chaser",
-  "textureSheetName": "*.chaser",
+  "textureSheetName": "*.mob.chaser",
   "tags": [
     "enemy"
   ],
@@ -20,7 +19,7 @@
   "inventorySize": 0,
 
   // lua
-  "lua": "*.chaser",
+  "lua": "*.mob.chaser",
 
   // eof
   "": ""
