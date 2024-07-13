@@ -146,26 +146,16 @@ namespace SurviveCore.Engine
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
-            //todo: i think these should load differently, like "test.dimension.overworld"
-            // the subfolders currently have no meaning outside of organisation
-            // as it is you can't tell the difference between item "apple", tile "apple", and weapon "apple" for example
-
             currentCategory = contentType;
+            string categoryPath = Path.Join(packPath, currentCategory);
 
-            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), LoadTexture);
-            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), LoadSoundEffect);
-            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), LoadSong);
-            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), LoadJson);
-            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), LoadLua);
+            LoadAssetsInFolder(Path.Join(categoryPath, TEXTURE_FOLDER), LoadTexture);
+            LoadAssetsInFolder(Path.Join(categoryPath, SOUND_FOLDER), LoadSoundEffect);
+            //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
+            LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
+            LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
           }
 
-          //todo: each object should update all internal references with the namespace
-          // if they don't, it won't know which namespace the file is from if it's omitted
-          // alternatively, perform a "best-guess" by loading the first matching name from any namespace.
-
-          // how to handle the different types? character, item, etc.
-          // they're all in the same list, what if we have a tile and item both called Furnace?
-          // whichever is loaded last will take precedence, overwriting the first one
 
         }
 
@@ -232,7 +222,7 @@ namespace SurviveCore.Engine
     /// <param name="loadMethod">The method to use to import the asset when found.</param>
     public static void LoadAssetsInFolder(string basePath, Func<string, string> loadMethod)
     {
-      string path = Path.Join(basePath, currentCategory);
+      string path = Path.Join(basePath);
       // skip this folder if it doesn't exist
       if (!Directory.Exists(path)) return;
 
