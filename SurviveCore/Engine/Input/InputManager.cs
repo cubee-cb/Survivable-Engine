@@ -8,7 +8,6 @@ namespace SurviveCore.Engine.Input
 {
   public class InputManager
   {
-    public string internalName = "default_inputManager";
     private PlayerIndex playerIndex = PlayerIndex.One;
     private bool hasKeyboard = false;
 
@@ -39,7 +38,7 @@ namespace SurviveCore.Engine.Input
     {
       //todo: set "last" states
 
-      keyboardState = Keyboard.GetState();
+      if (hasKeyboard) keyboardState = Keyboard.GetState();
       mouseState = Mouse.GetState();
       gamePadState = GamePad.GetState(playerIndex);
     }
@@ -53,7 +52,7 @@ namespace SurviveCore.Engine.Input
     public bool Action(string action, bool justPressed = false)
     {
       // check keyboard
-      if (keyboardBindings.ContainsKey(action))
+      if (hasKeyboard && keyboardBindings.ContainsKey(action))
       {
         foreach (Keys key in keyboardBindings[action])
         {
