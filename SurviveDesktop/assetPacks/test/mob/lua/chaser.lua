@@ -27,7 +27,7 @@ states = {
     stateDuration = 30
 
     if (stateTimer == 0) then
-      PlaySound("*.chaser_shout")
+      PlaySound("*.mob.chaser_shout")
     end
 
   end,
@@ -37,7 +37,7 @@ states = {
     stateDuration = 60
 
     if (stateTimer == 0) then
-      PlaySound("*.chaser_dash")
+      PlaySound("*.mob.chaser_dash")
       dashEnd = target
     end
 

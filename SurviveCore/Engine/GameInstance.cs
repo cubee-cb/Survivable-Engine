@@ -7,7 +7,6 @@ using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
-using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -37,6 +36,8 @@ namespace SurviveCore.Engine
     private int activeWorldIndex = 0;
     World activeWorld;
 
+    GameProperties gameProps;
+
     public GameInstance(EInstanceMode instanceMode, PlayerIndex playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
     {
       this.instanceMode = instanceMode;
@@ -50,6 +51,8 @@ namespace SurviveCore.Engine
       warehouse = new Warehouse(contentManager, graphicsDevice);
       Warehouse.LoadAll();
 
+      gameProps = Warehouse.GetGameProps();
+
       this.targetTickRate = targetTickRate;
       tickRate = targetTickRate;
       tick = 0;
@@ -59,32 +62,32 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      World tempWorld = new(10, 10, new OverworldGenerator());
-
-      //tempWorld.AddActor(new SimpleWalker());
+      World tempWorld = new(gameProps.startingDimension);
 
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
       {
-        player = new("test.test", input, tempWorld);
+        player = new(gameProps.startingPlayer, input, tempWorld);
         tempWorld.AddEntity(player);
       }
 
-      // create a test mob
-      tempWorld.AddEntity(new Mob("test.testghost", tempWorld));
-      tempWorld.AddEntity(new Mob("test.chaser", tempWorld));
+      // create test mobs
+      tempWorld.AddEntity(new Mob("test.mob.testghost", tempWorld));
+      tempWorld.AddEntity(new Mob("test.mob.chaser", tempWorld));
 
       // tell camera to focus on this entity
       cameraFocusEntities = new()
       {
         player
       };
-      //
-      player.GetInventory().PlaceItem(0, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(1, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(2, new Item("test.mountain_sign"));
-      player.GetInventory().PlaceItem(3, new Item("test.mountain_sign"));
-      //*/
+
+      foreach (string itemID in gameProps.startingInventory)
+      {
+        //todo: make this entry use actual ItemsProperties in json?
+        // so games can start players off with modified and custom items, say a damaged axe or something
+        player.GetInventory().AddItem(new Item(itemID));
+      }
+
       worlds.Add(tempWorld);
       this.graphicsDevice = graphicsDevice;
 
@@ -101,9 +104,17 @@ namespace SurviveCore.Engine
 
       // dangerous keys (hold right control to activate)
       // unload all asset packs ([U]nload)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U)) Warehouse.UnloadAll();
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U))
+      {
+        Warehouse.UnloadAll();
+        UpdateAssets();
+      }
       // load all asset packs ([I]nitialise)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I)) Warehouse.LoadAll();
+      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I))
+      {
+        Warehouse.LoadAll();
+        UpdateAssets();
+      }
 
 
 
@@ -205,6 +216,15 @@ namespace SurviveCore.Engine
 
       return null;
     }
+
+    private void UpdateAssets()
+    {
+      foreach (World world in worlds)
+      {
+        world.UpdateAssets();
+      }
+    }
+
 
   }
 }

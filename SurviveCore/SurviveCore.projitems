@@ -20,7 +20,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Input\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Inventory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Item.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\WorldProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GameProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ItemProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ModProperties.cs" />
@@ -33,9 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\OverworldGenerator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\Routines\GM_FlatGrass.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\Routines\WorldGenRoutine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\TileMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\WorldGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\ELDebug.cs" />

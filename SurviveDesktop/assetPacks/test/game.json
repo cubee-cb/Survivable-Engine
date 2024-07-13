@@ -1,0 +1,18 @@
+{
+  // properties
+  "tags": [
+    "testgame"
+  ],
+  
+  "startingDimension": "*.dimension.testmap",
+
+  "startingPlayer": "*.character.test",
+
+  "startingInventory": [
+    "*.item.mountain_sign",
+    "*.item.mountain_sign"
+  ],
+
+  // eof
+  "": ""
+}

@@ -11,35 +11,39 @@ using static SurviveCore.Engine.JsonHandlers.GroundProperties;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal class GroundTile
+  public class GroundTile
   {
+    private string id;
     private const int TILE_THICKNESS = 16;
 
     private int elevation = 0;
 
     [JsonIgnore] GroundProperties properties;
-    [JsonIgnore] private readonly Texture2D texture;
-    [JsonIgnore] private readonly Script lua;
+    [JsonIgnore] private Texture2D texture;
+    [JsonIgnore] private Script lua;
 
     public GroundTile(string id, int elevation)
     {
+      this.id = id;
+      this.elevation = elevation;
 
+      UpdateAssets();
+    }
+
+    /// <summary>
+    /// Re-obtain the assets for this tile.
+    /// </summary>
+    public void UpdateAssets()
+    {
       // set initial properties
       properties = Warehouse.GetJson<GroundProperties>(id);
-      this.elevation = elevation;
 
       // load assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
-      if (properties.sounds != null)
-      {
-        foreach (string fileName in properties.sounds)
-        {
-          Warehouse.GetSoundEffect(fileName);
-        }
-      }
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);
+
     }
 
     /// <summary>
@@ -52,6 +56,19 @@ namespace SurviveCore.Engine.WorldGen
       return pixels? elevation * TILE_THICKNESS : elevation;
     }
 
+    /// <summary>
+    /// Set the elevation of this tile.
+    /// </summary>
+    /// <param name="newElevation">The elevation to change to.</param>
+    public void SetElevation(int newElevation)
+    {
+      elevation = newElevation;
+    }
+
+    /// <summary>
+    /// Get the slope of this tile.
+    /// </summary>
+    /// <returns>Slope value.</returns>
     public SlopeType GetSlope()
     {
       return properties.slope;

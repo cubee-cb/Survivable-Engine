@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Entities;
+using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
@@ -13,29 +14,47 @@ namespace SurviveCore.Engine
   //todo: we could probably make a new class for each world type, but that's probably best left for the games/mods
   internal class World
   {
+    string id;
+
     TileMap map;
     WorldGenerator generator;
     List<Entity> entities;
 
-    public World()
+    WorldProperties properties;
+
+
+    public World(string id)
     {
-      map = new TileMap(100, 100);
+      properties = Warehouse.GetJson<WorldProperties>(id);
 
-      entities = new();
-      generator = new OverworldGenerator(); // default to overworld if not specified
+      int width = 8;
+      int height = 8;
+      if (properties.area != null)
+      {
+        properties.area.TryGetValue("width", out width);
+        properties.area.TryGetValue("height", out height);
+      }
 
-      generator.Generate(map);
-
-    }
-
-    public World(int width, int height, WorldGenerator generator)
-    {
       map = new TileMap(width, height);
 
       entities = new();
-      this.generator = generator;
 
-      this.generator.Generate(map);
+      generator = new WorldGenerator(properties.generationRoutines);
+      generator.Generate(map);
+    }
+
+    public void UpdateAssets()
+    {
+      //generator.UpdateAssets();
+
+      //todo: update the world's properties when they have them.
+
+      map.UpdateAssets();
+
+      foreach (Entity entity in entities)
+      {
+        entity.UpdateAssets();
+      }
     }
 
     public void Update(int tick, float deltaTime)

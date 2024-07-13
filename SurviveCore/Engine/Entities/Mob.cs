@@ -20,7 +20,11 @@ namespace SurviveCore.Engine.Entities
 
     public Mob(string id, World world) : base(id, world)
     {
+      UpdateAssets();
+    }
 
+    public override void UpdateAssets()
+    {
       // set initial properties
       properties = Warehouse.GetJson<MobProperties>(id);
       rotationType = properties.rotationType;
@@ -28,15 +32,8 @@ namespace SurviveCore.Engine.Entities
       health = properties.maxHealth;
       tags = properties.tags;
 
-      // load assets
+      // find assets
       texture = Warehouse.GetTexture(properties.textureSheetName);
-      if (properties.sounds != null)
-      {
-        foreach (string fileName in properties.sounds)
-        {
-          Warehouse.GetSoundEffect(fileName);
-        }
-      }
 
       // create inventory
       inventory = new(properties.inventorySize);
@@ -53,7 +50,6 @@ namespace SurviveCore.Engine.Entities
         lua.Globals["DistanceTo"] = (Func<float, float, float>)DistanceTo;
         lua.Globals["SnapPosition"] = (Func<float, float, bool>)SnapPosition;
       }
-
     }
 
     public override void Update(int tick, float deltaTime)
