@@ -201,17 +201,33 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
-    /// Used to handle leaving out the namespace in file references. To reference a namespace in json, use namespace/item.name.png
+    /// Takes in a file path, and converts that into an object id of format "namespace.category.id". If a namespace is provided in the file name as "namespace.id", that will be used for this object. Otherwise, the active namespace will be used.
     /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    private static string BuildInternalName(string fileName)
+    /// <param name="file">The path to the original file.</param>
+    /// <returns>An object id.</returns>
+    private static string BuildInternalName(string file)
     {
       // get just the filename
       //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
-      fileName = Path.GetFileNameWithoutExtension(fileName);
+      file = Path.GetFileNameWithoutExtension(file);
 
-      return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, fileName);
+      // if the filename has a namespace, use that namespace.
+      // handy for having packs loaded later override content in already loaded packs, or inject content into other namespaces
+      if (file.Contains(NAMESPACE_SEPARATOR))
+      {
+        string[] splitName = file.Split(NAMESPACE_SEPARATOR);
+
+        // use the first part as the namespace, and the last as the id.
+        // we can ignore extensions since we already removed them at the eginning of this method.
+        return string.Join(NAMESPACE_SEPARATOR, splitName[0], currentCategory, splitName[^1]);
+      }
+      // if it's missing a namespace, use the active namespace.
+      // handy for if you want to easily change the pack's namespace later for whatever reason.
+      else
+      {
+        return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, file);
+      }
+
     }
 
     /// <summary>
