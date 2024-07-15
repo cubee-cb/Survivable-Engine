@@ -77,8 +77,10 @@ namespace SurviveCore.Engine.WorldGen
 
     public void Draw(float tickProgress, Vector2 position)
     {
-      // todo: handle spritesheets and multiple textures
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White, scaleBox: new(1, elevation + 1));
+      // todo: handle spritesheets
+
+      // front face
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White);
 
       // top face
       GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);

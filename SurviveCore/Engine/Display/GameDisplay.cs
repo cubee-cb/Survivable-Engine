@@ -169,6 +169,7 @@ namespace SurviveCore.Engine.Display
       }
       if (colour == null) colour = Color.White;
       location -= currentDisplayInstance.cameraPosition;
+      location = Vector2.Floor(location);
 
       if (depth == -1) depth = 1 - (location.Y / currentDisplayInstance.internalHeight);
       SpriteEffects effects = SpriteEffects.None;
@@ -177,7 +178,7 @@ namespace SurviveCore.Engine.Display
 
       //todo: angleTurns is still radians instead of turns. FIX IT
       // why do i need a +0.5f offset to have the sprites render correctly? i dunno.
-      Vector2 position = Vector2.Floor(location) + Vector2.One * 0.5f + Vector2.UnitY * visualOffsetY;
+      Vector2 position = Vector2.Floor(location + Vector2.One * 0.5f + Vector2.UnitY * visualOffsetY);
       Point destinationSize = clippingArea.Size;
       if (scaleBox != null) destinationSize *= (Point)scaleBox;
       currentDisplayInstance.spriteBatch.Draw(texture, new Rectangle(position.ToPoint(), destinationSize), clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, effects, depth);

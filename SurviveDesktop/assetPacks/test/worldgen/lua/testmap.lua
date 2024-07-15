@@ -12,7 +12,7 @@ function Generate(x, y, w, h)
       elevation = 0
 
       -- create some simple slopes
-      if ix == 4 and iy > 3 then
+      if ix == 4 and iy > 3 or ix == 10 then
         tile = "*.ground.grass_slope_horizontal"
       end
       if iy == 3 and ix < 4 then
@@ -20,6 +20,9 @@ function Generate(x, y, w, h)
       end
       if ix > 4 or iy < 3 then
         elevation = 1
+      end
+      if ix > 10 then
+        elevation = 3
       end
 
       -- place the tiles
