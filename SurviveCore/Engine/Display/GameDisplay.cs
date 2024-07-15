@@ -171,7 +171,7 @@ namespace SurviveCore.Engine.Display
       location -= currentDisplayInstance.cameraPosition;
       location = Vector2.Floor(location);
 
-      if (depth == -1) depth = 1 - (location.Y / currentDisplayInstance.internalHeight);
+      if (depth == -1) depth = (1 - (location.Y / currentDisplayInstance.internalHeight)) / 2f + 0.25f;
       SpriteEffects effects = SpriteEffects.None;
       if (flipX) effects = SpriteEffects.FlipHorizontally;
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
