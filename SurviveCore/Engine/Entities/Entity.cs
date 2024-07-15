@@ -114,7 +114,7 @@ namespace SurviveCore.Engine.Entities
 
       // draw, with the bottom of the sprite as its centre
       Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height);
-      float myElevation = GetElevation();
+      float myElevation = GetVisualElevation(tickProgress);
       GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset, visualOffsetY: feetOffsetY - myElevation);
 
     }
@@ -134,6 +134,10 @@ namespace SurviveCore.Engine.Entities
     public virtual int GetElevation()
     {
       return world.GetStandingTileElevation(position);
+    }
+    public virtual int GetVisualElevation(float tickProgress)
+    {
+      return world.GetStandingTileElevation(GetVisualPosition(tickProgress));
     }
 
     public virtual Inventory GetInventory()

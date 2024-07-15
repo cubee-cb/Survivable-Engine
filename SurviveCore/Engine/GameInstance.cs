@@ -103,17 +103,20 @@ namespace SurviveCore.Engine
       if (ELDebug.Key(Keys.L)) tickRate *= 16;
 
       // dangerous keys (hold right control to activate)
-      // unload all asset packs ([U]nload)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.U))
+      if (ELDebug.Key(Keys.RightControl))
       {
-        Warehouse.UnloadAll();
-        UpdateAssets();
-      }
-      // load all asset packs ([I]nitialise)
-      if (ELDebug.Key(Keys.RightControl) && ELDebug.Key(Keys.I))
-      {
-        Warehouse.LoadAll();
-        UpdateAssets();
+        // unload all asset packs ([U]nload)
+        if (ELDebug.Key(Keys.U))
+        {
+          Warehouse.UnloadAll();
+          UpdateAssets();
+        }
+        // load all asset packs ([I]nitialise)
+        if (ELDebug.Key(Keys.I))
+        {
+          Warehouse.LoadAll();
+          UpdateAssets();
+        }
       }
 
 
@@ -165,7 +168,7 @@ namespace SurviveCore.Engine
         if (cameraFocusEntities.Count > 0)
         {
           Entity followEntity = cameraFocusEntities[0];
-          display.Camera(followEntity.GetVisualPosition(tickProgress) - Vector2.UnitY * followEntity.GetElevation() - new Vector2(display.internalWidth, display.internalHeight) / 2);
+          display.Camera(followEntity.GetVisualPosition(tickProgress) - Vector2.UnitY * followEntity.GetVisualElevation(tickProgress) - new Vector2(display.internalWidth, display.internalHeight) / 2);
         }
 
         // pass tick progress to draw, so objects can visually smooth to their new location
