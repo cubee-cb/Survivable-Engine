@@ -13,7 +13,7 @@ namespace SurviveCore.Engine.Entities
   {
     Item itemData;
 
-    public DroppedItem(Item item, World world) : base(item.properties.internalName, world)
+    public DroppedItem(Item item, World world) : base(item.id, world)
     {
       itemData = item;
       tags = item.properties.tags;

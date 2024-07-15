@@ -8,7 +8,6 @@ namespace SurviveCore.Engine.Input
 {
   public class InputManager
   {
-    public string internalName = "default_inputManager";
     private PlayerIndex playerIndex = PlayerIndex.One;
     private bool hasKeyboard = false;
 
@@ -26,7 +25,16 @@ namespace SurviveCore.Engine.Input
       { "use", new List<Keys>() { Keys.Space } },
       { "run", new List<Keys>() { Keys.LeftShift } }
     };
-    Dictionary<string, List<Buttons>> controllerBindings = new();
+    Dictionary<string, List<Buttons>> controllerBindings = new()
+    {
+      { "left", new List<Buttons>() { Buttons.DPadLeft, Buttons.LeftThumbstickLeft } },
+      { "right", new List<Buttons>() { Buttons.DPadRight, Buttons.LeftThumbstickRight } },
+      { "up", new List<Buttons>() { Buttons.DPadUp, Buttons.LeftThumbstickUp } },
+      { "down", new List<Buttons>() { Buttons.DPadDown, Buttons.LeftThumbstickDown } },
+      { "interact", new List<Buttons>() { Buttons.A } },
+      { "use", new List<Buttons>() { Buttons.RightTrigger } },
+      { "run", new List<Buttons>() { Buttons.X } }
+    };
 
     // this is set up this way so not every input type has to be specified.
     public InputManager(PlayerIndex playerIndex, bool hasKeyboard = false)
@@ -39,7 +47,7 @@ namespace SurviveCore.Engine.Input
     {
       //todo: set "last" states
 
-      keyboardState = Keyboard.GetState();
+      if (hasKeyboard) keyboardState = Keyboard.GetState();
       mouseState = Mouse.GetState();
       gamePadState = GamePad.GetState(playerIndex);
     }
@@ -53,7 +61,7 @@ namespace SurviveCore.Engine.Input
     public bool Action(string action, bool justPressed = false)
     {
       // check keyboard
-      if (keyboardBindings.ContainsKey(action))
+      if (hasKeyboard && keyboardBindings.ContainsKey(action))
       {
         foreach (Keys key in keyboardBindings[action])
         {

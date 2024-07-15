@@ -20,6 +20,11 @@ namespace SurviveCore.Engine.Items
       }
     }
 
+    /// <summary>
+    /// Take an item out of a specific inventory slot.
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <returns></returns>
     public Item TakeItem(int slot)
     {
       if (slot < 0 || slot >= items.Count)
@@ -34,7 +39,7 @@ namespace SurviveCore.Engine.Items
     }
 
     /// <summary>
-    /// 
+    /// Place an item into a specific inventory slot, swapping with what's there.
     /// </summary>
     /// <param name="slot">The slot to place the item in.</param>
     /// <returns>The item that was previously in the slot.</returns>
@@ -49,6 +54,25 @@ namespace SurviveCore.Engine.Items
       Item existingItem = items[slot];
       items[slot] = item;
       return existingItem;
+    }
+
+    /// <summary>
+    /// Places an item in the next available slot. If there's no space, return false.
+    /// </summary>
+    /// <param name="item">The item to place.</param>
+    /// <returns>True if the item could be placed.</returns>
+    public bool AddItem(Item item)
+    {
+      for (int slot = 0; slot < items.Count; slot++)
+      {
+        if (items[slot] == null)
+        {
+          items[slot] = item;
+          return true;
+        }
+      }
+
+      return false;
     }
 
     public List<Item> GetItems()

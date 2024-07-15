@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
@@ -27,6 +28,7 @@ namespace SurviveCore.Engine
     private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
     private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
+    private static string currentCategory = "default";
 
     private const string TEXTURE_FOLDER = "spr";
     private const string SOUND_FOLDER = "sfx";
@@ -53,6 +55,7 @@ namespace SurviveCore.Engine
     private const string FOLDER_BIOME = "biome";
     private const string FOLDER_ITEM = "item";
     private const string FOLDER_MOB = "mob";
+    private const string FOLDER_WORLDGEN = "worldgen";
     readonly static private List<string> contentTypeSubfolders = new()
     {
       FOLDER_CHARACTER,
@@ -61,8 +64,11 @@ namespace SurviveCore.Engine
       FOLDER_DIMENSION,
       FOLDER_BIOME,
       FOLDER_ITEM,
-      FOLDER_MOB
+      FOLDER_MOB,
+      FOLDER_WORLDGEN
     };
+
+    private static GameProperties gameProps = null;
 
     private static List<string> contentPaths = new()
     {
@@ -116,28 +122,38 @@ namespace SurviveCore.Engine
           if (!Platform.Exists(Path.Combine(packPath, "pack.json"))) continue;
 
           // load pack.json
-          ModProperties packProps = new(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
+          ModProperties packProps = JsonConvert.DeserializeObject<ModProperties>(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
           ELDebug.Log("found pack: " + packProps);
 
           nameSpace = packProps.nameSpace;
 
+          // check if this mod is a game
+          if (Platform.Exists(Path.Combine(packPath, "game.json")))
+          {
+            if (gameProps != null)
+            {
+              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
+            }
+            else
+            {
+              gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
+              ELDebug.Log("this is a game pack, using it for game data");
+            }
+          }
+
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
-            LoadAssetsInFolder(Path.Join(packPath, TEXTURE_FOLDER), contentType, LoadTexture);
-            LoadAssetsInFolder(Path.Join(packPath, SOUND_FOLDER), contentType, LoadSoundEffect);
-            //LoadAssetsInFolder(Path.Join(packPath, MUSIC_FOLDER), contentType, LoadSong);
-            LoadAssetsInFolder(Path.Join(packPath, JSON_FOLDER), contentType, LoadJson);
-            LoadAssetsInFolder(Path.Join(packPath, LUA_FOLDER), contentType, LoadLua);
+            currentCategory = contentType;
+            string categoryPath = Path.Join(packPath, currentCategory);
+
+            LoadAssetsInFolder(Path.Join(categoryPath, TEXTURE_FOLDER), LoadTexture);
+            LoadAssetsInFolder(Path.Join(categoryPath, SOUND_FOLDER), LoadSoundEffect);
+            //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
+            LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
+            LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
           }
 
-          //todo: each object should update all internal references with the namespace
-          // if they don't, it won't know which namespace the file is from if it's omitted
-          // alternatively, perform a "best-guess" by loading the first matching name from any namespace.
-
-          // how to handle the different types? character, item, etc.
-          // they're all in the same list, what if we have a tile and item both called Furnace?
-          // whichever is loaded last will take precedence, overwriting the first one
 
         }
 
@@ -185,36 +201,42 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
-    /// Used to handle leaving out the namespace in file references. To reference a namespace in json, use namespace/item.name.png
+    /// Takes in a file path, and converts that into an object id of format "namespace.category.id". If a namespace is provided in the file name as "namespace.id", that will be used for this object. Otherwise, the active namespace will be used.
     /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    private static string BuildInternalName(string fileName)
+    /// <param name="file">The path to the original file.</param>
+    /// <returns>An object id.</returns>
+    private static string BuildInternalName(string file)
     {
       // get just the filename
       //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
-      fileName = Path.GetFileNameWithoutExtension(fileName);
+      file = Path.GetFileNameWithoutExtension(file);
 
-      // if the filename has a namespace, use that.
-      if (fileName.Contains(NAMESPACE_SEPARATOR))
+      // if the filename has a namespace, use that namespace.
+      // handy for having packs loaded later override content in already loaded packs, or inject content into other namespaces
+      if (file.Contains(NAMESPACE_SEPARATOR))
       {
-        return fileName;
+        string[] splitName = file.Split(NAMESPACE_SEPARATOR);
+
+        // use the first part as the namespace, and the last as the id.
+        // we can ignore extensions since we already removed them at the eginning of this method.
+        return string.Join(NAMESPACE_SEPARATOR, splitName[0], currentCategory, splitName[^1]);
       }
       // if it's missing a namespace, use the active namespace.
       // handy for if you want to easily change the pack's namespace later for whatever reason.
       else
       {
-        return string.Join(NAMESPACE_SEPARATOR, nameSpace, fileName);
+        return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, file);
       }
+
     }
 
     /// <summary>
     /// Scans a folder for files, and passes their path to the loadMethod().
     /// </summary>
     /// <param name="loadMethod">The method to use to import the asset when found.</param>
-    public static void LoadAssetsInFolder(string basePath, string subfolder, Func<string, string> loadMethod)
+    public static void LoadAssetsInFolder(string basePath, Func<string, string> loadMethod)
     {
-      string path = Path.Join(basePath, subfolder);
+      string path = Path.Join(basePath);
       // skip this folder if it doesn't exist
       if (!Directory.Exists(path)) return;
 
@@ -230,7 +252,7 @@ namespace SurviveCore.Engine
         }
         catch
         {
-          ELDebug.Log(" failed to load " + subfolder + " " + basePath + ". wrong file type?", error: true);
+          ELDebug.Log(" failed to load " + basePath + " for category " + currentCategory + ". wrong file type?", category: ELDebug.Category.ERROR);
         }
       }
     }
@@ -271,7 +293,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty texture reference", error: true);
+        ELDebug.Log("got an empty texture reference", category: ELDebug.Category.Warning);
         return missingTexture;
       }
 
@@ -282,7 +304,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain texture " + internalName, error: true);
+        ELDebug.Log("failed to obtain texture " + internalName, category: ELDebug.Category.Warning);
         return missingTexture;
       }
     }
@@ -324,7 +346,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty sound reference", error: true);
+        ELDebug.Log("got an empty sound reference", category: ELDebug.Category.Warning);
         return missingSound;
       }
 
@@ -335,7 +357,7 @@ namespace SurviveCore.Engine
       }
       else
       {
-        ELDebug.Log("failed to obtain sound " + internalName, error: true);
+        ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
         return missingSound;
       }
     }
@@ -384,7 +406,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty json reference", error: true);
+        ELDebug.Log("got an empty json reference", category: ELDebug.Category.Warning);
         return JsonConvert.DeserializeObject<T>("{}");
       }
 
@@ -400,7 +422,7 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain json file " + internalName, error: true);
+        ELDebug.Log("failed to obtain json file " + internalName, category: ELDebug.Category.Warning);
         return JsonConvert.DeserializeObject<T>("{}");
       }
 
@@ -444,7 +466,7 @@ namespace SurviveCore.Engine
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty lua reference", error: true);
+        ELDebug.Log("got an empty lua reference", category: ELDebug.Category.Warning);
         return default;
       }
 
@@ -466,7 +488,7 @@ namespace SurviveCore.Engine
         }
         catch (Exception e)
         {
-          ELDebug.Log("LUA error: \n" + e);
+          ELDebug.Log("LUA error: \n" + e, ELDebug.Category.ERROR);
           return default;
         }
 
@@ -475,11 +497,20 @@ namespace SurviveCore.Engine
 
       else
       {
-        ELDebug.Log("failed to obtain lua file " + internalName, error: true);
+        ELDebug.Log("failed to obtain lua file " + internalName, category: ELDebug.Category.Warning);
         return default;
       }
 
     }
+
+    public static GameProperties GetGameProps()
+    {
+      return gameProps;
+    }
+
+
+
+
 
   }
 }

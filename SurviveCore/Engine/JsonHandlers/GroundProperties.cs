@@ -1,11 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SurviveCore.Engine.JsonHandlers
 {
-  public struct GroundProperties
+  public class GroundProperties
   {
     // descriptions
     public string textureSheetName = "ground_default";
@@ -23,26 +22,27 @@ namespace SurviveCore.Engine.JsonHandlers
 
 
 
-    public GroundProperties(string jsonObject)
+    public GroundProperties()
     {
-      /*
-      textureSheetName =;
-      internalName = key;
-      tags = new List<string>();
+    }
 
-      maxHealth = 10;
-      inventorySize = 5;
+    public void ReplaceData(GroundProperties source)
+    {
+      // set the following to source's fields if they aren't null, otherwise back to themselves
 
-      luaAI = "";
-      luaTick = "";
-      luaInteract = "";
-      luaDamaged = "";
-      luaDefeated = "";
-      */
+      // descriptions
+      textureSheetName = source.textureSheetName ?? textureSheetName;
+      internalName = source.internalName ?? internalName;
+      tags = source.tags ?? tags;
 
-      this = JsonConvert.DeserializeObject<GroundProperties>(jsonObject);
+      // stats
+      slope = source.slope;
+
+      // lua
+      lua = source.lua ?? lua;
 
     }
+
 
     public enum SlopeType
     {

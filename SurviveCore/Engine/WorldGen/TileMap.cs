@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal class TileMap
+  public class TileMap
   {
     public const int TILE_WIDTH = 16;
     public const int TILE_HEIGHT = 16;
@@ -50,6 +50,23 @@ namespace SurviveCore.Engine.WorldGen
       return Plot((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT, tile);
     }
 
+    public bool SetElevation(int x, int y, int elevation)
+    {
+      if (x < 0 || x >= width || y < 0 || y >= height)
+      {
+        return false;
+      }
+
+      map[x, y].SetElevation(elevation);
+
+      return true;
+    }
+
+    public bool SetElevation(Vector2 position, int elevation)
+    {
+      return SetElevation((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT, elevation);
+    }
+
     public GroundTile Get(int x, int y)
     {
       if (x < 0 || x >= width || y < 0 || y >= height)
@@ -72,7 +89,7 @@ namespace SurviveCore.Engine.WorldGen
         for (int iy = 0; iy < height; iy++)
         {
           GroundTile tile = map[ix, iy];
-          tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
+          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
         }
       }
 

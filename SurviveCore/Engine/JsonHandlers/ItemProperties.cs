@@ -1,17 +1,14 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SurviveCore.Engine.JsonHandlers
 {
-  public struct ItemProperties
+  public class ItemProperties
   {
     // descriptions
     public string textureSheetName = "item_default";
-    public string internalName = "item_default";
     public List<string> tags = new();
-    public List<string> sounds = new();
 
     public int framesX = 1; // used to animate the item over time
     public int framesY = 1; // used for the charging animation of charged items
@@ -22,17 +19,32 @@ namespace SurviveCore.Engine.JsonHandlers
 
     public float chargeDuration = 0;
 
-
-    public List<ItemComponent> components = new();
-
     // lua
     public string lua;
 
 
 
-    public ItemProperties(string jsonObject)
+    public ItemProperties()
     {
-      this = JsonConvert.DeserializeObject<ItemProperties>(jsonObject);
+    }
+
+    public void ReplaceData(ItemProperties source)
+    {
+      // set the following to source's fields if they aren't null, otherwise back to themselves
+
+      // descriptions
+      textureSheetName = source.textureSheetName ?? textureSheetName;
+      tags = source.tags ?? tags;
+
+      // stats
+      swingType = source.swingType;
+      holdType = source.holdType;
+
+      chargeDuration = source.chargeDuration;
+
+      // lua
+      lua = source.lua ?? lua;
+
     }
 
 

@@ -1,0 +1,32 @@
+{
+  // properties
+  "textureSheetName": "*.character.test",
+  "tags": [
+    "placeholder"
+  ],
+  "sounds": [
+    "*.character.test_hurt"
+  ],
+  "hitbox": {"width": 4, "height": 2},
+
+  "rotationType": "Cardinal",
+  "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 2},
+  "animationLayout": [
+    "-"
+  ],
+
+  // stats
+  "maxHealth": 10,
+  "regenerationPerSecond": 1,
+
+  "movementSpeedWalk": 4,
+  "movementSpeedRun": 8,
+
+  "inventorySize": 32,
+
+  // lua
+  //"lua": "",
+
+  // eof
+  "": ""
+}

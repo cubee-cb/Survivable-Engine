@@ -25,7 +25,7 @@ function AI(self)
   -- complain loudly if not
   else
 	  if (t % 10 == 9) then
-		  PlaySound("*.mob_testghost_alert")
+		  PlaySound("*.mob.mob_testghost_alert")
       DebugLog("no target!!")
 	  end
   end

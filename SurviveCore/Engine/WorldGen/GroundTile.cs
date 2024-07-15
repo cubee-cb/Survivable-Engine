@@ -8,11 +8,10 @@ using System.Collections.Generic;
 using System.Text;
 using SurviveCore.Engine.JsonHandlers;
 using static SurviveCore.Engine.JsonHandlers.GroundProperties;
-using SurviveCore.Engine.Items;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal class GroundTile
+  public class GroundTile
   {
     private string id;
     private const int TILE_THICKNESS = 16;
@@ -31,6 +30,9 @@ namespace SurviveCore.Engine.WorldGen
       UpdateAssets();
     }
 
+    /// <summary>
+    /// Re-obtain the assets for this tile.
+    /// </summary>
     public void UpdateAssets()
     {
       // set initial properties
@@ -54,6 +56,19 @@ namespace SurviveCore.Engine.WorldGen
       return pixels? elevation * TILE_THICKNESS : elevation;
     }
 
+    /// <summary>
+    /// Set the elevation of this tile.
+    /// </summary>
+    /// <param name="newElevation">The elevation to change to.</param>
+    public void SetElevation(int newElevation)
+    {
+      elevation = newElevation;
+    }
+
+    /// <summary>
+    /// Get the slope of this tile.
+    /// </summary>
+    /// <returns>Slope value.</returns>
     public SlopeType GetSlope()
     {
       return properties.slope;
@@ -62,8 +77,10 @@ namespace SurviveCore.Engine.WorldGen
 
     public void Draw(float tickProgress, Vector2 position)
     {
-      // todo: handle spritesheets and multiple textures
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White, scaleBox: new(1, elevation + 1));
+      // todo: handle spritesheets
+
+      // front face
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White);
 
       // top face
       GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);

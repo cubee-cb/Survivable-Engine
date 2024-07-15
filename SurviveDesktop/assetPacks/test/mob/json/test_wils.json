@@ -1,12 +1,11 @@
 {
   // properties
-  "internalName": "test",
-  "textureSheetName": "*.test",
+  "textureSheetName": "*.character.test",
   "tags": [
     "placeholder"
   ],
   "sounds": [
-    "*.test_hurt"
+    "*.character.test_hurt"
   ],
   "hitbox": {"width": 4, "height": 2},
 
@@ -26,7 +25,7 @@
   "inventorySize": 32,
 
   // lua
-  //"lua": "",
+  "lua": "*.mob.testghost",
 
   // eof
   "": ""

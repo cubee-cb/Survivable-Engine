@@ -1,34 +1,104 @@
-﻿using SurviveCore.Engine.WorldGen.Routines;
+﻿using Microsoft.Xna.Framework;
+using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SurviveCore.Engine.WorldGen
 {
-  internal abstract class WorldGenerator
+  public class WorldGenerator
   {
-    readonly List<WorldGenRoutine> routines;
+    private readonly Dictionary<string, Script> worldgenRoutines = new();
+    private TileMap activeMap;
 
-    protected WorldGenerator()
+    /// <summary>
+    /// Create a generator with one routine.
+    /// </summary>
+    /// <param name="scriptID"></param>
+    public WorldGenerator(string scriptID)
     {
-      routines = new List<WorldGenRoutine>();
+      AddRoutine(scriptID);
     }
 
-    public void AddRoutine(WorldGenRoutine routine)
+    /// <summary>
+    /// Create a generator with multiple routines.
+    /// </summary>
+    /// <param name="scriptIDs"></param>
+    public WorldGenerator(List<string> scriptIDs)
     {
-      routines.Add(routine);
+      foreach (string scriptID in scriptIDs)
+      {
+        AddRoutine(scriptID);
+      }
     }
 
-    public virtual void Generate(TileMap map)
+    /// <summary>
+    /// Add a routine to this generator.
+    /// </summary>
+    /// <param name="scriptID"></param>
+    public void AddRoutine(string scriptID)
+    {
+      Script routine = Warehouse.GetLua(scriptID);
+
+      // register methods to the script
+      routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
+      routine.Globals["SetElevation"] = (Func<int, int, int, bool>)SetElevation;
+
+      //todo: create a conversion for TileMap<->Array and for TileEntities
+      worldgenRoutines.Add(scriptID, routine);
+    }
+
+    /// <summary>
+    /// Run this generator's routines on a map.
+    /// </summary>
+    /// <param name="map">The map for the routines to modify.</param>
+    public void Generate(TileMap map)
     {
       ELDebug.Log("generating world...");
-      foreach (WorldGenRoutine routine in routines)
+      activeMap = map;
+
+      // run routines
+      foreach (KeyValuePair<string, Script> kvp in worldgenRoutines)
       {
-        routine.Run(map);
+        Script routine = kvp.Value;
+        if (routine == null)
+        {
+          ELDebug.Log("routine \"" + kvp.Key + "\" is null");
+        }
+        else
+        {
+          ELDebug.Log("running routine \"" + kvp.Key + "\"");
+
+          DynValue generate = routine.Globals.Get("Generate");
+          if (generate != null)
+          {
+            DynValue outVal = routine.Call(generate, 0, 0, map.width, map.height);
+          }
+        }
       }
 
-      ELDebug.Log("done!");
+      activeMap = null;
+      ELDebug.Log("finished generation!");
     }
+
+
+    //                           //
+    // Lua-exposed methods below //
+    // v v v v v v v v v v v v v //
+
+
+    public bool Plot(int x, int y, string tileID)
+    {
+      //todo: i forgor
+      return activeMap.Plot(new Vector2(x * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT), new GroundTile(tileID, 0));
+    }
+
+    public bool SetElevation(int x, int y, int elevation)
+    {
+      return activeMap.SetElevation(new Vector2(x * TileMap.TILE_WIDTH, y * TileMap.TILE_HEIGHT), elevation);
+    }
+
+
 
   }
 }

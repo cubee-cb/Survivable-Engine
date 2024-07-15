@@ -102,20 +102,29 @@ namespace SurviveCore.Engine.Entities
       int spriteY = dirs.IndexOf(direct);
       int frameX = (int)MathF.Floor(t % 20 / 10f);
 
-      // set up clipping rectangle
-      Rectangle clippingRect = new(0, 0, 16, 16);
+      int width = 16;
+      int height = 16;
       if (spriteDimensions != null)
       {
-        spriteDimensions.TryGetValue("width", out clippingRect.Width);
-        spriteDimensions.TryGetValue("height", out clippingRect.Height);
+        spriteDimensions.TryGetValue("width", out width);
+        spriteDimensions.TryGetValue("height", out height);
         spriteDimensions.TryGetValue("feetOffsetY", out feetOffsetY);
       }
 
-      clippingRect.Location = new Point(frameX, (int)MathF.Max(spriteY, 0)) * clippingRect.Size;
+      // set up clipping rectangle
+      // rendering breaks slightly with non power-of-2 sprites, try to use powers of 2 where possible.
+      Rectangle clippingRect = new(
+        frameX * width,
+        (int)MathF.Floor(MathF.Max(spriteY, 0)) * height,
+        width,
+        height
+      );
+
+      //ELDebug.Log(id + ": " + width + " " + clippingRect.Y);
 
       // draw, with the bottom of the sprite as its centre
-      Vector2 offset = new(clippingRect.Width / 2, clippingRect.Height);
-      float myElevation = GetElevation();
+      Vector2 offset = new(width / 2, height);
+      float myElevation = GetVisualElevation(tickProgress);
       GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset, visualOffsetY: feetOffsetY - myElevation);
 
     }
@@ -135,6 +144,10 @@ namespace SurviveCore.Engine.Entities
     public virtual int GetElevation()
     {
       return world.GetStandingTileElevation(position);
+    }
+    public virtual int GetVisualElevation(float tickProgress)
+    {
+      return world.GetStandingTileElevation(GetVisualPosition(tickProgress));
     }
 
     public virtual Inventory GetInventory()
