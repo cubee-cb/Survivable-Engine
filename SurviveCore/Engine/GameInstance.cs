@@ -72,8 +72,10 @@ namespace SurviveCore.Engine
       }
 
       // create test mobs
-      tempWorld.AddEntity(new Mob("test.mob.testghost", tempWorld));
-      tempWorld.AddEntity(new Mob("test.mob.chaser", tempWorld));
+      foreach (string mobID in gameProps.startingMobs)
+      {
+        tempWorld.AddEntity(new Mob(mobID, tempWorld));
+      }
 
       // tell camera to focus on this entity
       cameraFocusEntities = new()

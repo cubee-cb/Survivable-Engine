@@ -14,6 +14,7 @@ namespace SurviveCore.Engine.JsonHandlers
     public string startingDimension = "dimension_default";
     public string startingPlayer = "character_default";
     public List<string> startingInventory = new();
+    public List<string> startingMobs = new();
 
 
     // lua
@@ -34,6 +35,7 @@ namespace SurviveCore.Engine.JsonHandlers
       startingDimension = source.startingDimension ?? startingDimension;
       startingPlayer = source.startingPlayer ?? startingPlayer;
       startingInventory = source.startingInventory ?? startingInventory;
+      startingMobs = source.startingMobs ?? startingMobs;
 
 
     }

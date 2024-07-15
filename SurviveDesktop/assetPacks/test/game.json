@@ -13,6 +13,11 @@
     "*.item.mountain_sign"
   ],
 
+  "startingMobs": [
+    "*.mob.chaser",
+    "*.mob.test_wils"
+  ],
+
   // eof
   "": ""
 }
