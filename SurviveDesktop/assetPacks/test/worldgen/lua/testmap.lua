@@ -12,16 +12,16 @@ function Generate(x, y, w, h)
       elevation = 0
 
       -- create some simple slopes
-      if ix == 4 and iy > 3 or ix == 10 then
+      if ix == 8 and iy > 7 or ix == 14 then
         tile = "*.ground.grass_slope_horizontal"
       end
-      if iy == 3 and ix < 4 then
+      if iy == 7 and ix < 8 then
         tile = "*.ground.grass_slope_vertical"
       end
-      if ix > 4 or iy < 3 then
+      if ix > 8 or iy < 7 then
         elevation = 1
       end
-      if ix > 10 then
+      if ix > 14 then
         elevation = 3
       end
 
@@ -29,6 +29,13 @@ function Generate(x, y, w, h)
       Plot(ix, iy, tile)
       SetElevation(ix, iy, elevation)
 
+    end
+  end
+
+  -- make a little raised area for collision testing
+  for ix = 1, 2 do
+    for iy = 10, 14 do
+      SetElevation(ix, iy, 1)
     end
   end
 
