@@ -67,8 +67,21 @@ namespace SurviveCore.Engine.WorldGen
       return SetElevation((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT, elevation);
     }
 
-    public GroundTile Get(int x, int y)
+    /// <summary>
+    /// Gets a Tile at tile coordinate. If pixel is set, uses pixel coordinates.
+    /// </summary>
+    /// <param name="x">X coordinate.</param>
+    /// <param name="y">Y coordinate.</param>
+    /// <param name="pixel">Use pixel coordinates instead of tile coordinates.</param>
+    /// <returns>The tile at the location.</returns>
+    public GroundTile Get(int x, int y, bool pixel = false)
     {
+      if (pixel)
+      {
+        x /= TILE_WIDTH;
+        y /= TILE_HEIGHT;
+      }
+
       if (x < 0 || x >= width || y < 0 || y >= height)
       {
         return null;
@@ -77,9 +90,14 @@ namespace SurviveCore.Engine.WorldGen
       return map[x, y];
     }
 
+    /// <summary>
+    /// Gets a Tile at pixel coordinate.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public GroundTile Get(Vector2 position)
     {
-      return Get((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT);
+      return Get((int)position.X, (int)position.Y, pixel: true);
     }
 
     public void Draw(float tickProgress)

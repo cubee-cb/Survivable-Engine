@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Items;
 using SurviveCore.Engine.WorldGen;
+using SurviveCore.Engine.JsonHandlers;
+using static SurviveCore.Engine.JsonHandlers.GroundProperties;
+using MoonSharp.Interpreter;
 
 namespace SurviveCore.Engine.Entities
 {
@@ -17,6 +20,8 @@ namespace SurviveCore.Engine.Entities
     [JsonIgnore] protected World world;
 
     protected string id;
+    protected EntityProperties properties;
+
     [JsonIgnore] protected List<string> tags = new();
     protected int t;
 
@@ -38,7 +43,9 @@ namespace SurviveCore.Engine.Entities
     protected Inventory inventory;
 
     [JsonIgnore] protected Texture2D texture;
-    //protected EntityProperties properties;
+
+    // lua scripts
+    [JsonIgnore] protected Script lua;
 
 
     /// <summary>
@@ -160,9 +167,18 @@ namespace SurviveCore.Engine.Entities
       return tags;
     }
 
-    public a GetHitbox()
+    public Dictionary<string, int> GetHitbox()
     {
-      return hitbox;
+      // this can't read the properties
+      if (properties != null)
+      {
+        return properties.hitbox;
+      }
+      else
+      {
+        ELDebug.Log("null properties: " + id);
+        return new();
+      }
     }
 
     public virtual float GetDurability()
@@ -186,11 +202,97 @@ namespace SurviveCore.Engine.Entities
       // todo: check for collisions with objects this object is allowed to collide with
 
       // ground tile collisions
-      delta = world.HandleEntityMovement(this, delta);
+      //delta = world.HandleEntityMovement(this, delta);
+
+      TileMap map = world.GetMap();
+
+      // ground tiles
+      GroundTile tileCurrent = map.Get(GetPosition());
+      GroundTile checkTile;
+
+      Point hitbox;
+
+      properties.hitbox.TryGetValue("width", out hitbox.X);
+      properties.hitbox.TryGetValue("height", out hitbox.Y);
+
+
+      // right
+      if (delta.X > 0)
+      {
+        checkTile = map.Get((int)(position.X + delta.X + hitbox.X / 2), (int)(position.Y), pixel: true);
+
+        if (
+          tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+          checkTile?.GetSlope() != SlopeType.Horizontal && 
+          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+        )
+        {
+          delta.X = 0;
+          position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.X / 2;
+        }
+      }
+
+      // left
+      else
+      {
+        checkTile = map.Get((int)(position.X + delta.X - hitbox.X / 2), (int)(position.Y), pixel: true);
+
+        if (
+          tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+          checkTile?.GetSlope() != SlopeType.Horizontal &&
+          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+        )
+        {
+          delta.X = 0;
+          position.X = TileMap.SnapPosition(position).X + hitbox.X / 2;
+        }
+      }
+
+      // down
+      if (delta.Y > 0)
+      {
+        checkTile = map.Get((int)(position.X), (int)(position.Y + delta.Y + hitbox.Y / 2), pixel: true);
+
+        if (
+          tileCurrent?.GetSlope() != SlopeType.Vertical &&
+          checkTile?.GetSlope() != SlopeType.Vertical &&
+          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+        )
+        {
+          delta.Y = 0;
+          position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Y / 2;
+        }
+      }
+
+      // up
+      else
+      {
+        checkTile = map.Get((int)(position.X), (int)(position.Y + delta.Y - hitbox.Y / 2), pixel: true);
+
+        if (
+          tileCurrent?.GetSlope() != SlopeType.Vertical &&
+          checkTile?.GetSlope() != SlopeType.Vertical &&
+          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+        )
+        {
+          delta.Y = 0;
+          position.Y = TileMap.SnapPosition(position).Y + hitbox.Y / 2;
+        }
+      }
+
+
+      /*/todo: tileEntity/entity collision
+      foreach (Entity otherEntity in world.GetCollidingEntities(this))
+      {
+        // get entity's hitbox and eject self from it based on velocity.
+        ResolveCollision(otherEntity.hitboxOrWhatever);
+      }
+      //*/
+
 
       position += delta;
 
-      direction = GetFacingDirection(delta);
+      if (delta != Vector2.Zero) direction = GetFacingDirection(delta);
 
       return delta;
     }

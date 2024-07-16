@@ -7,7 +7,7 @@
   "sounds": [
     "*.character.test_hurt"
   ],
-  "hitbox": {"width": 4, "height": 2},
+  "hitbox": {"width": 6, "height": 3},
 
   "rotationType": "Cardinal",
   "spriteDimensions": {"width": 16, "height": 16, "feetOffsetY": 2},

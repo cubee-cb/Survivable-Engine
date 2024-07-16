@@ -12,12 +12,6 @@ namespace SurviveCore.Engine.Entities
   [MoonSharpUserData]
   internal class Mob : Entity
   {
-
-    [JsonIgnore] MobProperties properties;
-
-    // lua scripts
-    [JsonIgnore] private Script lua;
-
     public Mob(string id, World world) : base(id, world)
     {
       UpdateAssets();

@@ -11,13 +11,7 @@ namespace SurviveCore.Engine.Entities
 {
   internal class Player : Entity
   {
-
-    [JsonIgnore] CharacterProperties properties;
-
     [JsonIgnore] private InputManager input;
-
-    // lua scripts
-    //[JsonIgnore] private Script lua;
 
     public Player(string id, InputManager input, World world) : base(id, world)
     {
