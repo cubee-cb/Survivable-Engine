@@ -246,68 +246,75 @@ namespace SurviveCore.Engine.Entities
       properties.hitbox.TryGetValue("width", out hitbox.X);
       properties.hitbox.TryGetValue("height", out hitbox.Y);
 
-
-      // right
-      if (delta.X > 0)
+      // horizontal
+      for (int d = 0; d <= MathF.Abs(delta.X); d++)
       {
-        checkTile = map.Get((int)(position.X + delta.X + hitbox.X / 2), (int)(position.Y), pixel: true);
-
-        if (
-          tileCurrent?.GetSlope() != SlopeType.Horizontal &&
-          checkTile?.GetSlope() != SlopeType.Horizontal && 
-          elevation < checkTile?.GetElevation(pixels: true)
-        )
+        // right
+        if (delta.X > 0)
         {
-          delta.X = 0;
-          position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.X / 2;
+          checkTile = map.Get((int)(position.X + d + hitbox.X / 2), (int)(position.Y), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+            checkTile?.GetSlope() != SlopeType.Horizontal &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.X = 0;
+            position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.X / 2;
+          }
+        }
+
+        // left
+        else if (delta.X < 0)
+        {
+          checkTile = map.Get((int)(position.X - d - hitbox.X / 2), (int)(position.Y), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+            checkTile?.GetSlope() != SlopeType.Horizontal &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.X = 0;
+            position.X = TileMap.SnapPosition(position).X + hitbox.X / 2;
+          }
         }
       }
 
-      // left
-      else
+      // vertical
+      for (int d = 0; d <= MathF.Abs(delta.Y); d++)
       {
-        checkTile = map.Get((int)(position.X + delta.X - hitbox.X / 2), (int)(position.Y), pixel: true);
-
-        if (
-          tileCurrent?.GetSlope() != SlopeType.Horizontal &&
-          checkTile?.GetSlope() != SlopeType.Horizontal &&
-          elevation < checkTile?.GetElevation(pixels: true)
-        )
+        // down
+        if (delta.Y > 0)
         {
-          delta.X = 0;
-          position.X = TileMap.SnapPosition(position).X + hitbox.X / 2;
+          checkTile = map.Get((int)(position.X), (int)(position.Y + d + hitbox.Y / 2), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Vertical &&
+            checkTile?.GetSlope() != SlopeType.Vertical &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.Y = 0;
+            position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Y / 2;
+          }
         }
-      }
 
-      // down
-      if (delta.Y > 0)
-      {
-        checkTile = map.Get((int)(position.X), (int)(position.Y + delta.Y + hitbox.Y / 2), pixel: true);
-
-        if (
-          tileCurrent?.GetSlope() != SlopeType.Vertical &&
-          checkTile?.GetSlope() != SlopeType.Vertical &&
-          elevation < checkTile?.GetElevation(pixels: true)
-        )
+        // up
+        else if (delta.Y < 0)
         {
-          delta.Y = 0;
-          position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Y / 2;
-        }
-      }
+          checkTile = map.Get((int)(position.X), (int)(position.Y - d - hitbox.Y / 2), pixel: true);
 
-      // up
-      else
-      {
-        checkTile = map.Get((int)(position.X), (int)(position.Y + delta.Y - hitbox.Y / 2), pixel: true);
-
-        if (
-          tileCurrent?.GetSlope() != SlopeType.Vertical &&
-          checkTile?.GetSlope() != SlopeType.Vertical &&
-          elevation < checkTile?.GetElevation(pixels: true)
-        )
-        {
-          delta.Y = 0;
-          position.Y = TileMap.SnapPosition(position).Y + hitbox.Y / 2;
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Vertical &&
+            checkTile?.GetSlope() != SlopeType.Vertical &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.Y = 0;
+            position.Y = TileMap.SnapPosition(position).Y + hitbox.Y / 2;
+          }
         }
       }
 
