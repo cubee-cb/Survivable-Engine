@@ -75,6 +75,13 @@ namespace SurviveCore.Engine.Entities
         velocity.Y = speed;
       }
 
+
+      //todo: placeholder jump action
+      if (grounded && input.Action("use"))
+      {
+        velocityElevation = 2.5f;
+      }
+
       TryMove(velocity);
 
       /*/ run ai and tick scripts each tick

@@ -13,6 +13,8 @@ namespace SurviveCore.Engine.JsonHandlers
 
     public List<string> generationRoutines = new();
 
+    public float gravity = 0.1f;
+
     // lua
     public string lua;
 

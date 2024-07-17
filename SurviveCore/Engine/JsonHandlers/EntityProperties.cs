@@ -20,6 +20,7 @@ namespace SurviveCore.Engine.JsonHandlers
     public int maxHealth = 10;
     public float regenerationPerSecond = 1;
 
+    public bool affectedByGravity = true;
     public float movementSpeedWalk = 1f;
     public float movementSpeedRun = 1.5f;
 

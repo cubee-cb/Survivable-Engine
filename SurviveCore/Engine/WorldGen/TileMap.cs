@@ -12,6 +12,7 @@ namespace SurviveCore.Engine.WorldGen
   {
     public const int TILE_WIDTH = 16;
     public const int TILE_HEIGHT = 16;
+    public const int TILE_THICKNESS = 16;
 
     readonly public int width;
     readonly public int height;

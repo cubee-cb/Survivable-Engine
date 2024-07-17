@@ -29,6 +29,8 @@ namespace SurviveCore.Engine.Entities
     private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
+    protected float elevation = 0;
+    protected float velocityElevation = 0;
 
     [JsonIgnore] protected FacingDirection direction = FacingDirection.Down;
     [JsonIgnore] protected SpriteRotationType rotationType = SpriteRotationType.None;
@@ -37,6 +39,8 @@ namespace SurviveCore.Engine.Entities
 
     [JsonIgnore] protected Dictionary<string, int> spriteDimensions = new();
     [JsonIgnore] public int feetOffsetY = 2;
+
+    [JsonIgnore] protected bool grounded = false;
 
     protected float health;
 
@@ -92,6 +96,30 @@ namespace SurviveCore.Engine.Entities
     {
       //luaTick.Call(luaTick.Globals["update"], this);
 
+      // apply gravity and ground collisions
+      if (properties.affectedByGravity)
+      {
+        // apply gravity
+        velocityElevation -= world.GetGravity();
+
+        // land on ground
+        int elevationHere = world.GetStandingTileElevation(position);
+        if (velocityElevation < 0 && elevation <= elevationHere)
+        {
+          elevation = elevationHere;
+          velocityElevation = 0;
+          grounded = true;
+        }
+        else
+        {
+          // fall
+          elevation += velocityElevation;
+          grounded = false;
+        }
+
+      }
+
+      //lastElevation = elevation;
       lastPosition = position;
       t += 1;
     }
@@ -148,13 +176,16 @@ namespace SurviveCore.Engine.Entities
       return Vector2.Lerp(lastPosition, position, tickProgress);
     }
 
-    public virtual int GetElevation()
+    public virtual float GetElevation()
     {
-      return world.GetStandingTileElevation(position);
+      return elevation;
     }
-    public virtual int GetVisualElevation(float tickProgress)
+    public virtual float GetVisualElevation(float tickProgress)
     {
-      return world.GetStandingTileElevation(GetVisualPosition(tickProgress));
+      //todo: lerp between values
+      return GetElevation();
+      //return Single.Lerp()
+        //world.GetStandingTileElevation(GetVisualPosition(tickProgress)); elevation
     }
 
     public virtual Inventory GetInventory()
@@ -224,7 +255,7 @@ namespace SurviveCore.Engine.Entities
         if (
           tileCurrent?.GetSlope() != SlopeType.Horizontal &&
           checkTile?.GetSlope() != SlopeType.Horizontal && 
-          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+          elevation < checkTile?.GetElevation(pixels: true)
         )
         {
           delta.X = 0;
@@ -240,7 +271,7 @@ namespace SurviveCore.Engine.Entities
         if (
           tileCurrent?.GetSlope() != SlopeType.Horizontal &&
           checkTile?.GetSlope() != SlopeType.Horizontal &&
-          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+          elevation < checkTile?.GetElevation(pixels: true)
         )
         {
           delta.X = 0;
@@ -256,7 +287,7 @@ namespace SurviveCore.Engine.Entities
         if (
           tileCurrent?.GetSlope() != SlopeType.Vertical &&
           checkTile?.GetSlope() != SlopeType.Vertical &&
-          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+          elevation < checkTile?.GetElevation(pixels: true)
         )
         {
           delta.Y = 0;
@@ -272,7 +303,7 @@ namespace SurviveCore.Engine.Entities
         if (
           tileCurrent?.GetSlope() != SlopeType.Vertical &&
           checkTile?.GetSlope() != SlopeType.Vertical &&
-          checkTile?.GetElevation() != tileCurrent?.GetElevation()
+          elevation < checkTile?.GetElevation(pixels: true)
         )
         {
           delta.Y = 0;

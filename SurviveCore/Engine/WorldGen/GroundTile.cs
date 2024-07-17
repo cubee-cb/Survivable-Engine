@@ -14,7 +14,6 @@ namespace SurviveCore.Engine.WorldGen
   public class GroundTile
   {
     private string id;
-    private const int TILE_THICKNESS = 16;
 
     private int elevation = 0;
 
@@ -53,7 +52,7 @@ namespace SurviveCore.Engine.WorldGen
     /// <returns></returns>
     public int GetElevation(bool pixels = false)
     {
-      return pixels? elevation * TILE_THICKNESS : elevation;
+      return pixels? elevation * TileMap.TILE_THICKNESS : elevation;
     }
 
     /// <summary>
@@ -80,10 +79,10 @@ namespace SurviveCore.Engine.WorldGen
       // todo: handle spritesheets
 
       // front face
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White);
 
       // top face
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);
     }
 
 

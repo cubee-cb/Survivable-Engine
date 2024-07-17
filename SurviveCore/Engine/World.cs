@@ -151,6 +151,11 @@ namespace SurviveCore.Engine
 
     }
 
+    public float GetGravity()
+    {
+      return properties.gravity;
+    }
+
     public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)
     {
       // get list of targets matching the tag
