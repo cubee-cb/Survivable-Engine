@@ -21,22 +21,13 @@ namespace SurviveCore.Engine.Entities
     {
       // set initial properties
       properties = Warehouse.GetJson<MobProperties>(id);
-      rotationType = properties.rotationType;
-      spriteDimensions = properties.spriteDimensions;
-      health = properties.maxHealth;
-      tags = properties.tags;
+      base.UpdateAssets();
 
-      // find assets
-      texture = Warehouse.GetTexture(properties.textureSheetName);
 
-      // create inventory
-      inventory = new(properties.inventorySize);
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
       {
-        lua = Warehouse.GetLua(properties.lua);
-
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;

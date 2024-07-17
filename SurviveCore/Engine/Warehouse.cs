@@ -48,6 +48,7 @@ namespace SurviveCore.Engine
     private static Dictionary<string, string> jsonData;
     private static Dictionary<string, string> luaScripts;
 
+    private const string FOLDER_COMMON = "common";
     private const string FOLDER_CHARACTER = "character";
     private const string FOLDER_GROUND = "ground";
     private const string FOLDER_TILE = "tile";
@@ -58,6 +59,7 @@ namespace SurviveCore.Engine
     private const string FOLDER_WORLDGEN = "worldgen";
     readonly static private List<string> contentTypeSubfolders = new()
     {
+      FOLDER_COMMON,
       FOLDER_CHARACTER,
       FOLDER_GROUND,
       FOLDER_TILE,
@@ -144,6 +146,7 @@ namespace SurviveCore.Engine
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
+            ELDebug.Log(contentType);
             currentCategory = contentType;
             string categoryPath = Path.Join(packPath, currentCategory);
 

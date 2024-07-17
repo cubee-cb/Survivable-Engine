@@ -47,6 +47,7 @@ namespace SurviveCore.Engine.Entities
     protected Inventory inventory;
 
     [JsonIgnore] protected Texture2D texture;
+    [JsonIgnore] protected Texture2D shadowTexture;
 
     // lua scripts
     [JsonIgnore] protected Script lua;
@@ -85,7 +86,26 @@ namespace SurviveCore.Engine.Entities
     /// Called when this object should re-obtain its assets.
     /// </summary>
     /// <param name="id">The string id of the object. Handled on a per-subclass basis.</param>
-    public abstract void UpdateAssets();
+    public virtual void UpdateAssets()
+    {
+      // load assets
+      texture = Warehouse.GetTexture(properties.textureSheetName);
+      shadowTexture = Warehouse.GetTexture(properties.shadow);
+
+      rotationType = properties.rotationType;
+      spriteDimensions = properties.spriteDimensions;
+      health = properties.maxHealth;
+      tags = properties.tags;
+
+      // create inventory
+      inventory = new(properties.inventorySize);
+
+      // initialise lua
+      if (!string.IsNullOrWhiteSpace(properties.lua))
+      {
+        lua = Warehouse.GetLua(properties.lua);
+      }
+    }
 
     /// <summary>
     /// 
@@ -158,9 +178,9 @@ namespace SurviveCore.Engine.Entities
       //ELDebug.Log(id + ": " + width + " " + clippingRect.Y);
 
       // draw, with the bottom of the sprite as its centre
-      Vector2 offset = new(width / 2, height);
       float myElevation = GetVisualElevation(tickProgress);
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset, visualOffsetY: feetOffsetY - myElevation);
+      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-world.GetStandingTileElevation(GetVisualPosition(tickProgress)) - shadowTexture.Height / 2, colour: Color.White * 0.5f);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height);
 
     }
 
