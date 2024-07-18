@@ -26,10 +26,11 @@ namespace SurviveCore.Engine.Entities
     protected int t;
 
     // should these be vector3? thinking we want to support elevations
-    private Vector2 lastPosition;
+    [JsonIgnore] private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
     protected float elevation = 0;
+    [JsonIgnore] protected float lastElevation = 0;
     protected float velocityElevation = 0;
 
     [JsonIgnore] protected FacingDirection direction = FacingDirection.Down;
@@ -139,7 +140,7 @@ namespace SurviveCore.Engine.Entities
 
       }
 
-      //lastElevation = elevation;
+      lastElevation = elevation;
       lastPosition = position;
       t += 1;
     }
@@ -202,10 +203,8 @@ namespace SurviveCore.Engine.Entities
     }
     public virtual float GetVisualElevation(float tickProgress)
     {
-      //todo: lerp between values
-      return GetElevation();
-      //return Single.Lerp()
-        //world.GetStandingTileElevation(GetVisualPosition(tickProgress)); elevation
+      // lerp between elevations
+      return MathHelper.Lerp(lastElevation, elevation, tickProgress);
     }
 
     public virtual Inventory GetInventory()
