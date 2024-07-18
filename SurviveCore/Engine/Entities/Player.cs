@@ -70,7 +70,7 @@ namespace SurviveCore.Engine.Entities
       //todo: placeholder jump action
       if (grounded && input.Action("use"))
       {
-        velocityElevation = 2.5f;
+        velocityElevation = 4.5f;
       }
 
       TryMove(velocity);

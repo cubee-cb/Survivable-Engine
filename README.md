@@ -12,23 +12,20 @@ So far, I've:
 - Set up a ticking system, so the update rate of each instance can be modified and the game's framerate can be unlocked without adversely affecting the game loop.
 - Made a runtime-loading asset system called Warehouse, which lets me load Json, Lua, and PNG files at runtime for loading mods.
 - Added an Entity/Mob system that can somewhat be controlled through basic Lua scripting and inherits properties from Json files.
-- Made a simple world generator system that uses a List of WorldGenRoutines to build world maps step-by-step with reusable routines.
+- Made a simple world generator system that uses a List of Lua routines to build a world.
 - Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
 - Add dynamic tiles.
 	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
-- Collisions with entities and tiles.
+- Collisions between entities and tile entities.
 - Inventories and items.
-- Slopes to move up the world ground.
 - Saving worlds and players.
 	- Should players be per-world as before like Stardew, or separate like Terraria?
-- Worldgen steps driven by Json.
-	- Currently they are just a bunch of classes, how to link them to Json?
 - Multiple worlds/"dimensions" per-save with their own mobs and world properties.
-	- Portals with destination world/position. (may be doors or literal portals)
-	- Mob spawns, world generator.
-- Networking/splitscreen/multiplayer.
+	- "Portals" with destination world/position. (may be doorways, caves, or literal portals)
+	- Mob spawns, biome generators, etc.
+- Networking/splitscreen/multiplayer?
 	- Actual differences between host/client/dedicated.
 	- Tilemap/entity position syncing.
 - Game progression triggers.
@@ -37,6 +34,12 @@ Notable milestones to-do:
 
 
 Controls:
-- Arrow Keys / ESDF - move
-- Left Shift - run
+- Arrow Keys / ESDF - Move
+- Left Shift - Run
 - J, K, L - Adjust tickrate (/8, x8, x16)
+- Left Alt - (while held) Print tick stats to the console.
+
+Controls (Hold Right CTRL)
+- U - Unload all asset packs
+- I Load all asset packs
+

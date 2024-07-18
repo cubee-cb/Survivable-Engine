@@ -79,10 +79,10 @@ namespace SurviveCore.Engine.WorldGen
       // todo: handle spritesheets
 
       // front face
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 32, colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: elevation == 0 ? Color.LightGray : Color.White);
 
       // top face
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS), colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) - 16, colour: elevation == 0 ? Color.LightGray : Color.White);
     }
 
 

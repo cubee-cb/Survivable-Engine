@@ -11,9 +11,9 @@ namespace SurviveCore.Engine.JsonHandlers
     public Dictionary<string, int> area;
     public List<string> tags = new();
 
-    public List<string> generationRoutines = new();
+    public float gravity = 0.5f;
 
-    public float gravity = 0.1f;
+    public List<string> generationRoutines = new();
 
     // lua
     public string lua;

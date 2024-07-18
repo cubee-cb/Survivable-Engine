@@ -108,7 +108,7 @@ namespace SurviveCore.Engine.WorldGen
         for (int iy = 0; iy < height; iy++)
         {
           GroundTile tile = map[ix, iy];
-          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
+          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
         }
       }
 

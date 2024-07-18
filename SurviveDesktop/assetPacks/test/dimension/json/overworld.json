@@ -6,6 +6,8 @@
     "grass or something idk"
   ],
 
+  "gravity": 0.5,
+
   // these are called in the listed order, top to bottom
   "generationRoutines": [
     "*.worldgen.flatgrass"
