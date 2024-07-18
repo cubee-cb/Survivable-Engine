@@ -124,7 +124,7 @@ namespace SurviveCore.Engine.Entities
 
         // land on ground
         int elevationHere = world.GetStandingTileElevation(position);
-        if (velocityElevation < 0 && elevation <= elevationHere)
+        if (velocityElevation < 0 && elevation + velocityElevation <= elevationHere)
         {
           elevation = elevationHere;
           velocityElevation = 0;
