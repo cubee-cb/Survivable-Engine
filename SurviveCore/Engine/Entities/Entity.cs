@@ -109,13 +109,39 @@ namespace SurviveCore.Engine.Entities
     }
 
     /// <summary>
-    /// 
+    /// Call before the base Update method.
+    /// </summary>
+    /// <param name="tick">current game tick</param>
+    /// <param name="deltaTime">delta time of the previous frame</param>
+    public virtual void PreUpdate(int tick, float deltaTime)
+    {
+      lastElevation = elevation;
+      lastPosition = position;
+
+    }
+
+
+    /// <summary>
+    /// Run this entity's main code.
     /// </summary>
     /// <param name="tick">current game tick</param>
     /// <param name="deltaTime">delta time of the previous frame</param>
     public virtual void Update(int tick, float deltaTime)
     {
+      PreUpdate(tick, deltaTime);
+
       //luaTick.Call(luaTick.Globals["update"], this);
+
+      PostUpdate(tick, deltaTime);
+    }
+
+    /// <summary>
+    /// Call after the base Update method.
+    /// </summary>
+    /// <param name="tick">current game tick</param>
+    /// <param name="deltaTime">delta time of the previous frame</param>
+    public virtual void PostUpdate(int tick, float deltaTime)
+    {
 
       // apply gravity and ground collisions
       if (properties.affectedByGravity)
@@ -140,10 +166,10 @@ namespace SurviveCore.Engine.Entities
 
       }
 
-      lastElevation = elevation;
-      lastPosition = position;
+
       t += 1;
     }
+
 
     /// <summary>
     /// 

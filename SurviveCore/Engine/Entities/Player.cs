@@ -46,6 +46,8 @@ namespace SurviveCore.Engine.Entities
 
     public override void Update(int tick, float deltaTime)
     {
+      base.PreUpdate(tick, deltaTime);
+
       // movmement
       velocity = Vector2.Zero;
       float speed = input.Action("run") ? properties.movementSpeedRun : properties.movementSpeedWalk;
@@ -93,7 +95,7 @@ namespace SurviveCore.Engine.Entities
       ELDebug.Log(a + " / " + direction);
       //*/
 
-      base.Update(tick, deltaTime);
+      base.PostUpdate(tick, deltaTime);
     }
 
     public override float GetStrength()

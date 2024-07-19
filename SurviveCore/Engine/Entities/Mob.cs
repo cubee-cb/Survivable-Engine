@@ -39,7 +39,7 @@ namespace SurviveCore.Engine.Entities
 
     public override void Update(int tick, float deltaTime)
     {
-      base.Update(tick, deltaTime);
+      base.PreUpdate(tick, deltaTime);
 
       // run mob's ai and tick scripts each tick
       if (lua != null)
@@ -56,6 +56,7 @@ namespace SurviveCore.Engine.Entities
         }
       }
 
+      base.PostUpdate(tick, deltaTime);
     }
 
     public override float GetStrength()
