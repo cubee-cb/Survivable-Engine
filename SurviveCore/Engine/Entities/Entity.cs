@@ -291,6 +291,9 @@ namespace SurviveCore.Engine.Entities
       properties.hitbox.TryGetValue("width", out hitbox.X);
       properties.hitbox.TryGetValue("height", out hitbox.Y);
 
+      //todo: if going too fast, entity can snap to higher elevations before colliding with walls?
+      // seen with test.chaser's charge state
+
       // horizontal
       for (int d = 0; d <= MathF.Abs(delta.X); d++)
       {

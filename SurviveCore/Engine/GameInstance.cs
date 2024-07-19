@@ -26,8 +26,6 @@ namespace SurviveCore.Engine
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
     InputManager input;
-    Warehouse warehouse;
-    Texture2D missingTex;
 
     Player player;
     List<Entity> cameraFocusEntities;
@@ -46,10 +44,6 @@ namespace SurviveCore.Engine
       // initialise display and input
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
       input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
-
-      // initialise warehouse
-      warehouse = new Warehouse(contentManager, graphicsDevice);
-      Warehouse.LoadAll();
 
       gameProps = Warehouse.GetGameProps();
 
@@ -176,13 +170,6 @@ namespace SurviveCore.Engine
 
         display.Camera(Vector2.Zero);
 
-        /*/ debug things
-        for (int i = 0; i < 500; i++)
-        {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
-        }
-        //*/
-
         display.End();
 
 
@@ -193,13 +180,6 @@ namespace SurviveCore.Engine
 
         // draw player's inventory
         player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
-
-        /*/ debug things
-        for (int i = 0; i < 500; i++)
-        {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
-        }
-        //*/
 
         display.End();
 

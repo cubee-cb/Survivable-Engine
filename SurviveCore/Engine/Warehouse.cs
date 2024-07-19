@@ -20,7 +20,7 @@ using SurviveDesktop;
 namespace SurviveCore.Engine
 {
   // this class is not static. make sure to call the constructor before using any of its functions so the placeholder assets can be properly initialised.
-  public class Warehouse
+  public static class Warehouse
   {
     // paths are formatted as:                        /contentPath/nameSpace/TEXTURE_FOLDER/
     // for example, the default values would become:  /assets/default/spr/
@@ -42,11 +42,11 @@ namespace SurviveCore.Engine
     public static SoundEffect missingSound;
     public static Song missingMusic;
 
-    private static Dictionary<string, Texture2D> textures;
-    private static Dictionary<string, SoundEffect> sounds;
-    private static Dictionary<string, Song> music;
-    private static Dictionary<string, string> jsonData;
-    private static Dictionary<string, string> luaScripts;
+    private static Dictionary<string, Texture2D> textures = new();
+    private static Dictionary<string, SoundEffect> sounds = new();
+    private static Dictionary<string, Song> music = new();
+    private static Dictionary<string, string> jsonData = new();
+    private static Dictionary<string, string> luaScripts = new();
 
     private const string FOLDER_COMMON = "common";
     private const string FOLDER_CHARACTER = "character";
@@ -80,24 +80,9 @@ namespace SurviveCore.Engine
 
     private static GraphicsDevice graphicsDevice;
 
-
-    public Warehouse(ContentManager content, GraphicsDevice outerGraphicsDevice)
+    public static void SetGraphicsDevice(GraphicsDevice newGraphicsDevice)
     {
-      // load fallback content, used when an asset cannot be found
-      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/pack assets.
-      missingTexture = content.Load<Texture2D>("spr/missing");
-      missingSound = content.Load<SoundEffect>("sfx/missing");
-      missingMusic = content.Load<Song>("music/missing");
-
-      // set reference to the GraphicsDevice
-      graphicsDevice = outerGraphicsDevice;
-
-      textures = new Dictionary<string, Texture2D>();
-      sounds = new Dictionary<string, SoundEffect>();
-      music = new Dictionary<string, Song>();
-      jsonData = new Dictionary<string, string>();
-      luaScripts = new Dictionary<string, string>();
-
+      graphicsDevice = newGraphicsDevice;
     }
 
     /// <summary>

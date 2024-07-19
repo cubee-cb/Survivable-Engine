@@ -76,7 +76,10 @@ namespace SurviveCore.Engine.WorldGen
 
     public void Draw(float tickProgress, Vector2 position)
     {
-      // todo: handle spritesheets
+      //todo: handle spritesheets
+      //todo: autotiling
+      //todo: tile animations
+      //todo: draw neighbour tiles beneath, to fill transparent "blending" areas in the sprites.
 
       // front face
       GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: elevation == 0 ? Color.LightGray : Color.White);

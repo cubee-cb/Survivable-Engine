@@ -26,6 +26,7 @@ namespace SurviveCore.Engine.WorldGen
       map = new GroundTile[width, height];
 
     }
+
     public void UpdateAssets()
     {
       foreach (GroundTile tile in map)
@@ -107,13 +108,20 @@ namespace SurviveCore.Engine.WorldGen
       {
         for (int iy = 0; iy < height; iy++)
         {
+          //todo: occasionally gaps appear in rendering briefly. why?
+          //todo: cull to camera view
           GroundTile tile = map[ix, iy];
-          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
+          tile?.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
         }
       }
 
     }
 
+    /// <summary>
+    /// Snaps a Vector2 position to the nearest grid lines on the tile map.
+    /// </summary>
+    /// <param name="position">The vector to snap.</param>
+    /// <returns>A vector in increments of TILE_WIDTH and TILE_HEIGHT.</returns>
     public static Vector2 SnapPosition(Vector2 position)
     {
       position.X = MathF.Floor(position.X / TILE_WIDTH) * TILE_WIDTH;

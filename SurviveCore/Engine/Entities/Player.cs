@@ -28,18 +28,15 @@ namespace SurviveCore.Engine.Entities
       base.UpdateAssets();
 
 
-
-
       // manually add a tag that says this object is a player
       tags.Add("player");
+
 
       /*/ initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
       {
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
-        lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
-        lua.Globals["GetTarget"] = (Func<Table, Table>)GetTarget;
       }
       //*/
     }
@@ -77,22 +74,11 @@ namespace SurviveCore.Engine.Entities
 
       TryMove(velocity);
 
-      /*/ run ai and tick scripts each tick
+      /*/ run update lua
       if (lua != null)
       {
-        DynValue resAI = lua.Call(lua.Globals["AI"]);
-
-        DynValue resTick = lua.Call(lua.Globals["Tick"]);
-
+        DynValue resUpdate = lua.Call(lua.Globals["Update"]);
       }
-      //*/
-
-      /*/ set the sprite corresponding to the facing direction of the player
-      string dirString = GetRotationSpriteName();
-      //if (dirString == "Left" && properties.animationLayout)
-      Point a = new(0, rotationTypeToLayout[rotationType].IndexOf(dirString));
-      spriteRect.Location = a;
-      ELDebug.Log(a + " / " + direction);
       //*/
 
       base.PostUpdate(tick, deltaTime);

@@ -126,7 +126,7 @@ namespace SurviveCore.Engine
             int elevationLeft = tileLeft != null ? tileLeft.GetElevation(pixels: true) : 0;
             int elevationRight = tileRight != null ? tileRight.GetElevation(pixels: true) : 0;
 
-            return (int)MathF.Floor(Common.Lerp(elevationLeft, elevationRight, progress) + 0.5f);
+            return (int)MathF.Floor(MathHelper.Lerp(elevationLeft, elevationRight, progress) + 0.5f);
 
             //return (int)MathF.Abs((elevationLeft - elevationRight) * progress);
           }
@@ -143,7 +143,7 @@ namespace SurviveCore.Engine
             int elevationUp = tileUp != null ? tileUp.GetElevation(pixels: true) : 0;
             int elevationDown = tileDown != null ? tileDown.GetElevation(pixels: true) : 0;
 
-            return (int)MathF.Floor(Common.Lerp(elevationUp, elevationDown, progress) + 0.5f);
+            return (int)MathF.Floor(MathHelper.Lerp(elevationUp, elevationDown, progress) + 0.5f);
 
             //return (int)MathF.Abs((elevationUp - elevationDown) * progress);
           }
