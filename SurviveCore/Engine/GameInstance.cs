@@ -123,29 +123,27 @@ namespace SurviveCore.Engine
 
 
 
-
       activeWorld = worlds[activeWorldIndex];
 
+      // buffer input
+      input.BufferInputs();
+
       // run ticks to fill the time we've accumulated
-      //todo: should we run ticks per-object?
-      // just leave it global per-world?
-      // move it to be per instance?
-      // what about the player's updating?
       deltaTimeAccumulated += deltaTime;
 
-      // this lets up catch up if we fall behind (assuming the device can handle it, otherwise this is will progressively take more performance), or slow down if we're going too fast.
-      // doesn't matter too much if we use fixed time step as the default is, but if we want to disable it, it shouldn't affect too much?
+      // this lets us catch up if we fall behind, or slow down if we're going too fast.
+      //todo: may break if the device is running too slowly, we'll see
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
-        input.UpdateInputs();
-
         activeWorld.Update(tick, deltaTime);
 
-        if (ELDebug.Key(Keys.LeftAlt)) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        if (ELDebug.Key(Keys.LeftAlt) || true) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "s > " + targetDeltaTime + "s (took " + deltaTime + "s this real frame)");
 
         tick++;
-        deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
+        deltaTimeAccumulated -= targetDeltaTime;
+
+        input.ResetInputs();
       }
 
     }

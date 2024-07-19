@@ -13,7 +13,11 @@ namespace SurviveCore.Engine.Input
 
     KeyboardState keyboardState;
     MouseState mouseState;
-    GamePadState gamePadState;
+    GamePadState gamepadState;
+
+    List<Keys> keyboardBuffer;
+    //List<MouseActions> mouseBuffer;
+    List<Buttons> gamepadBuffer;
 
     Dictionary<string, List<Keys>> keyboardBindings = new()
     {
@@ -41,15 +45,67 @@ namespace SurviveCore.Engine.Input
     {
       this.playerIndex = playerIndex;
       this.hasKeyboard = hasKeyboard;
+
+
+      if (hasKeyboard) keyboardBuffer = new();
+      gamepadBuffer = new();
     }
 
-    public void UpdateInputs()
+    /// <summary>
+    /// Called every real frame, stores inputs that are detected for use later.
+    /// </summary>
+    public void BufferInputs()
     {
-      //todo: set "last" states
+      // update input states
+      if (hasKeyboard)
+      {
+        keyboardState = Keyboard.GetState();
+        mouseState = Mouse.GetState();
+      }
+      gamepadState = GamePad.GetState(playerIndex);
 
-      if (hasKeyboard) keyboardState = Keyboard.GetState();
-      mouseState = Mouse.GetState();
-      gamePadState = GamePad.GetState(playerIndex);
+      // buffer keyboard
+      foreach (Keys key in keyboardState.GetPressedKeys())
+      {
+        keyboardBuffer.Add(key);
+      }
+
+      /*/ todo: buffer mouse clicks and scrolls
+      foreach (MouseActions action in Enum.GetValues(typeof(MouseActions)))
+      {
+        if (blah blah blah)
+        {
+          mouseBuffer.Add(action);
+        }
+      }
+      
+      //*/
+
+      // buffer controller
+      foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
+      {
+        if (gamepadState.IsButtonDown(button))
+        {
+          gamepadBuffer.Add(button);
+        }
+      }
+
+    }
+
+    /// <summary>
+    /// Called at the end of a game tick. Resets the input buffers and <TODO> stores the previous input states.
+    /// </summary>
+    public void ResetInputs()
+    {
+      // todo: somehow store how many ticks each input has been held for, rather than just clearing them.
+      // or just store last tick buffer, that'll work for the simple "just pressed?" use case.
+
+      if (hasKeyboard)
+      {
+        keyboardBuffer.Clear();
+      }
+      gamepadBuffer.Clear();
+
     }
 
     /// <summary>
@@ -60,12 +116,13 @@ namespace SurviveCore.Engine.Input
     /// <returns>Whether the key was pressed.</returns>
     public bool Action(string action, bool justPressed = false)
     {
+
       // check keyboard
       if (hasKeyboard && keyboardBindings.ContainsKey(action))
       {
         foreach (Keys key in keyboardBindings[action])
         {
-          if (keyboardState.IsKeyDown(key))
+          if (keyboardBuffer.Contains(key))
           {
             return true;
           }
@@ -77,7 +134,7 @@ namespace SurviveCore.Engine.Input
       {
         foreach (Buttons button in controllerBindings[action])
         {
-          if (gamePadState.IsButtonDown(button))
+          if (gamepadBuffer.Contains(button))
           {
             return true;
           }
