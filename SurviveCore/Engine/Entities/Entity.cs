@@ -17,6 +17,8 @@ namespace SurviveCore.Engine.Entities
 {
   internal abstract class Entity : IdentifiableObject
   {
+    const int INVUL_FLASH_PER_SECOND = 4;
+
     [JsonIgnore] protected World world;
 
     protected string id;
@@ -44,6 +46,7 @@ namespace SurviveCore.Engine.Entities
     [JsonIgnore] protected bool grounded = false;
 
     protected float health;
+    protected float invulnerabilitySeconds = 1000;
 
     protected Inventory inventory;
 
@@ -166,7 +169,7 @@ namespace SurviveCore.Engine.Entities
 
       }
 
-
+      TickTimer(ref invulnerabilitySeconds);
       t += 1;
     }
 
@@ -178,6 +181,15 @@ namespace SurviveCore.Engine.Entities
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(float tickProgress)
     {
+      // check invulnerability flash
+      int tickRate = world.GetInstance().GetTickRate();
+      float a = (1 / tickRate * tickProgress);
+      float invulVal = ((invulnerabilitySeconds + a) * INVUL_FLASH_PER_SECOND) % 1;
+      //if (a) return;
+
+      float opacity = invulVal;
+
+
       // get row number from facing direction
       List<FacingDirection> dirs = rotationTypeToLayout[rotationType];
       FacingDirection direct = GetSpriteDirection();
@@ -205,9 +217,10 @@ namespace SurviveCore.Engine.Entities
       //ELDebug.Log(id + ": " + width + " " + clippingRect.Y);
 
       // draw, with the bottom of the sprite as its centre
+      //todo: how do we fix the depth sorting when standing on top of tiles? the shadow clips into the below tile until the player walks onto it.
       float myElevation = GetVisualElevation(tickProgress);
       GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-world.GetStandingTileElevation(GetVisualPosition(tickProgress)) - shadowTexture.Height / 2, colour: Color.White * 0.5f);
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity);
 
     }
 
@@ -390,6 +403,33 @@ namespace SurviveCore.Engine.Entities
     public void SetY(float y)
     {
       position.Y = y;
+    }
+
+    /// <summary>
+    /// Tick down a timer in seconds according to the tickrate.
+    /// </summary>
+    /// <param name="timer">The variable holding the remaining seconds.</param>
+    /// <returns>True if the timer just expired.</returns>
+    public bool TickTimer(ref float timer)
+    {
+      //todo: lua RegisterTimer(name, duration, method) and call method on expiry
+      //todo: lua QueryTimer(name) to get remaining duration of the timer
+      int tickRate = world.GetInstance().GetTickRate();
+      float timeToStep = 1f / tickRate;
+
+      if (timer > 0)
+      {
+        // tick timer down
+        timer -= timeToStep;
+        if (timer < 0)
+        {
+          // return true if this step finished the timer
+          timer = 0;
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>

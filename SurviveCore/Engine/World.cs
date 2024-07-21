@@ -22,9 +22,13 @@ namespace SurviveCore.Engine
 
     WorldProperties properties;
 
+    private GameInstance parentInstance;
 
-    public World(string id)
+
+    public World(string id, GameInstance instance)
     {
+      parentInstance = instance;
+
       properties = Warehouse.GetJson<WorldProperties>(id);
 
       int width = 8;
@@ -154,6 +158,11 @@ namespace SurviveCore.Engine
     public float GetGravity()
     {
       return properties.gravity;
+    }
+
+    public GameInstance GetInstance()
+    {
+      return parentInstance;
     }
 
     public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)

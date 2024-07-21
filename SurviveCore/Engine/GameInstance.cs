@@ -56,7 +56,7 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      World tempWorld = new(gameProps.startingDimension);
+      World tempWorld = new(gameProps.startingDimension, this);
 
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
@@ -206,6 +206,11 @@ namespace SurviveCore.Engine
       {
         world.UpdateAssets();
       }
+    }
+
+    public int GetTickRate()
+    {
+      return tickRate;
     }
 
 
