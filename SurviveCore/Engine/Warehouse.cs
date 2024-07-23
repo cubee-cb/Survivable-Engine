@@ -117,14 +117,14 @@ namespace SurviveCore.Engine
           // check if this mod is a game
           if (Platform.Exists(Path.Combine(packPath, "game.json")))
           {
-            if (gameProps != null)
-            {
-              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
-            }
-            else
+            if (gameProps == null)
             {
               gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
               ELDebug.Log("this is a game pack, using it for game data");
+            }
+            else
+            {
+              ELDebug.Log("this is a game pack, but a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
             }
           }
 
