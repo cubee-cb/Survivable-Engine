@@ -33,6 +33,8 @@ namespace SurviveCore.Engine.Display
     private static GraphicsDevice graphicsDevice;
     private SpriteBatch spriteBatch;
 
+    private static Font activeFont;
+
     public GameDisplay(GraphicsDevice outerGraphicsDevice, int width, int height)
     {
       // set reference to the GraphicsDevice and SpriteBatch
@@ -169,7 +171,7 @@ namespace SurviveCore.Engine.Display
       }
       if (colour == null) colour = Color.White;
       location -= currentDisplayInstance.cameraPosition;
-      location = Vector2.Floor(location);
+      //location = Vector2.Floor(location);
 
       if (depth == -1) depth = (1 - (location.Y / currentDisplayInstance.internalHeight)) / 2f + 0.25f;
       SpriteEffects effects = SpriteEffects.None;
@@ -177,11 +179,40 @@ namespace SurviveCore.Engine.Display
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
 
       //todo: angleTurns is still radians instead of turns. FIX IT
-      Vector2 position = Vector2.Floor(location + Vector2.One + new Vector2(visualOffsetX, visualOffsetY));
+      Vector2 position = Vector2.Floor(location + new Vector2(visualOffsetX, visualOffsetY));
       Point destinationSize = clippingArea.Size;
       if (scaleBox != null) destinationSize *= (Point)scaleBox;
       currentDisplayInstance.spriteBatch.Draw(texture, new Rectangle(position.ToPoint(), destinationSize), clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, effects, depth);
     }
+    /*/
+    public static void setActiveFont(Font font)
+    {
+      activeFont = font;
+    }
+    //*/
+
+    public static void Print(object input, Vector2 position, Font font, Color? colour = null)
+    {
+      if (colour == null) colour = Color.White;
+      position -= currentDisplayInstance.cameraPosition;
+      position = Vector2.Floor(position);
+
+      Texture2D texture = Warehouse.GetTexture(font.textureSheetName);
+
+      int scribeX = 0;
+      foreach (char c in input.ToString())
+      {
+        int charIndex = font.glyphOrder.IndexOf(c);
+        if (charIndex == -1) ELDebug.Log("character '" + c + "' not found in font.");
+
+        Rectangle clippingArea = new(charIndex * (font.glyphSize + font.glyphGap), 0, font.glyphSize, texture.Height);
+
+        currentDisplayInstance.spriteBatch.Draw(texture, position + new Vector2(scribeX + 0.5f, 0.5f), clippingArea, (Color)colour, 0, Vector2.One / 2f, Vector2.One, SpriteEffects.None, 0);
+
+        scribeX += font.glyphSize + font.glyphGap;
+      }
+    }
+
 
   }
 

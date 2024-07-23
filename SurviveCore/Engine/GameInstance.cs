@@ -170,6 +170,15 @@ namespace SurviveCore.Engine
 
         display.Camera(Vector2.Zero);
 
+        //todo: temp: test font printing
+        Font font;
+        font = Warehouse.GetJson<Font>("test.common.everscript_small");
+        GameDisplay.Print("fake through the day that never subsides if i can't call to mind all the words or the lines i find to pocket them will keep them all alive.", Vector2.One * 8, font);
+
+        font = Warehouse.GetJson<Font>("test.common.everscript_big");
+        GameDisplay.Print("something something whatchamacallit", new(8, 16), font);
+        GameDisplay.Print("<('.'<) <('.')> (>'.')>", new(8, 32), font);
+
         display.End();
 
 

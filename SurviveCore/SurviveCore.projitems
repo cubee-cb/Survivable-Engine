@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Engine\AudioManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Common.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\Font.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\EFacingDirection.cs" />
