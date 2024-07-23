@@ -41,7 +41,7 @@ namespace SurviveCore.Engine.Entities
     {
       base.PreUpdate(tick, deltaTime);
 
-      // run mob's ai and tick scripts each tick
+      // run mob's ai and tick functions each tick
       if (lua != null)
       {
         try
@@ -63,6 +63,47 @@ namespace SurviveCore.Engine.Entities
     {
       //todo: return attack power
       return properties.maxHealth;
+    }
+
+    public override void OnCollisionEnter(Entity otherEntity)
+    {
+      OnCollisionEnter();
+
+      // run mob's collision enter function
+      //todo: have separate OnCollision and OnDamaged functions
+      if (lua != null)
+      {
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals.Get("CollisionEnter"), otherEntity.GetTags());
+
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
+      }
+
+    }
+
+    public override void OnCollisionExit(Entity otherEntity)
+    {
+      OnCollisionEnter();
+
+      // run mob's collision exit function
+      if (lua != null)
+      {
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals.Get("CollisionExit"), otherEntity.GetTags());
+
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
+      }
+
     }
 
     //                           //

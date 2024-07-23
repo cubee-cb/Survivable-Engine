@@ -6,16 +6,16 @@ namespace SurviveCore.Engine
 {
   internal abstract class IdentifiableObject
   {
-    private int id;
+    private int uid;
 
     public IdentifiableObject()
     {
-      id = GetHashCode();
+      uid = GetHashCode();
     }
 
-    int GetID()
+    public int GetUID()
     {
-      return id;
+      return uid;
     }
 
   }

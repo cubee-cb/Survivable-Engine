@@ -132,7 +132,7 @@ namespace SurviveCore.Engine
       {
         activeWorld.Update(tick, deltaTime);
 
-        if (ELDebug.Key(Keys.LeftAlt) || true) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "s > " + targetDeltaTime + "s (took " + deltaTime + "s this real frame)");
+        if (ELDebug.Key(Keys.LeftAlt)) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "s > " + targetDeltaTime + "s (took " + deltaTime + "s this real frame)");
 
         tick++;
         deltaTimeAccumulated -= targetDeltaTime;

@@ -46,9 +46,11 @@ namespace SurviveCore.Engine.Entities
     [JsonIgnore] protected bool grounded = false;
 
     protected float health;
-    protected float invulnerabilitySeconds = 1000;
+    protected float invulnerabilitySeconds = 0;
 
     protected Inventory inventory;
+
+    protected List<int> collidingEntityIDs = new();
 
     [JsonIgnore] protected Texture2D texture;
     [JsonIgnore] protected Texture2D shadowTexture;
@@ -187,7 +189,7 @@ namespace SurviveCore.Engine.Entities
       float invulVal = ((invulnerabilitySeconds + a) * INVUL_FLASH_PER_SECOND) % 1;
       //if (a) return;
 
-      float opacity = invulVal;
+      float opacity = 1 - invulVal;
 
 
       // get row number from facing direction
@@ -256,18 +258,14 @@ namespace SurviveCore.Engine.Entities
       return tags;
     }
 
-    public Dictionary<string, int> GetHitbox()
+    public Rectangle GetHitbox()
     {
-      // this can't read the properties
-      if (properties != null)
-      {
-        return properties.hitbox;
-      }
-      else
-      {
-        ELDebug.Log("null properties: " + id);
-        return new();
-      }
+      Rectangle hitbox = new(position.ToPoint(), new());
+
+      properties.hitbox.TryGetValue("width", out hitbox.Width);
+      properties.hitbox.TryGetValue("height", out hitbox.Height);
+
+      return hitbox;
     }
 
     public virtual float GetDurability()
@@ -299,10 +297,7 @@ namespace SurviveCore.Engine.Entities
       GroundTile tileCurrent = map.Get(GetPosition());
       GroundTile checkTile;
 
-      Point hitbox;
-
-      properties.hitbox.TryGetValue("width", out hitbox.X);
-      properties.hitbox.TryGetValue("height", out hitbox.Y);
+      Rectangle hitbox = GetHitbox();
 
       //todo: if going too fast, entity can snap to higher elevations before colliding with walls?
       // seen with test.chaser's charge state
@@ -313,7 +308,7 @@ namespace SurviveCore.Engine.Entities
         // right
         if (delta.X > 0)
         {
-          checkTile = map.Get((int)(position.X + d + hitbox.X / 2), (int)(position.Y), pixel: true);
+          checkTile = map.Get((int)(position.X + d + hitbox.Width / 2), (int)(position.Y), pixel: true);
 
           if (
             tileCurrent?.GetSlope() != SlopeType.Horizontal &&
@@ -322,14 +317,14 @@ namespace SurviveCore.Engine.Entities
           )
           {
             delta.X = 0;
-            position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.X / 2;
+            position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.Width / 2;
           }
         }
 
         // left
         else if (delta.X < 0)
         {
-          checkTile = map.Get((int)(position.X - d - hitbox.X / 2), (int)(position.Y), pixel: true);
+          checkTile = map.Get((int)(position.X - d - hitbox.Width / 2), (int)(position.Y), pixel: true);
 
           if (
             tileCurrent?.GetSlope() != SlopeType.Horizontal &&
@@ -338,7 +333,7 @@ namespace SurviveCore.Engine.Entities
           )
           {
             delta.X = 0;
-            position.X = TileMap.SnapPosition(position).X + hitbox.X / 2;
+            position.X = TileMap.SnapPosition(position).X + hitbox.Width / 2;
           }
         }
       }
@@ -349,7 +344,7 @@ namespace SurviveCore.Engine.Entities
         // down
         if (delta.Y > 0)
         {
-          checkTile = map.Get((int)(position.X), (int)(position.Y + d + hitbox.Y / 2), pixel: true);
+          checkTile = map.Get((int)(position.X), (int)(position.Y + d + hitbox.Height / 2), pixel: true);
 
           if (
             tileCurrent?.GetSlope() != SlopeType.Vertical &&
@@ -358,14 +353,14 @@ namespace SurviveCore.Engine.Entities
           )
           {
             delta.Y = 0;
-            position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Y / 2;
+            position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Height / 2;
           }
         }
 
         // up
         else if (delta.Y < 0)
         {
-          checkTile = map.Get((int)(position.X), (int)(position.Y - d - hitbox.Y / 2), pixel: true);
+          checkTile = map.Get((int)(position.X), (int)(position.Y - d - hitbox.Height / 2), pixel: true);
 
           if (
             tileCurrent?.GetSlope() != SlopeType.Vertical &&
@@ -374,7 +369,7 @@ namespace SurviveCore.Engine.Entities
           )
           {
             delta.Y = 0;
-            position.Y = TileMap.SnapPosition(position).Y + hitbox.Y / 2;
+            position.Y = TileMap.SnapPosition(position).Y + hitbox.Height / 2;
           }
         }
       }
@@ -431,6 +426,82 @@ namespace SurviveCore.Engine.Entities
 
       return false;
     }
+
+    /// <summary>
+    /// Adds the other entity to this entity's list of current colliding entities.
+    /// </summary>
+    /// <param name="other">The other entity to register overlap with.</param>
+    /// <returns>False if the requested entity is already colliding.</returns>
+    public bool RegisterCollidingEntity(Entity other)
+    {
+      if (collidingEntityIDs.Contains(other.GetUID()))
+      {
+        return false;
+      }
+
+      collidingEntityIDs.Add(other.GetUID());
+
+      return true;
+    }
+
+    /// <summary>
+    /// Removes the other entity from this entity's list of current colliding entities.
+    /// </summary>
+    /// <param name="other">The other entity to unregister overlap with.</param>
+    /// <returns>False if the entity was unable to be removed.</returns>
+    public bool UnregisterCollidingEntity(Entity other)
+    {
+      return collidingEntityIDs.Remove(other.GetUID());
+    }
+
+    /// <summary>
+    /// Gets the current list of colliding entity ids.
+    /// </summary>
+    /// <returns>List of colliding entity ids.</returns>
+    public List<int> GetCollidingEntityIDs()
+    {
+      return collidingEntityIDs;
+    }
+
+    /// <summary>
+    /// Called when a collision is entered.
+    /// </summary>
+    public virtual void OnCollisionEnter()
+    {
+      //todo: temporary -> this should be on attacking hitboxes like projectiles and weapons/melee
+      if (invulnerabilitySeconds == 0)
+      {
+        invulnerabilitySeconds = properties.invulnerabilitySeconds;
+      }
+    }
+
+    /// <summary>
+    /// Called when a collision is entered.
+    /// </summary>
+    /// <param name="otherEntity">The other entity this collision happened with.</param>
+    public virtual void OnCollisionEnter(Entity otherEntity)
+    {
+      OnCollisionEnter();
+    }
+
+    /// <summary>
+    /// Called when a collision is exited.
+    /// </summary>
+    public virtual void OnCollisionExit()
+    {
+    }
+
+    /// <summary>
+    /// Called when a collision is exited.
+    /// </summary>
+    /// <param name="otherEntity">The other entity this collision stopped with.</param>
+    public virtual void OnCollisionExit(Entity otherEntity)
+    {
+      OnCollisionExit();
+      //ELDebug.Log("collision exited: " + id + " with " + otherEntity.id);
+    }
+
+
 
     /// <summary>
     /// Gets a FacingDirection based on a vector and the object's rotation type.
@@ -597,6 +668,11 @@ namespace SurviveCore.Engine.Entities
       },
 
     };
+
+    public override string ToString()
+    {
+      return id;
+    }
 
 
   }
