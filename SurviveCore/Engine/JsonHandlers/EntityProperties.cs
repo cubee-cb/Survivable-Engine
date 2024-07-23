@@ -9,6 +9,7 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string textureSheetName = "entity_default";
+    public string shadow = "shadow_default";
     public List<string> tags = new();
     public int feetOffsetY = 2;
     public Dictionary<string, int> hitbox = new();
@@ -19,7 +20,9 @@ namespace SurviveCore.Engine.JsonHandlers
     // stats
     public int maxHealth = 10;
     public float regenerationPerSecond = 1;
+    public float invulnerabilitySeconds = 1;
 
+    public bool affectedByGravity = true;
     public float movementSpeedWalk = 1f;
     public float movementSpeedRun = 1.5f;
 

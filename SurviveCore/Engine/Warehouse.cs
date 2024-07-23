@@ -20,7 +20,7 @@ using SurviveDesktop;
 namespace SurviveCore.Engine
 {
   // this class is not static. make sure to call the constructor before using any of its functions so the placeholder assets can be properly initialised.
-  public class Warehouse
+  public static class Warehouse
   {
     // paths are formatted as:                        /contentPath/nameSpace/TEXTURE_FOLDER/
     // for example, the default values would become:  /assets/default/spr/
@@ -42,12 +42,13 @@ namespace SurviveCore.Engine
     public static SoundEffect missingSound;
     public static Song missingMusic;
 
-    private static Dictionary<string, Texture2D> textures;
-    private static Dictionary<string, SoundEffect> sounds;
-    private static Dictionary<string, Song> music;
-    private static Dictionary<string, string> jsonData;
-    private static Dictionary<string, string> luaScripts;
+    private static Dictionary<string, Texture2D> textures = new();
+    private static Dictionary<string, SoundEffect> sounds = new();
+    private static Dictionary<string, Song> music = new();
+    private static Dictionary<string, string> jsonData = new();
+    private static Dictionary<string, string> luaScripts = new();
 
+    private const string FOLDER_COMMON = "common";
     private const string FOLDER_CHARACTER = "character";
     private const string FOLDER_GROUND = "ground";
     private const string FOLDER_TILE = "tile";
@@ -58,6 +59,7 @@ namespace SurviveCore.Engine
     private const string FOLDER_WORLDGEN = "worldgen";
     readonly static private List<string> contentTypeSubfolders = new()
     {
+      FOLDER_COMMON,
       FOLDER_CHARACTER,
       FOLDER_GROUND,
       FOLDER_TILE,
@@ -78,24 +80,9 @@ namespace SurviveCore.Engine
 
     private static GraphicsDevice graphicsDevice;
 
-
-    public Warehouse(ContentManager content, GraphicsDevice outerGraphicsDevice)
+    public static void SetGraphicsDevice(GraphicsDevice newGraphicsDevice)
     {
-      // load fallback content, used when an asset cannot be found
-      // content.Load should only be used here for built-in engine content like placeholders, not for the per-game/pack assets.
-      missingTexture = content.Load<Texture2D>("spr/missing");
-      missingSound = content.Load<SoundEffect>("sfx/missing");
-      missingMusic = content.Load<Song>("music/missing");
-
-      // set reference to the GraphicsDevice
-      graphicsDevice = outerGraphicsDevice;
-
-      textures = new Dictionary<string, Texture2D>();
-      sounds = new Dictionary<string, SoundEffect>();
-      music = new Dictionary<string, Song>();
-      jsonData = new Dictionary<string, string>();
-      luaScripts = new Dictionary<string, string>();
-
+      graphicsDevice = newGraphicsDevice;
     }
 
     /// <summary>
@@ -130,20 +117,21 @@ namespace SurviveCore.Engine
           // check if this mod is a game
           if (Platform.Exists(Path.Combine(packPath, "game.json")))
           {
-            if (gameProps != null)
-            {
-              ELDebug.Log("a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
-            }
-            else
+            if (gameProps == null)
             {
               gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
               ELDebug.Log("this is a game pack, using it for game data");
+            }
+            else
+            {
+              ELDebug.Log("this is a game pack, but a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
             }
           }
 
           // load content from folders
           foreach (string contentType in contentTypeSubfolders)
           {
+            ELDebug.Log(contentType);
             currentCategory = contentType;
             string categoryPath = Path.Join(packPath, currentCategory);
 

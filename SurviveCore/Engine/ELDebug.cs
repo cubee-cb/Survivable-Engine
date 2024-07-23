@@ -30,6 +30,9 @@ namespace SurviveCore.Engine
       return Keyboard.GetState().IsKeyDown(key);
     }
 
+    /// <summary>
+    /// Log categories for debug logging.
+    /// </summary>
     public enum Category
     {
       Log,

@@ -107,6 +107,16 @@ function Interact()
   DebugLog("I have been interacted with.")
 end
 
+-- called when a collision is entered
+function CollisionEnter(tags)
+  DebugLog("I have collided with " .. (tags[1] or "unknown tag") .. ".")
+end
+
+-- called when the mob is damaged
+function CollisionExit(tags)
+  DebugLog("I have stopped colliding with " .. (tags[1] or "unknown tag") .. ".")
+end
+
 -- called when the mob is damaged
 function Damaged()
   DebugLog("I have been damaged.")

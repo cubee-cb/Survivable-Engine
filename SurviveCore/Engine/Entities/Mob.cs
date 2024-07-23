@@ -12,12 +12,6 @@ namespace SurviveCore.Engine.Entities
   [MoonSharpUserData]
   internal class Mob : Entity
   {
-
-    [JsonIgnore] MobProperties properties;
-
-    // lua scripts
-    [JsonIgnore] private Script lua;
-
     public Mob(string id, World world) : base(id, world)
     {
       UpdateAssets();
@@ -27,22 +21,13 @@ namespace SurviveCore.Engine.Entities
     {
       // set initial properties
       properties = Warehouse.GetJson<MobProperties>(id);
-      rotationType = properties.rotationType;
-      spriteDimensions = properties.spriteDimensions;
-      health = properties.maxHealth;
-      tags = properties.tags;
+      base.UpdateAssets();
 
-      // find assets
-      texture = Warehouse.GetTexture(properties.textureSheetName);
 
-      // create inventory
-      inventory = new(properties.inventorySize);
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua))
       {
-        lua = Warehouse.GetLua(properties.lua);
-
         // pass methods to lua
         lua.Globals["Move"] = (Func<float, float, float, bool>)Move;
         lua.Globals["MoveToward"] = (Func<float, float, float, bool>)MoveToward;
@@ -54,9 +39,9 @@ namespace SurviveCore.Engine.Entities
 
     public override void Update(int tick, float deltaTime)
     {
-      base.Update(tick, deltaTime);
+      base.PreUpdate(tick, deltaTime);
 
-      // run mob's ai and tick scripts each tick
+      // run mob's ai and tick functions each tick
       if (lua != null)
       {
         try
@@ -71,12 +56,54 @@ namespace SurviveCore.Engine.Entities
         }
       }
 
+      base.PostUpdate(tick, deltaTime);
     }
 
     public override float GetStrength()
     {
       //todo: return attack power
       return properties.maxHealth;
+    }
+
+    public override void OnCollisionEnter(Entity otherEntity)
+    {
+      OnCollisionEnter();
+
+      // run mob's collision enter function
+      //todo: have separate OnCollision and OnDamaged functions
+      if (lua != null)
+      {
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals.Get("CollisionEnter"), otherEntity.GetTags());
+
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
+      }
+
+    }
+
+    public override void OnCollisionExit(Entity otherEntity)
+    {
+      OnCollisionEnter();
+
+      // run mob's collision exit function
+      if (lua != null)
+      {
+        try
+        {
+          DynValue resAI = lua.Call(lua.Globals.Get("CollisionExit"), otherEntity.GetTags());
+
+        }
+        catch (Exception e)
+        {
+          ELDebug.Log("LUA error: \n" + e);
+        }
+      }
+
     }
 
     //                           //

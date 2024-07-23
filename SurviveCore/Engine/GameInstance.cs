@@ -26,8 +26,6 @@ namespace SurviveCore.Engine
     GraphicsDevice graphicsDevice;
     public GameDisplay display;
     InputManager input;
-    Warehouse warehouse;
-    Texture2D missingTex;
 
     Player player;
     List<Entity> cameraFocusEntities;
@@ -47,10 +45,6 @@ namespace SurviveCore.Engine
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
       input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
 
-      // initialise warehouse
-      warehouse = new Warehouse(contentManager, graphicsDevice);
-      Warehouse.LoadAll();
-
       gameProps = Warehouse.GetGameProps();
 
       this.targetTickRate = targetTickRate;
@@ -62,7 +56,7 @@ namespace SurviveCore.Engine
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
-      World tempWorld = new(gameProps.startingDimension);
+      World tempWorld = new(gameProps.startingDimension, this);
 
       // create local player (unless this is a dedicated server)
       if (instanceMode != EInstanceMode.Dedicated)
@@ -123,29 +117,27 @@ namespace SurviveCore.Engine
 
 
 
-
       activeWorld = worlds[activeWorldIndex];
 
+      // buffer input
+      input.BufferInputs();
+
       // run ticks to fill the time we've accumulated
-      //todo: should we run ticks per-object?
-      // just leave it global per-world?
-      // move it to be per instance?
-      // what about the player's updating?
       deltaTimeAccumulated += deltaTime;
 
-      // this lets up catch up if we fall behind (assuming the device can handle it, otherwise this is will progressively take more performance), or slow down if we're going too fast.
-      // doesn't matter too much if we use fixed time step as the default is, but if we want to disable it, it shouldn't affect too much?
+      // this lets us catch up if we fall behind, or slow down if we're going too fast.
+      //todo: may break if the device is running too slowly, we'll see
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
-        input.UpdateInputs();
-
         activeWorld.Update(tick, deltaTime);
 
-        //ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "ms > " + targetDeltaTime + "ms (took " + deltaTime + "ms this real frame)");
+        if (ELDebug.Key(Keys.LeftAlt)) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "s > " + targetDeltaTime + "s (took " + deltaTime + "s this real frame)");
 
         tick++;
-        deltaTimeAccumulated -= targetDeltaTime; // is it correct to use targetDeltaTime? or will we overshoot or something?
+        deltaTimeAccumulated -= targetDeltaTime;
+
+        input.ResetInputs();
       }
 
     }
@@ -178,13 +170,6 @@ namespace SurviveCore.Engine
 
         display.Camera(Vector2.Zero);
 
-        /*/ debug things
-        for (int i = 0; i < 500; i++)
-        {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
-        }
-        //*/
-
         display.End();
 
 
@@ -195,13 +180,6 @@ namespace SurviveCore.Engine
 
         // draw player's inventory
         player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
-
-        /*/ debug things
-        for (int i = 0; i < 500; i++)
-        {
-          GameDisplay.Draw(Warehouse.GetTexture("everlost.mob_testghost"), new Rectangle(0, 0, 16, 16), new Vector2(i * 12, i));
-        }
-        //*/
 
         display.End();
 
@@ -228,6 +206,11 @@ namespace SurviveCore.Engine
       {
         world.UpdateAssets();
       }
+    }
+
+    public int GetTickRate()
+    {
+      return tickRate;
     }
 
 

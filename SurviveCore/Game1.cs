@@ -1,9 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using SurviveCore.Engine;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 
 namespace SurviveCore
 {
@@ -13,7 +16,6 @@ namespace SurviveCore
     private SpriteBatch spriteBatch;
 
     public static Random rnd = new Random();
-    public static GraphicsDevice graphicsDevice;
 
     List<GameInstance> gameInstances;
 
@@ -40,6 +42,24 @@ namespace SurviveCore
     {
       // TODO: Add your initialization logic here
 
+      base.Initialize();
+    }
+
+
+
+    protected override void LoadContent()
+    {
+      spriteBatch = new SpriteBatch(GraphicsDevice);
+
+      // load fallback content for warehouse, used when an asset cannot be found
+      // content.Load is only used here for built-in engine content like placeholders.
+      Warehouse.missingTexture = Content.Load<Texture2D>("spr/missing");
+      Warehouse.missingSound = Content.Load<SoundEffect>("sfx/missing");
+      Warehouse.missingMusic = Content.Load<Song>("music/missing");
+
+      // start up warehouse and load asset packs
+      Warehouse.SetGraphicsDevice(GraphicsDevice);
+      Warehouse.LoadAll();
 
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances = new()
@@ -49,18 +69,6 @@ namespace SurviveCore
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
       };
-
-      base.Initialize();
-    }
-
-
-
-    protected override void LoadContent()
-    {
-      spriteBatch = new SpriteBatch(GraphicsDevice);
-      graphicsDevice = GraphicsDevice;
-
-      // TODO: use this.Content to load your game content here
 
     }
 
@@ -76,8 +84,7 @@ namespace SurviveCore
       if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();
 
-      // TODO: Add your update logic here
-      //ELDebug.Log("update!");
+      // update game instances
       foreach (GameInstance instance in gameInstances)
       {
         instance.Update(deltaTime);
@@ -94,9 +101,7 @@ namespace SurviveCore
 
       GraphicsDevice.Clear(Color.CornflowerBlue);
 
-      // TODO: Add your drawing code here
-
-      // figure out a somewhat reasonable grid size for the display, to fit the splitscreen displays
+      // dynamically figure out a somewhat reasonable grid size for the display, to fit the splitscreen displays
       // kind of sketchy, probably best to have some predefined layouts, then get generative for more extreme counts.
       int displayGridX = (int)Math.Ceiling(Math.Sqrt(gameInstances.Count));
       int displayGridY = (int)Math.Floor(Math.Sqrt(gameInstances.Count) + 0.5f);
@@ -112,13 +117,13 @@ namespace SurviveCore
         // resize the displays to fit the grid layout
         instance.display.ScaleDisplay(displayWidth, displayHeight);
 
-        // store rendered displays to actually draw later, so we can use one spritebatch for that instead of having to end it before we render the next display.
+        // store rendered displays to actually draw later, so we can use one spritebatch for that instead of having to start and end one for each display
         displays.Add(instance.Draw(deltaTime));
         displayIndex++;
       }
 
       // draw game instances to the main display
-      graphicsDevice.SetRenderTarget(null);
+      GraphicsDevice.SetRenderTarget(null);
 
       displayIndex = 0;
       spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);

@@ -19,12 +19,17 @@ namespace SurviveCore.Engine
     TileMap map;
     WorldGenerator generator;
     List<Entity> entities;
+    List<Entity> activeEntities;
 
     WorldProperties properties;
 
+    private GameInstance parentInstance;
 
-    public World(string id)
+
+    public World(string id, GameInstance instance)
     {
+      parentInstance = instance;
+
       properties = Warehouse.GetJson<WorldProperties>(id);
 
       int width = 8;
@@ -59,12 +64,67 @@ namespace SurviveCore.Engine
 
     public void Update(int tick, float deltaTime)
     {
+      //activeEntities.Clear();
+      activeEntities = entities;
+
       // update world's entities
       //todo: create a partitioning system so only entities near the camera get updated
-      foreach (Entity entity in entities)
+      foreach (Entity entity in activeEntities)
       {
         entity.Update(tick, deltaTime);
       }
+
+      // collide entities
+      for (int a = 0; a < activeEntities.Count; a++)
+      {
+        Entity entityA = activeEntities[a];
+
+        // with all following entities
+        for (int b = a + 1; b < activeEntities.Count; b++)
+        {
+          Entity entityB = activeEntities[b];
+
+          /*/ skip if same
+          if (entityA == entityB)
+          {
+            ELDebug.Log("this should never execute lol, but we tried to check the same entity in collisions"); continue;
+          }
+          //*/
+
+          // collide
+          //todo: get height of entity rather than hardcoded +-12px
+          bool withinElevation = MathF.Abs(entityA.GetElevation() - entityB.GetElevation()) < 12;
+          if (entityA.GetHitbox().Intersects(entityB.GetHitbox()) && withinElevation)
+          {
+            // don't execute OnCollisionEnter for already colliding entities
+            bool clearA = entityA.RegisterCollidingEntity(entityB);
+            bool clearB = entityB.RegisterCollidingEntity(entityA);
+
+            if (clearA && clearB)
+            {
+              entityA.OnCollisionEnter(entityB);
+              entityB.OnCollisionEnter(entityA);
+            }
+          }
+          else
+          {
+            // do OnCollisionExit and unregister colliding entities
+            if (entityA.GetCollidingEntityIDs().Contains(entityB.GetUID()))
+            {
+              entityA.OnCollisionExit(entityB);
+              entityB.OnCollisionExit(entityA);
+
+              entityA.UnregisterCollidingEntity(entityB);
+              entityB.UnregisterCollidingEntity(entityA);
+            }
+
+          }
+
+
+
+        }
+      }
+
 
     }
 
@@ -74,7 +134,7 @@ namespace SurviveCore.Engine
 
 
       // draw world's entities
-      foreach (Entity entity in entities)
+      foreach (Entity entity in activeEntities)
       {
         entity.Draw(tickProgress);
       }
@@ -126,7 +186,7 @@ namespace SurviveCore.Engine
             int elevationLeft = tileLeft != null ? tileLeft.GetElevation(pixels: true) : 0;
             int elevationRight = tileRight != null ? tileRight.GetElevation(pixels: true) : 0;
 
-            return (int)MathF.Floor(Common.Lerp(elevationLeft, elevationRight, progress) + 0.5f);
+            return (int)MathF.Floor(MathHelper.Lerp(elevationLeft, elevationRight, progress) + 0.5f);
 
             //return (int)MathF.Abs((elevationLeft - elevationRight) * progress);
           }
@@ -143,12 +203,22 @@ namespace SurviveCore.Engine
             int elevationUp = tileUp != null ? tileUp.GetElevation(pixels: true) : 0;
             int elevationDown = tileDown != null ? tileDown.GetElevation(pixels: true) : 0;
 
-            return (int)MathF.Floor(Common.Lerp(elevationUp, elevationDown, progress) + 0.5f);
+            return (int)MathF.Floor(MathHelper.Lerp(elevationUp, elevationDown, progress) + 0.5f);
 
             //return (int)MathF.Abs((elevationUp - elevationDown) * progress);
           }
       }
 
+    }
+
+    public float GetGravity()
+    {
+      return properties.gravity;
+    }
+
+    public GameInstance GetInstance()
+    {
+      return parentInstance;
     }
 
     public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)

@@ -12,6 +12,7 @@ namespace SurviveCore.Engine.WorldGen
   {
     public const int TILE_WIDTH = 16;
     public const int TILE_HEIGHT = 16;
+    public const int TILE_THICKNESS = 16;
 
     readonly public int width;
     readonly public int height;
@@ -25,6 +26,7 @@ namespace SurviveCore.Engine.WorldGen
       map = new GroundTile[width, height];
 
     }
+
     public void UpdateAssets()
     {
       foreach (GroundTile tile in map)
@@ -67,8 +69,21 @@ namespace SurviveCore.Engine.WorldGen
       return SetElevation((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT, elevation);
     }
 
-    public GroundTile Get(int x, int y)
+    /// <summary>
+    /// Gets a Tile at tile coordinate. If pixel is set, uses pixel coordinates.
+    /// </summary>
+    /// <param name="x">X coordinate.</param>
+    /// <param name="y">Y coordinate.</param>
+    /// <param name="pixel">Use pixel coordinates instead of tile coordinates.</param>
+    /// <returns>The tile at the location.</returns>
+    public GroundTile Get(int x, int y, bool pixel = false)
     {
+      if (pixel)
+      {
+        x /= TILE_WIDTH;
+        y /= TILE_HEIGHT;
+      }
+
       if (x < 0 || x >= width || y < 0 || y >= height)
       {
         return null;
@@ -77,9 +92,14 @@ namespace SurviveCore.Engine.WorldGen
       return map[x, y];
     }
 
+    /// <summary>
+    /// Gets a Tile at pixel coordinate.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     public GroundTile Get(Vector2 position)
     {
-      return Get((int)position.X / TILE_WIDTH, (int)position.Y / TILE_HEIGHT);
+      return Get((int)position.X, (int)position.Y, pixel: true);
     }
 
     public void Draw(float tickProgress)
@@ -88,11 +108,25 @@ namespace SurviveCore.Engine.WorldGen
       {
         for (int iy = 0; iy < height; iy++)
         {
+          //todo: occasionally gaps appear in rendering briefly. why?
+          //todo: cull to camera view
           GroundTile tile = map[ix, iy];
-          if (tile != null) tile.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT - TILE_HEIGHT));
+          tile?.Draw(tickProgress, new Vector2(ix * TILE_WIDTH, iy * TILE_HEIGHT));
         }
       }
 
+    }
+
+    /// <summary>
+    /// Snaps a Vector2 position to the nearest grid lines on the tile map.
+    /// </summary>
+    /// <param name="position">The vector to snap.</param>
+    /// <returns>A vector in increments of TILE_WIDTH and TILE_HEIGHT.</returns>
+    public static Vector2 SnapPosition(Vector2 position)
+    {
+      position.X = MathF.Floor(position.X / TILE_WIDTH) * TILE_WIDTH;
+      position.Y = MathF.Floor(position.Y / TILE_HEIGHT) * TILE_HEIGHT;
+      return position;
     }
 
 

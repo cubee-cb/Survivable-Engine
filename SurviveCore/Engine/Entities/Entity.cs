@@ -8,21 +8,32 @@ using System.Text;
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Items;
+using SurviveCore.Engine.WorldGen;
+using SurviveCore.Engine.JsonHandlers;
+using static SurviveCore.Engine.JsonHandlers.GroundProperties;
+using MoonSharp.Interpreter;
 
 namespace SurviveCore.Engine.Entities
 {
   internal abstract class Entity : IdentifiableObject
   {
+    const int INVUL_FLASH_PER_SECOND = 4;
+
     [JsonIgnore] protected World world;
 
     protected string id;
+    protected EntityProperties properties;
+
     [JsonIgnore] protected List<string> tags = new();
     protected int t;
 
     // should these be vector3? thinking we want to support elevations
-    private Vector2 lastPosition;
+    [JsonIgnore] private Vector2 lastPosition;
     protected Vector2 position;
     protected Vector2 velocity;
+    protected float elevation = 0;
+    [JsonIgnore] protected float lastElevation = 0;
+    protected float velocityElevation = 0;
 
     [JsonIgnore] protected FacingDirection direction = FacingDirection.Down;
     [JsonIgnore] protected SpriteRotationType rotationType = SpriteRotationType.None;
@@ -32,12 +43,20 @@ namespace SurviveCore.Engine.Entities
     [JsonIgnore] protected Dictionary<string, int> spriteDimensions = new();
     [JsonIgnore] public int feetOffsetY = 2;
 
+    [JsonIgnore] protected bool grounded = false;
+
     protected float health;
+    protected float invulnerabilitySeconds = 0;
 
     protected Inventory inventory;
 
+    protected List<int> collidingEntityIDs = new();
+
     [JsonIgnore] protected Texture2D texture;
-    //protected EntityProperties properties;
+    [JsonIgnore] protected Texture2D shadowTexture;
+
+    // lua scripts
+    [JsonIgnore] protected Script lua;
 
 
     /// <summary>
@@ -73,20 +92,89 @@ namespace SurviveCore.Engine.Entities
     /// Called when this object should re-obtain its assets.
     /// </summary>
     /// <param name="id">The string id of the object. Handled on a per-subclass basis.</param>
-    public abstract void UpdateAssets();
+    public virtual void UpdateAssets()
+    {
+      // load assets
+      texture = Warehouse.GetTexture(properties.textureSheetName);
+      shadowTexture = Warehouse.GetTexture(properties.shadow);
+
+      rotationType = properties.rotationType;
+      spriteDimensions = properties.spriteDimensions;
+      health = properties.maxHealth;
+      tags = properties.tags;
+
+      // create inventory
+      inventory = new(properties.inventorySize);
+
+      // initialise lua
+      if (!string.IsNullOrWhiteSpace(properties.lua))
+      {
+        lua = Warehouse.GetLua(properties.lua);
+      }
+    }
 
     /// <summary>
-    /// 
+    /// Call before the base Update method.
+    /// </summary>
+    /// <param name="tick">current game tick</param>
+    /// <param name="deltaTime">delta time of the previous frame</param>
+    public virtual void PreUpdate(int tick, float deltaTime)
+    {
+      lastElevation = elevation;
+      lastPosition = position;
+
+    }
+
+
+    /// <summary>
+    /// Run this entity's main code.
     /// </summary>
     /// <param name="tick">current game tick</param>
     /// <param name="deltaTime">delta time of the previous frame</param>
     public virtual void Update(int tick, float deltaTime)
     {
+      PreUpdate(tick, deltaTime);
+
       //luaTick.Call(luaTick.Globals["update"], this);
 
-      lastPosition = position;
+      PostUpdate(tick, deltaTime);
+    }
+
+    /// <summary>
+    /// Call after the base Update method.
+    /// </summary>
+    /// <param name="tick">current game tick</param>
+    /// <param name="deltaTime">delta time of the previous frame</param>
+    public virtual void PostUpdate(int tick, float deltaTime)
+    {
+
+      // apply gravity and ground collisions
+      if (properties.affectedByGravity)
+      {
+        // apply gravity
+        velocityElevation -= world.GetGravity();
+
+        // land on ground
+        int elevationHere = world.GetStandingTileElevation(position);
+        if (velocityElevation < 0 && elevation + velocityElevation <= elevationHere)
+        {
+          elevation = elevationHere;
+          velocityElevation = 0;
+          grounded = true;
+        }
+        else
+        {
+          // fall
+          elevation += velocityElevation;
+          grounded = false;
+        }
+
+      }
+
+      TickTimer(ref invulnerabilitySeconds);
       t += 1;
     }
+
 
     /// <summary>
     /// 
@@ -95,6 +183,15 @@ namespace SurviveCore.Engine.Entities
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
     public virtual void Draw(float tickProgress)
     {
+      // check invulnerability flash
+      int tickRate = world.GetInstance().GetTickRate();
+      float a = (1 / tickRate * tickProgress);
+      float invulVal = ((invulnerabilitySeconds + a) * INVUL_FLASH_PER_SECOND) % 1;
+      //if (a) return;
+
+      float opacity = 1 - invulVal;
+
+
       // get row number from facing direction
       List<FacingDirection> dirs = rotationTypeToLayout[rotationType];
       FacingDirection direct = GetSpriteDirection();
@@ -122,9 +219,10 @@ namespace SurviveCore.Engine.Entities
       //ELDebug.Log(id + ": " + width + " " + clippingRect.Y);
 
       // draw, with the bottom of the sprite as its centre
-      Vector2 offset = new(width / 2, height);
+      //todo: how do we fix the depth sorting when standing on top of tiles? the shadow clips into the below tile until the player walks onto it.
       float myElevation = GetVisualElevation(tickProgress);
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress) - offset, visualOffsetY: feetOffsetY - myElevation);
+      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-world.GetStandingTileElevation(GetVisualPosition(tickProgress)) - shadowTexture.Height / 2, colour: Color.White * 0.5f);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity);
 
     }
 
@@ -140,13 +238,14 @@ namespace SurviveCore.Engine.Entities
       return Vector2.Lerp(lastPosition, position, tickProgress);
     }
 
-    public virtual int GetElevation()
+    public virtual float GetElevation()
     {
-      return world.GetStandingTileElevation(position);
+      return elevation;
     }
-    public virtual int GetVisualElevation(float tickProgress)
+    public virtual float GetVisualElevation(float tickProgress)
     {
-      return world.GetStandingTileElevation(GetVisualPosition(tickProgress));
+      // lerp between elevations
+      return MathHelper.Lerp(lastElevation, elevation, tickProgress);
     }
 
     public virtual Inventory GetInventory()
@@ -157,6 +256,16 @@ namespace SurviveCore.Engine.Entities
     public virtual List<string> GetTags()
     {
       return tags;
+    }
+
+    public Rectangle GetHitbox()
+    {
+      Rectangle hitbox = new(position.ToPoint(), new());
+
+      properties.hitbox.TryGetValue("width", out hitbox.Width);
+      properties.hitbox.TryGetValue("height", out hitbox.Height);
+
+      return hitbox;
     }
 
     public virtual float GetDurability()
@@ -179,12 +288,220 @@ namespace SurviveCore.Engine.Entities
       if (delta == Vector2.Zero) return Vector2.Zero;
       // todo: check for collisions with objects this object is allowed to collide with
 
+      // ground tile collisions
+      //delta = world.HandleEntityMovement(this, delta);
+
+      TileMap map = world.GetMap();
+
+      // ground tiles
+      GroundTile tileCurrent = map.Get(GetPosition());
+      GroundTile checkTile;
+
+      Rectangle hitbox = GetHitbox();
+
+      //todo: if going too fast, entity can snap to higher elevations before colliding with walls?
+      // seen with test.chaser's charge state
+
+      // horizontal
+      for (int d = 0; d <= MathF.Abs(delta.X); d++)
+      {
+        // right
+        if (delta.X > 0)
+        {
+          checkTile = map.Get((int)(position.X + d + hitbox.Width / 2), (int)(position.Y), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+            checkTile?.GetSlope() != SlopeType.Horizontal &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.X = 0;
+            position.X = TileMap.SnapPosition(position).X + TileMap.TILE_WIDTH - hitbox.Width / 2;
+          }
+        }
+
+        // left
+        else if (delta.X < 0)
+        {
+          checkTile = map.Get((int)(position.X - d - hitbox.Width / 2), (int)(position.Y), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Horizontal &&
+            checkTile?.GetSlope() != SlopeType.Horizontal &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.X = 0;
+            position.X = TileMap.SnapPosition(position).X + hitbox.Width / 2;
+          }
+        }
+      }
+
+      // vertical
+      for (int d = 0; d <= MathF.Abs(delta.Y); d++)
+      {
+        // down
+        if (delta.Y > 0)
+        {
+          checkTile = map.Get((int)(position.X), (int)(position.Y + d + hitbox.Height / 2), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Vertical &&
+            checkTile?.GetSlope() != SlopeType.Vertical &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.Y = 0;
+            position.Y = TileMap.SnapPosition(position).Y + TileMap.TILE_HEIGHT - hitbox.Height / 2;
+          }
+        }
+
+        // up
+        else if (delta.Y < 0)
+        {
+          checkTile = map.Get((int)(position.X), (int)(position.Y - d - hitbox.Height / 2), pixel: true);
+
+          if (
+            tileCurrent?.GetSlope() != SlopeType.Vertical &&
+            checkTile?.GetSlope() != SlopeType.Vertical &&
+            elevation < checkTile?.GetElevation(pixels: true)
+          )
+          {
+            delta.Y = 0;
+            position.Y = TileMap.SnapPosition(position).Y + hitbox.Height / 2;
+          }
+        }
+      }
+
+
+      /*/todo: tileEntity/entity collision
+      foreach (Entity otherEntity in world.GetCollidingEntities(this))
+      {
+        // get entity's hitbox and eject self from it based on velocity.
+        ResolveCollision(otherEntity.hitboxOrWhatever);
+      }
+      //*/
+
+
       position += delta;
 
-      direction = GetFacingDirection(delta);
+      if (delta != Vector2.Zero) direction = GetFacingDirection(delta);
 
       return delta;
     }
+
+    public void SetX(float x)
+    {
+      position.X = x;
+    }
+    public void SetY(float y)
+    {
+      position.Y = y;
+    }
+
+    /// <summary>
+    /// Tick down a timer in seconds according to the tickrate.
+    /// </summary>
+    /// <param name="timer">The variable holding the remaining seconds.</param>
+    /// <returns>True if the timer just expired.</returns>
+    public bool TickTimer(ref float timer)
+    {
+      //todo: lua RegisterTimer(name, duration, method) and call method on expiry
+      //todo: lua QueryTimer(name) to get remaining duration of the timer
+      int tickRate = world.GetInstance().GetTickRate();
+      float timeToStep = 1f / tickRate;
+
+      if (timer > 0)
+      {
+        // tick timer down
+        timer -= timeToStep;
+        if (timer < 0)
+        {
+          // return true if this step finished the timer
+          timer = 0;
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// Adds the other entity to this entity's list of current colliding entities.
+    /// </summary>
+    /// <param name="other">The other entity to register overlap with.</param>
+    /// <returns>False if the requested entity is already colliding.</returns>
+    public bool RegisterCollidingEntity(Entity other)
+    {
+      if (collidingEntityIDs.Contains(other.GetUID()))
+      {
+        return false;
+      }
+
+      collidingEntityIDs.Add(other.GetUID());
+
+      return true;
+    }
+
+    /// <summary>
+    /// Removes the other entity from this entity's list of current colliding entities.
+    /// </summary>
+    /// <param name="other">The other entity to unregister overlap with.</param>
+    /// <returns>False if the entity was unable to be removed.</returns>
+    public bool UnregisterCollidingEntity(Entity other)
+    {
+      return collidingEntityIDs.Remove(other.GetUID());
+    }
+
+    /// <summary>
+    /// Gets the current list of colliding entity ids.
+    /// </summary>
+    /// <returns>List of colliding entity ids.</returns>
+    public List<int> GetCollidingEntityIDs()
+    {
+      return collidingEntityIDs;
+    }
+
+    /// <summary>
+    /// Called when a collision is entered.
+    /// </summary>
+    public virtual void OnCollisionEnter()
+    {
+      //todo: temporary -> this should be on attacking hitboxes like projectiles and weapons/melee
+      if (invulnerabilitySeconds == 0)
+      {
+        invulnerabilitySeconds = properties.invulnerabilitySeconds;
+      }
+    }
+
+    /// <summary>
+    /// Called when a collision is entered.
+    /// </summary>
+    /// <param name="otherEntity">The other entity this collision happened with.</param>
+    public virtual void OnCollisionEnter(Entity otherEntity)
+    {
+      OnCollisionEnter();
+    }
+
+    /// <summary>
+    /// Called when a collision is exited.
+    /// </summary>
+    public virtual void OnCollisionExit()
+    {
+    }
+
+    /// <summary>
+    /// Called when a collision is exited.
+    /// </summary>
+    /// <param name="otherEntity">The other entity this collision stopped with.</param>
+    public virtual void OnCollisionExit(Entity otherEntity)
+    {
+      OnCollisionExit();
+      //ELDebug.Log("collision exited: " + id + " with " + otherEntity.id);
+    }
+
+
 
     /// <summary>
     /// Gets a FacingDirection based on a vector and the object's rotation type.
@@ -351,6 +668,11 @@ namespace SurviveCore.Engine.Entities
       },
 
     };
+
+    public override string ToString()
+    {
+      return id;
+    }
 
 
   }
