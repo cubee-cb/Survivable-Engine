@@ -16,8 +16,8 @@ So far, I've:
 - Made entities smooth their visual position between ticks, if the framerate is higher than the tickrate.
 
 Notable milestones to-do:
-- Add dynamic tiles.
-	- Don't-Starve-like "tile entities" that are solid and don't move, but are also not locked to the grid like normal tiles.
+- Add tile entities.
+	- Don't-Starve-like tiles that are solid and don't typically move, but are also not locked to the grid like normal tiles.
 - Collisions between entities and tile entities.
 - Inventories and items.
 - Saving worlds and players.
@@ -27,19 +27,20 @@ Notable milestones to-do:
 	- Mob spawns, biome generators, etc.
 - Networking/splitscreen/multiplayer?
 	- Actual differences between host/client/dedicated.
-	- Tilemap/entity position syncing.
+	- Might look into MonoSync and Backdash.
 - Game progression triggers.
 	- May be step-by-step or simple boolean.
 	- May have dependencies before availability. May optionally need to be fulfilled specifically after being made available, or can be completed beforehand without applying effects until later.
 
 
 Controls:
-- Arrow Keys / ESDF - Move
-- Left Shift - Run
-- J, K, L - Adjust tickrate (/8, x8, x16)
+- Arrow Keys / ESDF - Move.
+- Left Shift - Run.
+- Space - Jump. (temporary, we'll see if I want jumping as a mechanic in Everlost Isle later on)
+- J, K, L - Adjust tickrate. (/8, x8, x16)
 - Left Alt - (while held) Print tick stats to the console.
 
-Controls (Hold Right CTRL)
-- U - Unload all asset packs
-- I Load all asset packs
+Special Controls (Hold Right CTRL):
+- U - Unload all asset packs.
+- I - Load all asset packs.
 
