@@ -33,7 +33,7 @@ namespace SurviveCore.Engine.Display
     private static GraphicsDevice graphicsDevice;
     private SpriteBatch spriteBatch;
 
-    private static Font activeFont;
+    //private static Font activeFont;
 
     public GameDisplay(GraphicsDevice outerGraphicsDevice, int width, int height)
     {
@@ -191,7 +191,16 @@ namespace SurviveCore.Engine.Display
     }
     //*/
 
-    public static void Print(object input, Vector2 position, Font font, Color? colour = null)
+    /// <summary>
+    /// Draw some text to the screen using a Font, according to the provided options.
+    /// </summary>
+    /// <param name="input">The object to print. Calls ToString() on the input.</param>
+    /// <param name="position">Locaiton to start printing from.</param>
+    /// <param name="font">The Font object to use.</param>
+    /// <param name="colour">Colour to tint the font with.</param>
+    /// <param name="variableWidth">If true (default), use the glyph size overrides provided by the font. If false, use the base glyph size for all characters.</param>
+    /// <returns>A bounding rectangle for the displayed text.</returns>
+    public static Rectangle Print(object input, Vector2 position, Font font, Color? colour = null, bool variableWidth = true)
     {
       if (colour == null) colour = Color.White;
       position -= currentDisplayInstance.cameraPosition;
@@ -204,14 +213,20 @@ namespace SurviveCore.Engine.Display
       {
         int charIndex = font.glyphOrder.IndexOf(c);
         if (charIndex == -1) ELDebug.Log("character '" + c + "' not found in font.");
+        int thisCharWidth = font.glyphSize;
+        if (variableWidth && font.glyphSizeOverrides != null && font.glyphSizeOverrides.ContainsKey(c)) thisCharWidth = font.glyphSizeOverrides[c];
 
-        Rectangle clippingArea = new(charIndex * (font.glyphSize + font.glyphGap), 0, font.glyphSize, texture.Height);
+        Rectangle clippingArea = new(charIndex * (font.glyphSize + font.glyphGap), 0, thisCharWidth, texture.Height);
 
         currentDisplayInstance.spriteBatch.Draw(texture, position + new Vector2(scribeX + 0.5f, 0.5f), clippingArea, (Color)colour, 0, Vector2.One / 2f, Vector2.One, SpriteEffects.None, 0);
 
-        scribeX += font.glyphSize + font.glyphGap;
+        scribeX += thisCharWidth + font.glyphGap;
       }
+
+      return new((int)position.X, (int)position.Y, scribeX, texture.Height);
     }
+
+
 
 
   }

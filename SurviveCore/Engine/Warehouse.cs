@@ -365,7 +365,7 @@ namespace SurviveCore.Engine
         // if foo wants to become "xyzzy", it can do so without breaking its own content -
         // - as long as it uses "*.thing" instead of "foo.thing".
         // however, bar needs to be updated to continue using "xyzzy.thing".
-        string jsonString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
+        string jsonString = Platform.LoadFileDirectly(filePath).Replace("*.", nameSpace + '.');
 
         // replace loaded asset if it already exists
         if (jsonData.ContainsKey(internalName))

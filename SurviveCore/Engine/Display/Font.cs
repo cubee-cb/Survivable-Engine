@@ -10,9 +10,11 @@ namespace SurviveCore.Engine.Display
   {
     public string textureSheetName;
 
-    public string glyphOrder;
-    public int glyphSize;
-    public int glyphGap;
+    public string glyphOrder = " abcdefghijklmnopqrstuvwxyz./-_()";
+    public Dictionary<char, int> glyphSizeOverrides = new();
+    public int glyphSize = 8;
+    public int glyphGap = 0;
+
 
     public virtual void ReplaceData(Font source)
     {
@@ -20,6 +22,7 @@ namespace SurviveCore.Engine.Display
       textureSheetName = source.textureSheetName ?? textureSheetName;
 
       glyphOrder = source.glyphOrder ?? glyphOrder;
+      glyphSizeOverrides = source.glyphSizeOverrides ?? glyphSizeOverrides;
       glyphSize = source.glyphSize;
       glyphGap = source.glyphGap;
     }

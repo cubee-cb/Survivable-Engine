@@ -1,9 +1,75 @@
 {
-  "textureSheetName": "*.common.everscript_big",
+  "textureSheetName": "*.common.everscript_big_angular",
 
   "glyphOrder": " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890():;<>.,\"'!?[]-$*_+=&#^\\|{}@`~%/",
-  "glyphSize": 7,
-  "glyphGap": 1,
 
+  "glyphGap": 1,
+  "glyphSize": 7,
+
+  // hmm
+  "glyphSizes": {
+    "4": " fijlt()<>",
+    "6": "bceghknopqrsuvxyzTXY1"
+  },
+
+  // hmmmmmmmmm
+  "glyphSizeOverrides": {
+    " ": 4,
+    "b": 6,
+    "c": 6,
+    "e": 6,
+    "f": 4,
+    "g": 6,
+    "h": 6,
+    "i": 4,
+    "j": 4,
+    "k": 6,
+    "l": 4,
+    "n": 6,
+    "o": 6,
+    "p": 6,
+    "q": 6,
+    "r": 6,
+    "s": 6,
+    "t": 4,
+    "u": 6,
+    "v": 6,
+    "x": 6,
+    "y": 6,
+    "z": 6,
+    "T": 6,
+    "X": 6,
+    "Y": 6,
+    "1": 6,
+    "(": 4,
+    ")": 4,
+    ":": 4,
+    ";": 4,
+    "<": 5,
+    ">": 5,
+    ".": 2,
+    ",": 2,
+    "\"": 3,
+    "'": 1,
+    "!": 2,
+    "?": 3,
+    "[": 4,
+    "]": 4,
+    "-": 5,
+    "*": 5,
+    "_": 5,
+    "+": 5,
+    "=": 5,
+    "^": 5,
+    "\\": 4,
+    "|": 1,
+    "{": 4,
+    "}": 4,
+    "`": 3,
+    "~": 6,
+    "%": 6,
+    "/": 4
+  },
+ 
   "": ""
 }

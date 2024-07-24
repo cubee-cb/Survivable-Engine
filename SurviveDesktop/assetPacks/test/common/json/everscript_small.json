@@ -1,9 +1,45 @@
 {
-  "textureSheetName": "*.common.everscript_small",
+  "textureSheetName": "*.common.everscript_small_angular",
 
   "glyphOrder": " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890():;<>.,\"'!?[]-$*_+=&#^\\|{}@`~%/",
-  "glyphSize": 4,
+
   "glyphGap": 1,
+  "glyphSize": 4,
+  "glyphSizeOverrides": {
+    " ": 2,
+    "f": 3,
+    "i": 3,
+    "j": 2,
+    "l": 3,
+    "t": 3,
+    "I": 3,
+    "T": 3,
+    "1": 3,
+    "(": 2,
+    ")": 2,
+    ":": 1,
+    ";": 1,
+    "<": 3,
+    ">": 3,
+    ".": 1,
+    ",": 1,
+    "\"": 3,
+    "'": 1,
+    "!": 1,
+    "?": 3,
+    "[": 2,
+    "]": 2,
+    "+": 3,
+    "=": 3,
+    "#": 3,
+    "^": 3,
+    "\\": 3,
+    "{": 3,
+    "}": 3,
+    "`": 3,
+    "%": 3,
+    "/": 3
+  },
 
   "": ""
 }
