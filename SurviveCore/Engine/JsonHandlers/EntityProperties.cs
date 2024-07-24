@@ -8,7 +8,7 @@ namespace SurviveCore.Engine.JsonHandlers
   public abstract class EntityProperties
   {
     // descriptions
-    public string textureSheetName = "entity_default";
+    public string texture = "entity_default";
     public string shadow = "shadow_default";
     public List<string> tags = new();
     public int feetOffsetY = 2;
@@ -42,7 +42,7 @@ namespace SurviveCore.Engine.JsonHandlers
       // set the following to source's fields if they aren't null, otherwise back to themselves
 
       // descriptions
-      textureSheetName = source.textureSheetName ?? textureSheetName;
+      texture = source.texture ?? texture;
       tags = source.tags ?? tags;
       feetOffsetY = source.feetOffsetY;
       hitbox = source.hitbox ?? hitbox;

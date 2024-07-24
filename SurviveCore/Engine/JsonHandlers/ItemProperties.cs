@@ -7,7 +7,7 @@ namespace SurviveCore.Engine.JsonHandlers
   public class ItemProperties
   {
     // descriptions
-    public string textureSheetName = "item_default";
+    public string texture = "item_default";
     public List<string> tags = new();
 
     public int framesX = 1; // used to animate the item over time
@@ -33,7 +33,7 @@ namespace SurviveCore.Engine.JsonHandlers
       // set the following to source's fields if they aren't null, otherwise back to themselves
 
       // descriptions
-      textureSheetName = source.textureSheetName ?? textureSheetName;
+      texture = source.texture ?? texture;
       tags = source.tags ?? tags;
 
       // stats

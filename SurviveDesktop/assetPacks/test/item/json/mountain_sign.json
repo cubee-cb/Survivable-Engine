@@ -1,6 +1,6 @@
 {
   // properties
-  "textureSheetName": "*.item.mountain_sign",
+  "texture": "*.item.mountain_sign",
   "tags": [
     "mace"
   ],

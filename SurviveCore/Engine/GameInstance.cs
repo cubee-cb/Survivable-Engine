@@ -173,13 +173,13 @@ namespace SurviveCore.Engine
         //todo: temp: test font printing
         //todo: load fonts at startup into some collection
         Font font;
-        font = Warehouse.GetJson<Font>("test.common.everscript_small");
+        font = Warehouse.GetJson<Font>("test.font.everscript_small");
         font.UpdateAssets();
         //GameDisplay.Print("fake through the day that never subsides if i can't call to mind all the words or the lines i find to pocket them will keep them all alive.", new(8, 8), font);
         GameDisplay.Print("words: stuff. thing? whozzat!?!? chaos coordinator", new(8, 8), font);
         GameDisplay.Print("now we're in monospace. wowwee", new(8, 16), font, variableWidth: false);
 
-        font = Warehouse.GetJson<Font>("test.common.everscript_big");
+        font = Warehouse.GetJson<Font>("test.font.everscript_big");
         font.UpdateAssets();
         GameDisplay.Print("something something whatchamacallit", new(8, 24), font);
         GameDisplay.Print("<('.'<) <('.')> (>'.')>", new(8, 40), font);

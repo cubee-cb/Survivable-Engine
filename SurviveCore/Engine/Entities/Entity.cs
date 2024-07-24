@@ -95,7 +95,7 @@ namespace SurviveCore.Engine.Entities
     public virtual void UpdateAssets()
     {
       // load assets
-      texture = Warehouse.GetTexture(properties.textureSheetName);
+      texture = Warehouse.GetTexture(properties.texture);
       shadowTexture = Warehouse.GetTexture(properties.shadow);
 
       rotationType = properties.rotationType;

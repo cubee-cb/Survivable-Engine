@@ -1,6 +1,6 @@
 {
   // properties
-  "textureSheetName": "*.ground.grass",
+  "texture": "*.ground.grass",
   "tags": [
     "grass",
     "growsTrees"

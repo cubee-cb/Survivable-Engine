@@ -38,7 +38,7 @@ namespace SurviveCore.Engine.WorldGen
       properties = Warehouse.GetJson<GroundProperties>(id);
 
       // load assets
-      texture = Warehouse.GetTexture(properties.textureSheetName);
+      texture = Warehouse.GetTexture(properties.texture);
 
       // initialise lua
       if (!string.IsNullOrWhiteSpace(properties.lua)) lua = Warehouse.GetLua(properties.lua);

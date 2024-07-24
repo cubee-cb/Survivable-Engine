@@ -1,6 +1,6 @@
 {
   // properties
-  "textureSheetName": "*.mob.testghost",
+  "texture": "*.mob.testghost",
   "shadow": "*.common.small_shadow",
   "tags": [
     "enemy",

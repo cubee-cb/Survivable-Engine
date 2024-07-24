@@ -7,7 +7,7 @@ namespace SurviveCore.Engine.JsonHandlers
   public class GroundProperties
   {
     // descriptions
-    public string textureSheetName = "ground_default";
+    public string texture = "ground_default";
     public string internalName = "ground_default";
     public List<string> tags = new();
     public List<string> sounds = new();
@@ -31,7 +31,7 @@ namespace SurviveCore.Engine.JsonHandlers
       // set the following to source's fields if they aren't null, otherwise back to themselves
 
       // descriptions
-      textureSheetName = source.textureSheetName ?? textureSheetName;
+      texture = source.texture ?? texture;
       internalName = source.internalName ?? internalName;
       tags = source.tags ?? tags;
 

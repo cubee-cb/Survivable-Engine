@@ -36,7 +36,7 @@ namespace SurviveCore.Engine.Items
       properties = Warehouse.GetJson<ItemProperties>(id);
 
       // load assets
-      texture = Warehouse.GetTexture(properties.textureSheetName);
+      texture = Warehouse.GetTexture(properties.texture);
 
       frameWidth = texture.Width / (int)MathF.Max(properties.framesX, 1);
       frameHeight = texture.Height / (int)MathF.Max(properties.framesY, 1);

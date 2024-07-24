@@ -48,26 +48,19 @@ namespace SurviveCore.Engine
     private static Dictionary<string, string> jsonData = new();
     private static Dictionary<string, string> luaScripts = new();
 
-    private const string FOLDER_COMMON = "common";
-    private const string FOLDER_CHARACTER = "character";
-    private const string FOLDER_GROUND = "ground";
-    private const string FOLDER_TILE = "tile";
-    private const string FOLDER_DIMENSION = "dimension";
-    private const string FOLDER_BIOME = "biome";
-    private const string FOLDER_ITEM = "item";
-    private const string FOLDER_MOB = "mob";
-    private const string FOLDER_WORLDGEN = "worldgen";
     readonly static private List<string> contentTypeSubfolders = new()
     {
-      FOLDER_COMMON,
-      FOLDER_CHARACTER,
-      FOLDER_GROUND,
-      FOLDER_TILE,
-      FOLDER_DIMENSION,
-      FOLDER_BIOME,
-      FOLDER_ITEM,
-      FOLDER_MOB,
-      FOLDER_WORLDGEN
+      "common",
+      "character",
+      "ground",
+      "tile",
+      "dimension",
+      "biome",
+      "item",
+      "mob",
+      "worldgen",
+      "font",
+      "ui"
     };
 
     private static GameProperties gameProps = null;
