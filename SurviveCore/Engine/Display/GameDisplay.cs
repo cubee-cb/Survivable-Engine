@@ -206,8 +206,6 @@ namespace SurviveCore.Engine.Display
       position -= currentDisplayInstance.cameraPosition;
       position = Vector2.Floor(position);
 
-      Texture2D texture = Warehouse.GetTexture(font.textureSheetName);
-
       int scribeX = 0;
       foreach (char c in input.ToString())
       {
@@ -216,14 +214,14 @@ namespace SurviveCore.Engine.Display
         int thisCharWidth = font.glyphSize;
         if (variableWidth && font.glyphSizeOverrides != null && font.glyphSizeOverrides.ContainsKey(c)) thisCharWidth = font.glyphSizeOverrides[c];
 
-        Rectangle clippingArea = new(charIndex * (font.glyphSize + font.glyphGap), 0, thisCharWidth, texture.Height);
+        Rectangle clippingArea = new(charIndex * (font.glyphSize + font.glyphGap), 0, thisCharWidth, font.texture.Height);
 
-        currentDisplayInstance.spriteBatch.Draw(texture, position + new Vector2(scribeX + 0.5f, 0.5f), clippingArea, (Color)colour, 0, Vector2.One / 2f, Vector2.One, SpriteEffects.None, 0);
+        currentDisplayInstance.spriteBatch.Draw(font.texture, position + new Vector2(scribeX + 0.5f, 0.5f), clippingArea, (Color)colour, 0, Vector2.One / 2f, Vector2.One, SpriteEffects.None, 0);
 
         scribeX += thisCharWidth + font.glyphGap;
       }
 
-      return new((int)position.X, (int)position.Y, scribeX, texture.Height);
+      return new((int)position.X, (int)position.Y, scribeX, font.texture.Height);
     }
 
 

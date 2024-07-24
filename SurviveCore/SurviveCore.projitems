@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\ESpriteRotationType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\DroppedItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\IHasAssets.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Input\InputManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Inventory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Items\Item.cs" />

@@ -15,7 +15,7 @@ using MoonSharp.Interpreter;
 
 namespace SurviveCore.Engine.Entities
 {
-  internal abstract class Entity : IdentifiableObject
+  internal abstract class Entity : IdentifiableObject, IHasAssets
   {
     const int INVUL_FLASH_PER_SECOND = 4;
 
