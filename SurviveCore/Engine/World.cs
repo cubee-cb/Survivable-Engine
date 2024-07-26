@@ -64,6 +64,7 @@ namespace SurviveCore.Engine
 
     public void Update(int tick, float deltaTime)
     {
+      ELDebug.Log("update");
       //activeEntities.Clear();
       activeEntities = entities;
 
@@ -130,6 +131,7 @@ namespace SurviveCore.Engine
 
     public void Draw(float tickProgress)
     {
+      ELDebug.Log("draw");
       map.Draw(tickProgress);
 
 

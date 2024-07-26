@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SurviveCore.Engine.Display
 {
-  internal class Font : IHasAssets
+  public class Font : IHasAssets
   {
     public string textureSheetName = "default_font";
     public Texture2D texture;

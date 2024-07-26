@@ -14,6 +14,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\Font.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Display\GameDisplay.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\EInstanceMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\EngineStates\EngineState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\EngineStates\GameInstanceState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\EngineStates\LoadAssetsState.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\EFacingDirection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\ESpriteRotationType.cs" />

@@ -133,6 +133,11 @@ namespace SurviveCore.Engine
             //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
             LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
             LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
+
+            for (int i = 0; i < 10; i++)
+            {
+              ELDebug.Log("AAAAAAAAAAAAAAAAAAAAAA");
+            }
           }
 
 

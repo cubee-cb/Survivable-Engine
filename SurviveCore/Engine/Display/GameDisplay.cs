@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SurviveCore.Engine.Display
 {
-  internal class GameDisplay
+  public class GameDisplay
   {
     private static GameDisplay currentDisplayInstance;
     private static EGameDisplayLayer currentDisplayLayer;
