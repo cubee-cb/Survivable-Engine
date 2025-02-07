@@ -1,9 +1,9 @@
 # Survivable Engine
 
-An object-oriented rebuild of [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle)'s engine, which was originally internally known as Survive. 
+A rebuild of my engine for [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle) to be more focused on data files and extensibility, and overall just coded better. Everlost Isle was internally known as Survive, hence the name.
 Built on Monogame 3.8.1 originally in Visual Studio 2022, now in VSCodium. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json) for Json and [MoonSharp](https://www.moonsharp.org/) for Lua scripting.
 
-Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it.
+Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it. The goal is for as much of Everlost Isle as possible to be implemented as an "Asset Pack", so people can easily change or replace practically any part of it.
 
 So far, I've:
 - Set up an Instance system able to run as different modes like Server or Client. Also allows to have multiple game clients run in the same executable, potentially useful for split-screen.
