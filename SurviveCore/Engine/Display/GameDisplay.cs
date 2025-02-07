@@ -193,12 +193,14 @@ namespace SurviveCore.Engine.Display
       if (depth == -1)
       {
         float myDepth = (location.Y / currentDisplayInstance.internalHeight);
+        //todo: more layers might be needed. how many world layers do we want? need to change layer step if we want more than say, 8.
+        layer = Math.Clamp(layer, 0, 9);
         depth = 1 - (layer + (myDepth * 0.8f + 0.1f) / 10f) / 10f;
 
 #if DEBUG
         if (layerDebugEnabled)
         {
-          colour = layerDebug[layer];
+          colour = Color.Lerp(Color.White, layerDebug[layer], 0.5f);
         }
 #endif
       }

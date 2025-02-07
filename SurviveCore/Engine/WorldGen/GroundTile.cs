@@ -84,7 +84,8 @@ namespace SurviveCore.Engine.WorldGen
       Color myColour = elevation == 0 ? Color.LightGray : Color.White;
 
       // front face
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: myColour, layer: elevation);
+      // draw a layer lower so it doesn't draw in front of slopes
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: myColour, layer: elevation - 1);
 
       // top face
       GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) - 16, colour: myColour, layer: elevation);
