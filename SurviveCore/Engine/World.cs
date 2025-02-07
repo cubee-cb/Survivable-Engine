@@ -43,6 +43,7 @@ namespace SurviveCore.Engine
       map = new TileMap(width, height);
 
       entities = new();
+      activeEntities = new();
 
       generator = new WorldGenerator(properties.generationRoutines);
       generator.Generate(map);
@@ -124,7 +125,6 @@ namespace SurviveCore.Engine
 
         }
       }
-
 
     }
 
