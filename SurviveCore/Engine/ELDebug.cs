@@ -16,7 +16,7 @@ namespace SurviveCore.Engine
     [Conditional("DEBUG")] // may revert this, and have a bool to toggle it for logging purposes later.
     public static void Log(object output, Category category = Category.Log)
     {
-      if (output == null) output = "<null>";
+      output ??= "<null>";
       Debug.WriteLine(output.ToString(), '[' + category.ToString() + ']');
     }
 

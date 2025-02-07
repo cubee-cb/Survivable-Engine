@@ -79,6 +79,18 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
+    /// Uses Content.Load to load the placeholder/fallback assets from the engine
+    /// </summary>
+    public static void LoadPlaceholders(ContentManager Content)
+    {
+      // load fallback content for warehouse, used when an asset cannot be found
+      // content.Load is only used here for built-in engine content like placeholders.
+      missingTexture = Content.Load<Texture2D>("spr/missing");
+      missingSound = Content.Load<SoundEffect>("sfx/missing");
+      missingMusic = Content.Load<Song>("music/missing");
+    }
+
+    /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
     public static void LoadAll()

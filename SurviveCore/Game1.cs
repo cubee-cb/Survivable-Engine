@@ -51,14 +51,9 @@ namespace SurviveCore
     {
       spriteBatch = new SpriteBatch(GraphicsDevice);
 
-      // load fallback content for warehouse, used when an asset cannot be found
-      // content.Load is only used here for built-in engine content like placeholders.
-      Warehouse.missingTexture = Content.Load<Texture2D>("spr/missing");
-      Warehouse.missingSound = Content.Load<SoundEffect>("sfx/missing");
-      Warehouse.missingMusic = Content.Load<Song>("music/missing");
-
       // start up warehouse and load asset packs
       Warehouse.SetGraphicsDevice(GraphicsDevice);
+      Warehouse.LoadPlaceholders(Content);
       Warehouse.LoadAll();
 
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
