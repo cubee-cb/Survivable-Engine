@@ -81,11 +81,13 @@ namespace SurviveCore.Engine.WorldGen
       //todo: tile animations
       //todo: draw neighbour tiles beneath, to fill transparent "blending" areas in the sprites.
 
+      Color myColour = elevation == 0 ? Color.LightGray : Color.White;
+
       // front face
-      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 32, 16, 16), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) + 16, colour: myColour, layer: elevation);
 
       // top face
-      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) - 16, colour: elevation == 0 ? Color.LightGray : Color.White);
+      GameDisplay.Draw(texture, new Rectangle(0, 0, 16, 32), position, visualOffsetY: -(elevation * TileMap.TILE_THICKNESS) - 16, colour: myColour, layer: elevation);
     }
 
 

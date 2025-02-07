@@ -33,6 +33,21 @@ namespace SurviveCore.Engine.Display
     private static GraphicsDevice graphicsDevice;
     private SpriteBatch spriteBatch;
 
+#if DEBUG
+    private static bool layerDebugEnabled = true;
+    private static Color[] layerDebug = {
+      Color.Red,
+      Color.Green,
+      Color.Blue,
+      Color.Yellow,
+      Color.Purple,
+      Color.Orange,
+      Color.Pink,
+      Color.CornflowerBlue,
+      Color.Black,
+    };
+#endif
+
     //private static Font activeFont;
 
     public GameDisplay(GraphicsDevice outerGraphicsDevice, int width, int height)
@@ -162,7 +177,8 @@ namespace SurviveCore.Engine.Display
     /// <param name="angleTurns">Angle from 0-1.</param>
     /// <param name="visualOffsetY">Visual offset. Doesn't affect depth.</param>
     /// <param name="depth">Depth to render at.</param>
-    public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0, float visualOffsetX = 0, float visualOffsetY = 0, float depth = -1, Point? scaleBox = null)
+    /// <param name="layer">Depth group 0-9. Technically functions as depth=0.XYYY... where X is the layer.</param>
+    public static void Draw(Texture2D texture, Rectangle clippingArea, Vector2 location, Color? colour = null, bool flipX = false, bool flipY = false, float angleTurns = 0, float visualOffsetX = 0, float visualOffsetY = 0, float depth = -1, int layer = 0, Point? scaleBox = null)
     {
       if (texture == null)
       {
@@ -170,10 +186,22 @@ namespace SurviveCore.Engine.Display
         return;
       }
       if (colour == null) colour = Color.White;
+      //Vector2 oloc = location;
       location -= currentDisplayInstance.cameraPosition;
       //location = Vector2.Floor(location);
 
-      if (depth == -1) depth = (1 - (location.Y / currentDisplayInstance.internalHeight)) / 2f + 0.25f;
+      if (depth == -1)
+      {
+        float myDepth = (location.Y / currentDisplayInstance.internalHeight);
+        depth = 1 - (layer + (myDepth * 0.8f + 0.1f) / 10f) / 10f;
+
+#if DEBUG
+        if (layerDebugEnabled)
+        {
+          colour = layerDebug[layer];
+        }
+#endif
+      }
       SpriteEffects effects = SpriteEffects.None;
       if (flipX) effects = SpriteEffects.FlipHorizontally;
       if (flipY) effects = SpriteEffects.FlipVertically; // todo: how to combine these? are these even what we want?
@@ -183,6 +211,7 @@ namespace SurviveCore.Engine.Display
       Point destinationSize = clippingArea.Size;
       if (scaleBox != null) destinationSize *= (Point)scaleBox;
       currentDisplayInstance.spriteBatch.Draw(texture, new Rectangle(position.ToPoint(), destinationSize), clippingArea, (Color)colour, angleTurns, Vector2.One / 2f, effects, depth);
+
     }
     /*/
     public static void setActiveFont(Font font)

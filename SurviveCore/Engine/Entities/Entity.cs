@@ -221,8 +221,9 @@ namespace SurviveCore.Engine.Entities
       // draw, with the bottom of the sprite as its centre
       //todo: how do we fix the depth sorting when standing on top of tiles? the shadow clips into the below tile until the player walks onto it.
       float myElevation = GetVisualElevation(tickProgress);
-      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-world.GetStandingTileElevation(GetVisualPosition(tickProgress)) - shadowTexture.Height / 2, colour: Color.White * 0.5f);
-      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity);
+      int myLayer = (int)Math.Floor(myElevation) / TileMap.TILE_THICKNESS + 1;
+      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-world.GetStandingTileElevation(GetVisualPosition(tickProgress)) - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myLayer);
+      GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
 
     }
 
