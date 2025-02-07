@@ -119,7 +119,7 @@ namespace SurviveCore.Engine.Entities
     /// <returns>Whether the move was successful or not.</returns>
     private bool Move(float x, float y, float speed)
     {
-      Vector2 moveVector = new Vector2(x, y);
+      Vector2 moveVector = new(x, y);
       moveVector.Normalize();
 
       if (Single.IsNaN(moveVector.X) || Single.IsNaN(moveVector.Y))

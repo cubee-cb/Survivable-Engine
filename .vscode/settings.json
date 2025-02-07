@@ -1,0 +1,12 @@
+{
+    "Lua.diagnostics.globals": [
+        "SetElevation",
+        "Plot",
+        "MoveToward",
+        "PlaySound",
+        "DistanceTo",
+        "SnapPosition",
+        "GetTarget",
+        "DebugLog"
+    ]
+}

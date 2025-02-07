@@ -10,7 +10,6 @@ namespace SurviveCore.Engine
     /// <summary>
     /// Called when this object should re-obtain its assets.
     /// </summary>
-    /// <param name="id">The string id of the object. Handled on a per-subclass basis.</param>
     public void UpdateAssets();
   }
 }

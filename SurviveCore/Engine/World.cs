@@ -6,6 +6,8 @@ using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.WorldGen;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Net;
 using System.Text;
 using static SurviveCore.Engine.JsonHandlers.GroundProperties;
 
@@ -14,20 +16,24 @@ namespace SurviveCore.Engine
   //todo: we could probably make a new class for each world type, but that's probably best left for the games/mods
   internal class World
   {
-    string id;
+    readonly string id;
 
-    TileMap map;
-    WorldGenerator generator;
-    List<Entity> entities;
+    readonly TileMap map;
+    readonly WorldGenerator generator;
+    readonly List<Entity> entities;
     List<Entity> activeEntities;
 
-    WorldProperties properties;
+    readonly WorldProperties properties;
 
-    private GameInstance parentInstance;
+    readonly private GameInstance parentInstance;
+
+    readonly private static Random rnd = new();
 
 
     public World(string id, GameInstance instance)
     {
+      this.id = id;
+
       parentInstance = instance;
 
       properties = Warehouse.GetJson<WorldProperties>(id);
@@ -243,7 +249,7 @@ namespace SurviveCore.Engine
         // a random one
         default:
         case MatchCondition.Random:
-          returnEntity = validTargets[Game1.rnd.Next(validTargets.Count)];
+          returnEntity = validTargets[rnd.Next(validTargets.Count)];
           return returnEntity;
 
         case MatchCondition.Nearest:

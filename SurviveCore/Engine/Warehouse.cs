@@ -25,7 +25,7 @@ namespace SurviveCore.Engine
     // paths are formatted as:                        /contentPath/nameSpace/TEXTURE_FOLDER/
     // for example, the default values would become:  /assets/default/spr/
     // paths are relative to the executable
-    private static string contentPath = "assetPacks"; // the base path where assets will be stored
+    readonly private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
     private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
     private static string currentCategory = "default";
@@ -38,15 +38,15 @@ namespace SurviveCore.Engine
 
     private const char NAMESPACE_SEPARATOR = '.';
 
-    public static Texture2D missingTexture;
-    public static SoundEffect missingSound;
-    public static Song missingMusic;
+    private static Texture2D missingTexture;
+    private static SoundEffect missingSound;
+    private static Song missingMusic;
 
-    private static Dictionary<string, Texture2D> textures = new();
-    private static Dictionary<string, SoundEffect> sounds = new();
-    private static Dictionary<string, Song> music = new();
-    private static Dictionary<string, string> jsonData = new();
-    private static Dictionary<string, string> luaScripts = new();
+    readonly private static Dictionary<string, Texture2D> textures = new();
+    readonly private static Dictionary<string, SoundEffect> sounds = new();
+    readonly private static Dictionary<string, Song> music = new();
+    readonly private static Dictionary<string, string> jsonData = new();
+    readonly private static Dictionary<string, string> luaScripts = new();
 
     readonly static private List<string> contentTypeSubfolders = new()
     {
@@ -65,7 +65,7 @@ namespace SurviveCore.Engine
 
     private static GameProperties gameProps = null;
 
-    private static List<string> contentPaths = new()
+    readonly private static List<string> contentPaths = new()
     {
       Path.Combine(Platform.BASE_FOLDER, contentPath),
       Path.Combine(Platform.EXTERNAL_FOLDER, contentPath)
@@ -258,7 +258,7 @@ namespace SurviveCore.Engine
       {
         FileStream stream = new(filePath, FileMode.Open);
         Texture2D loadedTexture = Texture2D.FromStream(graphicsDevice, stream);
-        stream.DisposeAsync();
+        stream.Dispose(); //DisposeAsync();
 
         // replace loaded asset if it already exists
         if (textures.ContainsKey(internalName))
@@ -311,7 +311,7 @@ namespace SurviveCore.Engine
       {
         FileStream stream = new(filePath, FileMode.Open);
         SoundEffect loadedSound = SoundEffect.FromStream(stream);
-        stream.DisposeAsync();
+        stream.Dispose(); //DisposeAsync();
 
         // replace loaded asset if it already exists
         if (sounds.ContainsKey(internalName))

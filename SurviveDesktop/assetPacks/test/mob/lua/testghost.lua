@@ -1,6 +1,6 @@
 -- test ghost ai
 
-t = 1
+local t = 1
 
 -- called every tick
 function AI(self)

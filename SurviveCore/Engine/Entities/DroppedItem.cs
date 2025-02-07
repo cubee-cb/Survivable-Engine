@@ -11,15 +11,16 @@ namespace SurviveCore.Engine.Entities
 {
   internal class DroppedItem : Entity
   {
-    Item itemData;
+    readonly Item itemData;
+    readonly private static Random rnd = new();
 
     public DroppedItem(Item item, World world) : base(item.id, world)
     {
       itemData = item;
       tags = item.properties.tags;
 
-      velocity.X = (float)(Game1.rnd.NextDouble() * 2 - 1) * 3;
-      velocity.Y = (float)(Game1.rnd.NextDouble() * 2 - 4);
+      velocity.X = (float)(rnd.NextDouble() * 2 - 1) * 3;
+      velocity.Y = (float)(rnd.NextDouble() * 2 - 4);
 
       UpdateAssets();
     }

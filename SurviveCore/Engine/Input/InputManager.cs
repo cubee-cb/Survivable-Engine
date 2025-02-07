@@ -8,18 +8,18 @@ namespace SurviveCore.Engine.Input
 {
   public class InputManager
   {
-    private PlayerIndex playerIndex = PlayerIndex.One;
-    private bool hasKeyboard = false;
+    readonly private PlayerIndex playerIndex = PlayerIndex.One;
+    readonly private bool hasKeyboard = false;
 
     KeyboardState keyboardState;
     MouseState mouseState;
     GamePadState gamepadState;
 
-    List<Keys> keyboardBuffer;
+    readonly List<Keys> keyboardBuffer;
     //List<MouseActions> mouseBuffer;
-    List<Buttons> gamepadBuffer;
+    readonly List<Buttons> gamepadBuffer;
 
-    Dictionary<string, List<Keys>> keyboardBindings = new()
+    readonly Dictionary<string, List<Keys>> keyboardBindings = new()
     {
       { "left", new List<Keys>() { Keys.Left, Keys.S } },
       { "right", new List<Keys>() { Keys.Right, Keys.F } },
@@ -29,7 +29,7 @@ namespace SurviveCore.Engine.Input
       { "use", new List<Keys>() { Keys.Space } },
       { "run", new List<Keys>() { Keys.LeftShift } }
     };
-    Dictionary<string, List<Buttons>> controllerBindings = new()
+    readonly Dictionary<string, List<Buttons>> controllerBindings = new()
     {
       { "left", new List<Buttons>() { Buttons.DPadLeft, Buttons.LeftThumbstickLeft } },
       { "right", new List<Buttons>() { Buttons.DPadRight, Buttons.LeftThumbstickRight } },

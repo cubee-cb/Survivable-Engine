@@ -15,28 +15,28 @@ namespace SurviveCore.Engine
 {
   internal class GameInstance
   {
-    EInstanceMode instanceMode;
-    PlayerIndex playerIndex;
+    readonly EInstanceMode instanceMode;
+    readonly PlayerIndex playerIndex;
 
-    private int targetTickRate;
+    readonly private int targetTickRate;
     private int tickRate;
     private int tick;
     private float deltaTimeAccumulated;
 
-    GraphicsDevice graphicsDevice;
+    readonly GraphicsDevice graphicsDevice;
     public GameDisplay display;
-    InputManager input;
+    readonly InputManager input;
 
-    Player player;
-    List<Entity> cameraFocusEntities;
+    readonly Player player;
+    readonly List<Entity> cameraFocusEntities;
 
-    private List<World> worlds;
-    private int activeWorldIndex = 0;
+    readonly private List<World> worlds;
+    readonly private int activeWorldIndex = 0;
     World activeWorld;
 
-    GameProperties gameProps;
+    readonly GameProperties gameProps;
 
-    public GameInstance(EInstanceMode instanceMode, PlayerIndex playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, ContentManager contentManager, int displayWidth, int displayHeight)
+    public GameInstance(EInstanceMode instanceMode, PlayerIndex playerIndex, int targetTickRate, GraphicsDevice graphicsDevice, int displayWidth, int displayHeight)
     {
       this.instanceMode = instanceMode;
       this.playerIndex = playerIndex;
@@ -172,6 +172,7 @@ namespace SurviveCore.Engine
 
         //todo: temp: test font printing
         //todo: load fonts at startup into some collection
+        /*/
         Font font;
         font = Warehouse.GetJson<Font>("test.font.everscript_small");
         font.UpdateAssets();
@@ -183,6 +184,7 @@ namespace SurviveCore.Engine
         font.UpdateAssets();
         GameDisplay.Print("something something whatchamacallit", new(8, 24), font);
         GameDisplay.Print("<('.'<) <('.')> (>'.')>", new(8, 40), font);
+        //*/
 
         display.End();
 

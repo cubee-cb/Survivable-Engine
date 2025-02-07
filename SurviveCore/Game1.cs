@@ -12,10 +12,10 @@ namespace SurviveCore
 {
   public class Game1 : Game
   {
-    private GraphicsDeviceManager _graphics;
+    readonly private GraphicsDeviceManager _graphics;
     private SpriteBatch spriteBatch;
 
-    public static Random rnd = new Random();
+    private static Random rnd = new();
 
     List<GameInstance> gameInstances;
 
@@ -59,10 +59,10 @@ namespace SurviveCore
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances = new()
       {
-        new GameInstance(EInstanceMode.Host, PlayerIndex.One, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-        //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 30, graphicsDevice: GraphicsDevice, Content, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        new GameInstance(EInstanceMode.Host, PlayerIndex.One, targetTickRate: 30, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        //new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 30, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 30, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
+        //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 30, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
       };
 
     }

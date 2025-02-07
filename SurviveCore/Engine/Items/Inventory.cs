@@ -9,7 +9,7 @@ namespace SurviveCore.Engine.Items
 {
   internal class Inventory
   {
-    private List<Item> items;
+    readonly private List<Item> items;
 
     public Inventory(int size)
     {

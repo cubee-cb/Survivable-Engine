@@ -83,10 +83,10 @@ namespace SurviveCore.Engine.Entities
     /// 
     /// </summary>
     /// <param name="spawnLocation"></param>
-    public Entity(string id, Vector2 spawnLocation) : base()
-    {
-      position = spawnLocation;
-    }
+    //public Entity(string id, Vector2 spawnLocation) : base()
+    //{
+    //  position = spawnLocation;
+    //}
 
     /// <summary>
     /// Called when this object should re-obtain its assets.
@@ -222,8 +222,8 @@ namespace SurviveCore.Engine.Entities
       //todo: how do we fix the depth sorting when standing on top of tiles? the shadow clips into the below tile until the player walks onto it.
       float myElevation = GetVisualElevation(tickProgress);
       float myShadowElevation = world.GetStandingTileElevation(GetVisualPosition(tickProgress));
-      int myLayer = (int)Math.Floor(myElevation) / TileMap.TILE_THICKNESS + 1;
-      int myShadowLayer = (int)Math.Floor(myShadowElevation) / TileMap.TILE_THICKNESS + 1;
+      int myLayer = (int)MathF.Floor(myElevation) / TileMap.TILE_THICKNESS + 1;
+      int myShadowLayer = (int)MathF.Floor(myShadowElevation) / TileMap.TILE_THICKNESS + 1;
       GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-myShadowElevation - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myShadowLayer);
       GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
 

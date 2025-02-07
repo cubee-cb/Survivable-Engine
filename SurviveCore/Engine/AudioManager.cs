@@ -9,8 +9,8 @@ namespace SurviveCore.Engine
   // based on SoundEffectInstance manager code from Ninja Cat Remewstered
   internal static class AudioManager
   {
-    private static List<SoundEffectInstance> soundInstances = new();
-    private static Dictionary<string, SoundEffectInstance> keyedSoundInstances = new();
+    private static readonly List<SoundEffectInstance> soundInstances = new();
+    private static readonly Dictionary<string, SoundEffectInstance> keyedSoundInstances = new();
 
     /// <summary>
     /// Creates an instance of a soundeffect stored in Warehouse. Can optionally be made unique by passing a key.

@@ -9,7 +9,6 @@ namespace SurviveCore.Engine.Display
   internal class GameDisplay
   {
     private static GameDisplay currentDisplayInstance;
-    private static EGameDisplayLayer currentDisplayLayer;
 
     const int BASE_INTERNAL_WIDTH = 128;
     const int BASE_INTERNAL_HEIGHT = 128;
@@ -31,11 +30,11 @@ namespace SurviveCore.Engine.Display
     protected RenderTarget2D renderOverlay;
 
     private static GraphicsDevice graphicsDevice;
-    private SpriteBatch spriteBatch;
+    readonly private SpriteBatch spriteBatch;
 
 #if DEBUG
-    private static bool layerDebugEnabled = true;
-    private static Color[] layerDebug = {
+    readonly private static bool layerDebugEnabled = true;
+    readonly private static Color[] layerDebug = {
       Color.Red,
       Color.Green,
       Color.Blue,
@@ -143,7 +142,7 @@ namespace SurviveCore.Engine.Display
       int internalOffsetY = (height - targetInternalHeight) / 2;
 
       // draw the layers
-      Rectangle pixelRect = new Rectangle(internalOffsetX, internalOffsetY, targetInternalWidth, targetInternalHeight);
+      Rectangle pixelRect = new(internalOffsetX, internalOffsetY, targetInternalWidth, targetInternalHeight);
       spriteBatch.Draw(renderGameWorld, pixelRect, Color.White);
 
       spriteBatch.Draw(renderUI, display.Bounds, Color.White);

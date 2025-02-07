@@ -11,7 +11,7 @@ namespace SurviveCore.Engine.Entities
 {
   internal class Player : Entity
   {
-    [JsonIgnore] private InputManager input;
+    [JsonIgnore] readonly private InputManager input;
 
     public Player(string id, InputManager input, World world) : base(id, world)
     {

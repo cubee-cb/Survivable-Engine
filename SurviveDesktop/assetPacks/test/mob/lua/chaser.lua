@@ -1,24 +1,26 @@
 -- test chaser ai
 
-t = 1
-target = null
+local t = 1
+local target = nil
 
-state = 1
-stateTimer = 0
-stateDuration = 300
+local state = 1
+local stateTimer = 0
+local stateDuration = 300
 
-
-
-
+local dashEnd = nil
 
 
 
-states = {
+
+
+local states = {
   -- follow
   function()
     stateDuration = 180
   
-    MoveToward(target.x or 0, target.y or 0, 2)
+    if target ~= nil then
+      MoveToward(target.x or 0, target.y or 0, 2)
+    end
   
   end, 
 
@@ -43,14 +45,18 @@ states = {
 
     local dashSpeed = 10;
 
-    -- snap and finish state if the target is within dash step distance
-    if (DistanceTo(dashEnd.x, dashEnd.y) <= dashSpeed) then
-      stateTimer = stateDuration
-      SnapPosition(dashEnd.x, dashEnd.y)
+    if dashEnd then
+      -- snap and finish state if the target is within dash step distance
+      if (DistanceTo(dashEnd.x, dashEnd.y) <= dashSpeed) then
+        SnapPosition(dashEnd.x, dashEnd.y)
 
-    -- move by dash step speed
-    else
-      MoveToward(dashEnd.x or 0, dashEnd.y or 0, dashSpeed)
+        stateTimer = stateDuration
+        dashEnd = nil
+
+      -- move by dash step speed
+      else
+        MoveToward(dashEnd.x or 0, dashEnd.y or 0, dashSpeed)
+      end
     end
 
   end
@@ -63,8 +69,8 @@ function AI(self)
   --Move(1, 0, 10)
 
   -- check if near the target
-  near = true
-  --near = DistanceTo(target.x, target.y) < 64
+  local near = true
+  --local near = DistanceTo(target.x, target.y) < 64
 
   -- use states list if there is a target close enough
   if (target.valid and near) then

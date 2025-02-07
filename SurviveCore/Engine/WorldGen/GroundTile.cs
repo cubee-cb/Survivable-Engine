@@ -13,7 +13,7 @@ namespace SurviveCore.Engine.WorldGen
 {
   public class GroundTile
   {
-    private string id;
+    readonly private string id;
 
     private int elevation = 0;
 
