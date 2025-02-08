@@ -7,6 +7,7 @@ using SurviveCore.Engine.Entities;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,6 +34,8 @@ namespace SurviveCore.Engine
     readonly private List<World> worlds;
     readonly private int activeWorldIndex = 0;
     World activeWorld;
+
+    UI hudUI;
 
     readonly GameProperties gameProps;
 

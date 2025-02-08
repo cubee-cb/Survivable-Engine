@@ -1,0 +1,33 @@
+{
+  // properties
+  "texture": "*.ui.common",
+  "tags": [
+    "hud"
+  ],
+  "sounds": [
+  ],
+
+  "slots": [
+    {
+      "name": "input",
+      "position": [0, 0],
+    },
+    {
+      "name": "output",
+      "position": [2, 1],
+    },
+    {
+      "name": "fuel",
+      "position": [0, 2],
+    },
+    {
+      "position": [0, 5],
+    }
+  ],
+
+  // lua
+  "lua": "*.ui.hud",
+
+  // eof
+  "": ""
+}
