@@ -66,6 +66,13 @@ namespace SurviveCore.Engine.EngineStates
       GameDisplay.Print("loading asset packs...", Vector2.One * 8, font);
 
       game.engineDisplay.End();
+
+      // draw engine display to the screen
+      graphicsDevice.SetRenderTarget(null);
+      spriteBatch.Begin();
+      Texture2D display = game.engineDisplay.ComposeLayers();
+      spriteBatch.Draw(display, window.ClientBounds, Color.White);
+      spriteBatch.End();
     }
   }
 }
