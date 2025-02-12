@@ -369,14 +369,6 @@ namespace SurviveCore.Engine
       if (Platform.Exists(filePath))
       {
         // load json file content
-        // plus a quick, hacky way of handling namespace wildcards
-        // wildcard is replaced with the current namespace, typically the pack's namespace
-        // example, with two packs "foo" and "bar":
-        // foo may refer to its content as either "foo.thing" or "*.thing"
-        // if bar references "*.thing", it gets "bar.thing" unless it specifies "foo.thing"
-        // if foo wants to become "xyzzy", it can do so without breaking its own content -
-        // - as long as it uses "*.thing" instead of "foo.thing".
-        // however, bar needs to be updated to continue using "xyzzy.thing".
         string jsonString = Platform.LoadFileDirectly(filePath).Replace("@", nameSpace + ".");
 
         // replace loaded asset if it already exists
