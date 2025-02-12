@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -64,6 +65,7 @@ namespace SurviveCore.Engine
     };
 
     private static GameProperties gameProps = null;
+    readonly private static List<string> foundNamespaces = new();
 
     readonly private static List<string> contentPaths = new()
     {
@@ -118,6 +120,7 @@ namespace SurviveCore.Engine
           ELDebug.Log("found pack: " + packProps);
 
           nameSpace = packProps.nameSpace;
+          foundNamespaces.Add(nameSpace);
 
           // check if this mod is a game
           if (Platform.Exists(Path.Combine(packPath, "game.json")))
@@ -283,6 +286,8 @@ namespace SurviveCore.Engine
     /// <returns>The texture that was found, or the missing texture if not.</returns>
     public static Texture2D GetTexture(string internalName)
     {
+      internalName = ProcessWildcard(internalName, textures);
+      
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
@@ -336,6 +341,8 @@ namespace SurviveCore.Engine
     /// <returns>The sound that was found, or the missing sound if not.</returns>
     public static SoundEffect GetSoundEffect(string internalName)
     {
+      internalName = ProcessWildcard(internalName, sounds);
+
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
@@ -370,7 +377,7 @@ namespace SurviveCore.Engine
         // if foo wants to become "xyzzy", it can do so without breaking its own content -
         // - as long as it uses "*.thing" instead of "foo.thing".
         // however, bar needs to be updated to continue using "xyzzy.thing".
-        string jsonString = Platform.LoadFileDirectly(filePath).Replace("*.", nameSpace + '.');
+        string jsonString = Platform.LoadFileDirectly(filePath).Replace("@", nameSpace + ".");
 
         // replace loaded asset if it already exists
         if (jsonData.ContainsKey(internalName))
@@ -396,6 +403,8 @@ namespace SurviveCore.Engine
     /// <returns>An object deserialised from the json, based on the type provided to the function.</returns>
     public static T GetJson<T>(string internalName)
     {
+      internalName = ProcessWildcard(internalName, jsonData);
+
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
@@ -430,7 +439,7 @@ namespace SurviveCore.Engine
       {
         // load lua file content
         // also process lua namespaces, in case it wants to reference external files
-        string luaString = Platform.LoadFileDirectly(filePath).Replace("*", nameSpace);
+        string luaString = Platform.LoadFileDirectly(filePath).Replace("@", nameSpace + ".");
 
         // replace loaded asset if it already exists
         if (luaScripts.ContainsKey(internalName))
@@ -456,6 +465,8 @@ namespace SurviveCore.Engine
     /// <returns>A Script built based on the file contents.</returns>
     public static Script GetLua(string internalName)
     {
+      internalName = ProcessWildcard(internalName, luaScripts);
+
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
@@ -501,6 +512,21 @@ namespace SurviveCore.Engine
       return gameProps;
     }
 
+    private static string ProcessWildcard<T>(string internalName, Dictionary<string, T> dict)
+    {
+      string processedName = internalName.Replace("*.", "");
+
+      foreach (string name in foundNamespaces)
+      {
+        if (dict.ContainsKey(name + "." + processedName))
+        {
+          return name + "." + processedName;
+
+        }
+      }
+
+      return internalName;
+    }
 
 
 

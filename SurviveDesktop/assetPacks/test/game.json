@@ -5,17 +5,17 @@
     "testgame"
   ],
 
-  "hudLayout": "*.ui.hud",
+  "hudLayout": "@ui.hud",
 
-  "startingDimension": "*.dimension.testmap",
-  "startingPlayer": "*.character.test",
+  "startingDimension": "@dimension.testmap",
+  "startingPlayer": "@character.test",
   "startingInventory": [
-    "*.item.mountain_sign",
-    "*.item.mountain_sign"
+    "@item.mountain_sign",
+    "@item.mountain_sign"
   ],
   "startingMobs": [
-    "*.mob.chaser",
-    "*.mob.test_wils"
+    "@mob.chaser",
+    "@mob.test_wils"
   ],
 
   // eof
