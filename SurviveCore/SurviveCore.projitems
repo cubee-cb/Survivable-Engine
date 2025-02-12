@@ -31,6 +31,7 @@
     <Compile Include="..\SurviveCore\Engine\JsonHandlers\CharacterProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\UIProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />
@@ -42,7 +43,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\GameInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\World.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\IdentifiableObject.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UILayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UISlot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />

@@ -8,9 +8,11 @@ namespace SurviveCore.Engine.JsonHandlers
   public class GameProperties
   {
     // descriptions
+    public string internalName = "game_default";
     public List<string> tags = new();
 
     // stats
+    public string hudLayout = "hud_default";
     public string startingDimension = "dimension_default";
     public string startingPlayer = "character_default";
     public List<string> startingInventory = new();

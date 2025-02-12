@@ -35,7 +35,7 @@ namespace SurviveCore.Engine
     readonly private int activeWorldIndex = 0;
     World activeWorld;
 
-    UI hudUI;
+    UILayout hudUI;
 
     readonly GameProperties gameProps;
 
@@ -88,6 +88,9 @@ namespace SurviveCore.Engine
       }
 
       worlds.Add(tempWorld);
+
+      hudUI = new(gameProps.hudLayout);
+
       this.graphicsDevice = graphicsDevice;
 
       ELDebug.Log("game instance initialised");

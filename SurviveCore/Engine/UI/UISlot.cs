@@ -6,13 +6,17 @@ namespace SurviveCore.Engine.UI
 {
 
 
-  public abstract struct UISlot
+  public struct UISlot
   {
     // descriptions
     public string texture = "uislot_default";
     public string name = "slot";
     public List<float> position = new();
 
+    public UISlot()
+    {
+      
+    }
 
   }
 }
