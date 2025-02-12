@@ -1,7 +1,7 @@
 {
   // properties
-  "texture": "*.mob.chaser",
-  "shadow": "*.common.small_shadow",
+  "texture": "@mob.chaser",
+  "shadow": "@common.small_shadow",
   "tags": [
     "enemy"
   ],
@@ -20,7 +20,7 @@
   "inventorySize": 0,
 
   // lua
-  "lua": "*.mob.chaser",
+  "lua": "@mob.chaser",
 
   // eof
   "": ""

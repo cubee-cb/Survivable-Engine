@@ -1,9 +1,12 @@
 {
   // properties
-  "texture": "*.ground.grass",
+  "texture": "@ground.grass",
   "tags": [
     "grass",
     "growsTrees"
+  ],
+  "sounds": [
+    "@ground.grass_step"
   ],
 
   // stats

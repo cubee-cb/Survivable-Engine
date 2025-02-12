@@ -1,11 +1,11 @@
 {
   // properties
-  "texture": "*.item.mountain_sign",
+  "texture": "@item.mountain_sign",
   "tags": [
     "mace"
   ],
   "sounds": [
-    "*.item.mountain_sign_whack"
+    "@item.mountain_sign_whack"
   ],
   "framesX": 1,
   "framesY": 1,

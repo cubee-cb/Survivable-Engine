@@ -1,6 +1,6 @@
 {
   // properties
-  "texture": "*.ui.common",
+  "texture": "@ui.common",
   "tags": [
     "hud"
   ],
@@ -26,7 +26,7 @@
   ],
 
   // lua
-  "lua": "*.ui.hud",
+  "lua": "@ui.hud",
 
   // eof
   "": ""

@@ -1,11 +1,11 @@
 {
   // properties
-  "texture": "*.ground.grass_slope_vertical",
+  "texture": "@ground.grass_slope_vertical",
   "tags": [
     "grass"
   ],
   "sounds": [
-    "*.ground.grass_step"
+    "@ground.grass_step"
   ],
 
   // stats

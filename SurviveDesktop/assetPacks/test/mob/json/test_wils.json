@@ -1,12 +1,12 @@
 {
   // properties
-  "texture": "*.character.test",
-  "shadow": "*.common.small_shadow",
+  "texture": "@character.test",
+  "shadow": "@common.small_shadow",
   "tags": [
     "placeholder"
   ],
   "sounds": [
-    "*.character.test_hurt"
+    "@character.test_hurt"
   ],
   "hitbox": {"width": 6, "height": 3},
 
@@ -26,7 +26,7 @@
   "inventorySize": 32,
 
   // lua
-  "lua": "*.mob.testghost",
+  "lua": "@mob.testghost",
 
   // eof
   "": ""

@@ -10,8 +10,8 @@
 
   // these are called in the listed order, top to bottom
   "generationRoutines": [
-    "*.worldgen.testmap"
-    //{"routine": "*.testmap", "x": 0, "y": 0, "width": 32, "height": 32}
+    "@worldgen.testmap"
+    //{"routine": "@testmap", "x": 0, "y": 0, "width": 32, "height": 32}
   ],
 
   "lua": "",

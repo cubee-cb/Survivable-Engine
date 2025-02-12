@@ -8,15 +8,15 @@ function Generate(x, y, w, h)
 
   for ix = x, x + w do
     for iy = y, y + h do
-      local tile = "*.ground.grass"
+      local tile = "@ground.grass"
       local elevation = 0
 
       -- create some simple slopes
       if ix == 8 and iy > 7 or ix == 14 then
-        tile = "*.ground.grass_slope_horizontal"
+        tile = "@ground.grass_slope_horizontal"
       end
       if iy == 7 and ix < 8 then
-        tile = "*.ground.grass_slope_vertical"
+        tile = "@ground.grass_slope_vertical"
       end
       if ix > 8 or iy < 7 then
         elevation = 1
