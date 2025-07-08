@@ -4,6 +4,13 @@
 local t = 1
 
 
+function Tick(self)
+  if t % 60 == 0 then
+    DebugLog("Inventory ui lua test. ping!")
+  end
+
+  t = t + 1
+end
 
 
 

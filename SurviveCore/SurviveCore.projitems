@@ -28,7 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\GroundProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\ModProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\MatchCondition.cs" />
-    <Compile Include="..\SurviveCore\Engine\JsonHandlers\CharacterProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\CharacterProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\UIProperties.cs" />
@@ -45,6 +45,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\IdentifiableObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UILayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UISlot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\UI\UIWidget.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game1.cs" />
   </ItemGroup>
   <ItemGroup>

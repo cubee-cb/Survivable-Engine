@@ -33,7 +33,7 @@ namespace SurviveCore.Engine.Display
     readonly private SpriteBatch spriteBatch;
 
 #if DEBUG
-    readonly private static bool layerDebugEnabled = true;
+    readonly private static bool layerDebugEnabled = false;
     readonly private static Color[] layerDebug = {
       Color.Red,
       Color.Green,

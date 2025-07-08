@@ -50,7 +50,7 @@
   ],
 
   // lua
-  "lua": "@ui.hud",
+  "lua": "@ui.inventory",
 
   // eof
   "": ""

@@ -70,7 +70,7 @@ namespace SurviveCore.Engine.Items
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
       Rectangle clippingRect = new(frameWidth * (int)(localTick / 10 % properties.framesX), frameHeight * currentFrame, frameWidth, frameHeight);
-      GameDisplay.Draw(texture, clippingRect, position);
+      GameDisplay.Draw(texture, clippingRect, position - clippingRect.Size.ToVector2() / 2f);
 
     }
 

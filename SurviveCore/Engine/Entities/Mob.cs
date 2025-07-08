@@ -46,9 +46,12 @@ namespace SurviveCore.Engine.Entities
       {
         try
         {
-          DynValue resAI = lua.Call(lua.Globals["AI"]);
-
-          DynValue resTick = lua.Call(lua.Globals["Tick"]);
+          DynValue resAI;
+          if (lua.Globals["AI"] != null) resAI = lua.Call(lua.Globals["AI"]);
+          
+          DynValue resTick;
+          if (lua.Globals["Tick"] != null) resTick = lua.Call(lua.Globals["Tick"]);
+          
         }
         catch (Exception e)
         {

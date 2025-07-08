@@ -16,10 +16,7 @@ namespace SurviveCore.Engine.JsonHandlers
     public List<string> sounds = new();
 
     public List<UISlot> slots;
-
-
-    public int inventorySize = 10;
-    readonly private Inventory inventory;
+    public List<UIWidget> widgets;
 
     // lua
     public string lua;
@@ -28,8 +25,6 @@ namespace SurviveCore.Engine.JsonHandlers
 
     public UIProperties()
     {
-      inventory = new(inventorySize);
-
     }
 
     public virtual void ReplaceData(UIProperties source)
@@ -40,12 +35,11 @@ namespace SurviveCore.Engine.JsonHandlers
       texture = source.texture ?? texture;
       tags = source.tags ?? tags;
 
-      inventorySize = source.inventorySize;
-
       // lua
       lua = source.lua ?? lua;
 
     }
 
   }
+
 }

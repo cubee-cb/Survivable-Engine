@@ -91,8 +91,8 @@ namespace SurviveCore.Engine
 
       worlds.Add(tempWorld);
 
-      hudUI = new(gameProps.hudLayout);
-      inventoryUI = new(gameProps.inventory);
+      hudUI = new(gameProps.hudLayout, player.GetInventory());
+      inventoryUI = new(gameProps.inventory, player.GetInventory());
 
       this.graphicsDevice = graphicsDevice;
 
@@ -124,8 +124,6 @@ namespace SurviveCore.Engine
         }
       }
 
-
-
       activeWorld = worlds[activeWorldIndex];
 
       // buffer input
@@ -139,7 +137,12 @@ namespace SurviveCore.Engine
       float targetDeltaTime = 1f / tickRate;
       while (deltaTimeAccumulated > targetDeltaTime)
       {
+        // update the game on a per-tick basis here
         activeWorld.Update(tick, deltaTime);
+
+        // update uis; this runs their lua scripts
+        hudUI.Update(tick, deltaTime);
+        inventoryUI.Update(tick, deltaTime);
 
         if (ELDebug.Key(Keys.LeftAlt)) ELDebug.Log("ping! (" + tickRate + " TPS) total delta: " + deltaTimeAccumulated + "s > " + targetDeltaTime + "s (took " + deltaTime + "s this real frame)");
 
@@ -205,8 +208,8 @@ namespace SurviveCore.Engine
 
         // draw player's inventory
         //player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
-        inventoryUI.Draw(Vector2.Zero, player.GetInventory(), tickProgress);
-        //hotbarUI.Draw(Vector2.Zero, player.GetInventory(), tickProgress);
+        inventoryUI.Draw(Vector2.UnitY * 128, tickProgress);
+        hudUI.Draw(Vector2.Zero, tickProgress);
 
         display.End();
 
