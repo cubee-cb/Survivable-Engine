@@ -23,7 +23,7 @@
   "movementSpeedWalk": 4,
   "movementSpeedRun": 8,
 
-  "inventorySize": 32,
+  "inventorySize": 36,
 
   // lua
   //"lua": "",

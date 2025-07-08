@@ -1,11 +1,15 @@
 {
   // properties
   "internalName": "test mod",
-  "nameSpace": "test",
+  "nameSpace": "default",
   "revision": 1,
 
   "tags": [
-    "placeholder"
+    "internal"
+  ],
+
+  "authors": [
+    "cubee"
   ],
 
   // eof

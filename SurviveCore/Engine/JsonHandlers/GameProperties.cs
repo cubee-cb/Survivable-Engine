@@ -12,7 +12,9 @@ namespace SurviveCore.Engine.JsonHandlers
     public List<string> tags = new();
 
     // stats
-    public string hudLayout = "hud_default";
+    public string hudLayout = "ui_default";
+    public string inventory = "ui_default";
+
     public string startingDimension = "dimension_default";
     public string startingPlayer = "character_default";
     public List<string> startingInventory = new();

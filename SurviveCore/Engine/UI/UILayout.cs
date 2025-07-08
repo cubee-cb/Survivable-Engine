@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
+using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
@@ -56,14 +57,30 @@ namespace SurviveCore.Engine.UI
     /// 
     /// </summary>
     /// <param name="tickProgress">a value from 0-1 showing the progress through the current tick, for smoothing purposes</param>
-    public virtual void Draw(Vector2 position, float tickProgress)
+    public virtual void Draw(Vector2 position, Inventory inventory, float tickProgress)
     {
       float localTick = t + tickProgress;
 
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);
-      Rectangle clippingRect = new(0, 0, 128, 128);
-      GameDisplay.Draw(texture, clippingRect, position);
+      Rectangle clippingRect = new(0, 0, 24, 24);
+
+      int index = 0;
+      foreach (UISlot slot in properties.slots)
+      {
+        // grab item from the inventory
+        List<Item> items = inventory.GetItems();
+
+        // break if there are no more item slots in the inventory
+        if (index >= items.Count) break;
+        Item item = items[index];
+
+        Vector2 slotPosition = new(slot.position[0], slot.position[1]);
+
+        GameDisplay.Draw(texture, clippingRect, position + slotPosition * clippingRect.Size.ToVector2());
+
+        index++;
+      }
 
     }
 

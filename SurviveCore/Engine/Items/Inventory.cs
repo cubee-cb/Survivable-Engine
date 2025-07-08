@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using SurviveCore.Engine.Display;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace SurviveCore.Engine.Items
@@ -94,13 +95,15 @@ namespace SurviveCore.Engine.Items
     }
 
     /// <summary>
-    /// 
+    /// deprecated; use a UILayout to draw inventories
     /// </summary>
     /// <param name="position"></param>
     /// <param name="unitsWide">Amount of units wide to display the inventory at.</param>
     /// <param name="tickProgress">A value from 0-1 showing the progress through the current tick, for smoothing purposes.</param>
     public virtual void Draw(Vector2 position, int unitsWide, float tickProgress)
     {
+      ELDebug.Log("self-drawing inventories are deprecated; use a UILayout to draw inventories");
+
       // a "unit" here is the amount of screen pixels that correspond to an in-world pixel.
       float unitScale = 4; //todo: get the game scale somehow
 
@@ -119,6 +122,7 @@ namespace SurviveCore.Engine.Items
 
         index++;
       }
+      //*/
 
     }
 

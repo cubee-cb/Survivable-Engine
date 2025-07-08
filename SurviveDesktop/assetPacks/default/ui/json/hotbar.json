@@ -1,0 +1,30 @@
+{
+  // properties
+  "texture": "@ui.common",
+  "tags": [
+    "hotbar"
+  ],
+  "sounds": [
+  ],
+
+  "slots": [
+    // main inventory
+    {"position": [0, 0]},
+    {"position": [1, 0]},
+    {"position": [2, 0]},
+    {"position": [3, 0]},
+    {"position": [4, 0]},
+    {"position": [5, 0]},
+    {"position": [6, 0]},
+    {"position": [7, 0]},
+    {"position": [8, 0]},
+    {"position": [9, 0]}
+
+  ],
+
+  // lua
+  "lua": "@ui.hud",
+
+  // eof
+  "": ""
+}

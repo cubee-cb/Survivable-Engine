@@ -10,6 +10,7 @@ using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.UI;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SurviveCore.Engine
@@ -36,6 +37,7 @@ namespace SurviveCore.Engine
     World activeWorld;
 
     UILayout hudUI;
+    UILayout inventoryUI;
 
     readonly GameProperties gameProps;
 
@@ -90,6 +92,7 @@ namespace SurviveCore.Engine
       worlds.Add(tempWorld);
 
       hudUI = new(gameProps.hudLayout);
+      inventoryUI = new(gameProps.inventory);
 
       this.graphicsDevice = graphicsDevice;
 
@@ -201,7 +204,9 @@ namespace SurviveCore.Engine
         display.Camera(Vector2.Zero);
 
         // draw player's inventory
-        player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
+        //player.GetInventory().Draw(Vector2.Zero, 100, tickProgress);
+        inventoryUI.Draw(Vector2.Zero, player.GetInventory(), tickProgress);
+        //hotbarUI.Draw(Vector2.Zero, player.GetInventory(), tickProgress);
 
         display.End();
 

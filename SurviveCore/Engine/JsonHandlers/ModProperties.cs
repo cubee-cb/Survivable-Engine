@@ -8,6 +8,7 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     public string internalName = "default_mod";
     public string nameSpace = "default_mod";
+    public List<string> authors = new() { "author" };
     public int revision = 0;
 
     public ModProperties()
@@ -20,6 +21,7 @@ namespace SurviveCore.Engine.JsonHandlers
 
       internalName = source.internalName ?? internalName;
       nameSpace = source.nameSpace ?? nameSpace;
+      authors = source.authors ?? authors;
 
       revision = source.revision;
     }

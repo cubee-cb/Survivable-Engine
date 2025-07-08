@@ -5,7 +5,8 @@
     "testgame"
   ],
 
-  "hudLayout": "@ui.hud",
+  "hudLayout": "@ui.smelter",
+  "inventory": "@ui.inventory",
 
   "startingDimension": "@dimension.testmap",
   "startingPlayer": "@character.test",
