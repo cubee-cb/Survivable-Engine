@@ -24,7 +24,7 @@ Notable milestones to-do:
 	- "Portals" with destination world/position. (may be doorways, caves, or literal portals)
 	- Mob spawns, biome generators, etc.
 - Networking/splitscreen/multiplayer?
-	- Actual differences between host/client/dedicated.
+	- Actual differences between host/client/dedicated modes.
 	- Might look into MonoSync and Backdash.
 - Game progression triggers.
 	- May be step-by-step or simple boolean.
