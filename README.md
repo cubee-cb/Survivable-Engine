@@ -19,7 +19,7 @@ Notable milestones to-do:
 - Add tile entities.
 	- Don't-Starve-like tiles that can be solid and don't typically move, but are also not necessarily locked to the grid like normal tiles.
 - Collisions between entities and tile entities.
-- Inventories and items.
+- Items and inventory interfaces, general UI controls.
 - Saving worlds and players.
 	- Should players be per-world as before like Stardew, or separate like Terraria?
 - Multiple worlds/"dimensions" per-save with their own mobs and world properties.
