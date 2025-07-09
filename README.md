@@ -5,6 +5,8 @@ Built on Monogame 3.8.1. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json)
 
 Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it. The goal is for as much of Everlost Isle as possible to be implemented as an "Asset Pack", so people can easily change or replace practically any part of it.
 
+![image](.github/screen1.png)
+
 So far, I've:
 - Set up an Instance system able to run as different modes like Server or Client. Also allows to have multiple game clients run in the same executable, potentially useful for split-screen.
 - Set up a ticking system, so the update rate of each instance can be modified and the game's framerate can be unlocked without adversely affecting the game loop.
