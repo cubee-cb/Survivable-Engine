@@ -20,11 +20,11 @@ function AI(self)
 
   -- move toward target if one is found
   if (targetIsValid) then
-	  MoveToward(x or 0, y or 0, 1)
+	  MoveToward(x or 0, y or 0, 0.5)
 
   -- complain loudly if not
   else
-	  if (t % 10 == 9) then
+	  if (t % 20 == 19) then
 		  PlaySound("@mob.mob_testghost_alert")
       DebugLog("no target!!")
 	  end

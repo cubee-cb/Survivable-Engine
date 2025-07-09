@@ -20,8 +20,8 @@
   "maxHealth": 10,
   "regenerationPerSecond": 1,
 
-  "movementSpeedWalk": 4,
-  "movementSpeedRun": 8,
+  "movementSpeedWalk": 2,
+  "movementSpeedRun": 4,
 
   "inventorySize": 36,
 

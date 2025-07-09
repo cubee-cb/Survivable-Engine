@@ -5,7 +5,7 @@ local target = nil
 
 local state = 1
 local stateTimer = 0
-local stateDuration = 300
+local stateDuration = 600
 
 local dashEnd = nil
 
@@ -19,14 +19,14 @@ local states = {
     stateDuration = 180
   
     if target ~= nil then
-      MoveToward(target.x or 0, target.y or 0, 2)
+      MoveToward(target.x or 0, target.y or 0, 1)
     end
   
   end, 
 
   -- pause
   function()
-    stateDuration = 30
+    stateDuration = 60
 
     if (stateTimer == 0) then
       PlaySound("@mob.chaser_shout")
@@ -36,14 +36,14 @@ local states = {
 
   -- dash
   function()
-    stateDuration = 60
+    stateDuration = 120
 
     if (stateTimer == 0) then
       PlaySound("@mob.chaser_dash")
       dashEnd = target
     end
 
-    local dashSpeed = 10;
+    local dashSpeed = 5;
 
     if dashEnd then
       -- snap and finish state if the target is within dash step distance
