@@ -48,7 +48,7 @@ namespace SurviveCore.Engine
 
       // initialise display and input
       display = new GameDisplay(graphicsDevice, displayWidth, displayHeight);
-      input = new InputManager(playerIndex, hasKeyboard: playerIndex == PlayerIndex.One);
+      input = new InputManager(playerIndex, display, hasKeyboard: playerIndex == PlayerIndex.One);
 
       gameProps = Warehouse.GetGameProps();
 

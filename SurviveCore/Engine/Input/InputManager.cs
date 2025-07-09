@@ -1,18 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using SurviveCore.Engine.Display;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SurviveCore.Engine.Input
 {
-  public class InputManager
+  internal class InputManager
   {
     readonly private PlayerIndex playerIndex = PlayerIndex.One;
     readonly private bool hasKeyboard = false;
+    private GameDisplay pointerSource;
 
     KeyboardState keyboardState;
-    MouseState mouseState;
     GamePadState gamepadState;
 
     readonly List<Keys> keyboardBuffer;
@@ -26,7 +27,8 @@ namespace SurviveCore.Engine.Input
       { "up", new List<Keys>() { Keys.Up, Keys.E } },
       { "down", new List<Keys>() { Keys.Down, Keys.D } },
       { "interact", new List<Keys>() { Keys.E } },
-      { "use", new List<Keys>() { Keys.Space } },
+      { "use", new List<Keys>() { Keys.X } },
+      { "jump", new List<Keys>() { Keys.Space } },
       { "run", new List<Keys>() { Keys.LeftShift } }
     };
     readonly Dictionary<string, List<Buttons>> controllerBindings = new()
@@ -35,17 +37,18 @@ namespace SurviveCore.Engine.Input
       { "right", new List<Buttons>() { Buttons.DPadRight, Buttons.LeftThumbstickRight } },
       { "up", new List<Buttons>() { Buttons.DPadUp, Buttons.LeftThumbstickUp } },
       { "down", new List<Buttons>() { Buttons.DPadDown, Buttons.LeftThumbstickDown } },
-      { "interact", new List<Buttons>() { Buttons.A } },
+      { "interact", new List<Buttons>() { Buttons.B } },
       { "use", new List<Buttons>() { Buttons.RightTrigger } },
+      { "jump", new List<Buttons>() { Buttons.A } },
       { "run", new List<Buttons>() { Buttons.X } }
     };
 
     // this is set up this way so not every input type has to be specified.
-    public InputManager(PlayerIndex playerIndex, bool hasKeyboard = false)
+    public InputManager(PlayerIndex playerIndex, GameDisplay pointerSource, bool hasKeyboard = false)
     {
       this.playerIndex = playerIndex;
+      this.pointerSource = pointerSource;
       this.hasKeyboard = hasKeyboard;
-
 
       if (hasKeyboard) keyboardBuffer = new();
       gamepadBuffer = new();
@@ -60,7 +63,10 @@ namespace SurviveCore.Engine.Input
       if (hasKeyboard)
       {
         keyboardState = Keyboard.GetState();
-        mouseState = Mouse.GetState();
+      }
+      if (pointerSource != null && pointerSource.HasPointer())
+      {
+        pointerSource.UpdatePointerState();
       }
       gamepadState = GamePad.GetState(playerIndex);
 
@@ -145,6 +151,31 @@ namespace SurviveCore.Engine.Input
       return false;
     }
 
+    /// <summary>
+    /// Get this input manager's aim cursor.
+    /// </summary>
+    /// <param name="origin">Optional offset that the cursor is centred around.</param>
+    /// <returns>World coordinates. Origin or (0, 0) if no pointer is available.</returns>
+    public Vector2 GetAimCursor(Vector2? origin = null)
+    {
+      Vector2 vecOrigin = origin == null ? Vector2.Zero : (Vector2)origin;
+
+      if (pointerSource.HasPointer())
+      {
+        return pointerSource.ScreenToWorld(pointerSource.GetPointer()) - vecOrigin;
+      }
+      //todo: do we allow controllers to have a pointer of some kind?
+      else
+      {
+        return vecOrigin;
+      }
+    }
+
+    public bool IsAimCursorValid()
+    {
+      // todo: handle the cursor being over UI panels, etc.
+      return true;
+    }
 
   }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace SurviveCore.Engine.Display
 {
@@ -21,6 +23,8 @@ namespace SurviveCore.Engine.Display
     float scaleFactor;
 
     private Vector2 cameraPosition;
+
+    MouseState mouseState;
 
     float UIScaleMultiplier = 1.0f;
     
@@ -152,6 +156,37 @@ namespace SurviveCore.Engine.Display
 
       // return the display as a texture, to use later
       return display;
+    }
+
+    /// <summary>
+    /// Converts a pointer position on the screen to a world coordinate, taking into account the camera offset.
+    /// </summary>
+    /// <param name="screenPosition">Position to convert.</param>
+    /// <returns>World coordinates.</returns>
+    public Vector2 ScreenToWorld(Vector2 screenPosition)
+    {
+      Vector2 worldPosition = screenPosition / UIScaleMultiplier / scaleFactor;
+      worldPosition += currentDisplayInstance.cameraPosition;
+      return worldPosition;
+    }
+
+    public MouseState UpdatePointerState()
+    {
+      mouseState = Mouse.GetState();
+      return mouseState;
+    }
+
+    /// <summary>
+    /// Temporary. Check whether this display has any pointers.
+    /// </summary>
+    /// <returns>True; all displays have the mouse.</returns>
+    public bool HasPointer()
+    {
+      return true;
+    }
+    public Vector2 GetPointer()
+    {
+      return mouseState.Position.ToVector2();
     }
 
 

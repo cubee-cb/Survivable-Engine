@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
+using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.JsonHandlers;
 using System;
@@ -45,7 +46,9 @@ namespace SurviveCore.Engine.Entities
     {
       base.PreUpdate(tick, deltaTime);
 
-      // movmement
+      //todo: maybe reimplement player code as lua?
+
+      // movement
       velocity = Vector2.Zero;
       float speed = input.Action("run") ? properties.movementSpeedRun : properties.movementSpeedWalk;
       if (input.Action("left"))
@@ -67,12 +70,22 @@ namespace SurviveCore.Engine.Entities
 
 
       //todo: placeholder jump action
-      if (grounded && input.Action("use"))
+      if (grounded && input.Action("jump"))
       {
         velocityElevation = 4.5f;
       }
 
       TryMove(velocity);
+
+      //todo: use held items
+      if (input.Action("use"))
+      {
+        // player can spiiinnnn in place by pressing "use"
+        Vector2 aimCursor = input.GetAimCursor();
+
+        //todo: why doesn't this work? player just snaps to look right
+        direction = GetFacingDirection(aimCursor - position);
+      }
 
       /*/ run update lua
       if (lua != null)
@@ -88,6 +101,18 @@ namespace SurviveCore.Engine.Entities
     {
       //todo: return attack power
       return properties.maxHealth;
+    }
+
+
+
+
+    public override void Draw(float tickProgress)
+    {
+      base.Draw(tickProgress);
+
+      //todo: temporary draw aim cursor
+      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, input.GetAimCursor(), visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: -shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: 9);
+
     }
 
 
