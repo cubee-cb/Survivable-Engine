@@ -85,16 +85,24 @@ namespace SurviveCore.Engine.Entities
 
         //todo: why doesn't this work? player just snaps to look right
         direction = GetFacingDirection(aimCursor - position);
+
+        // yippee!
+        UseHeldItem();
+      }
+      else
+      {
+        // might be a crutch; how do i check in Entity if the held item is no-longer being "use"d?
+        ReleaseUseHeldItem();
       }
 
       /*/ run update lua
-      if (lua != null)
-      {
-        DynValue resUpdate = lua.Call(lua.Globals["Update"]);
-      }
-      //*/
+        if (lua != null)
+        {
+          DynValue resUpdate = lua.Call(lua.Globals["Update"]);
+        }
+        //*/
 
-      base.PostUpdate(tick, deltaTime);
+        base.PostUpdate(tick, deltaTime);
     }
 
     public override float GetStrength()

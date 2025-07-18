@@ -54,7 +54,8 @@ namespace SurviveCore.Engine.Entities
     protected List<int> collidingEntityIDs = new();
 
     // item usage
-    [JsonIgnore] protected float itemUseTimer = 0f;
+    [JsonIgnore] protected int itemUseTimer = 0;
+    [JsonIgnore] protected int itemChargeTimer = 0;
 
     [JsonIgnore] protected Texture2D texture;
     [JsonIgnore] protected Texture2D shadowTexture;
@@ -175,6 +176,9 @@ namespace SurviveCore.Engine.Entities
 
       }
 
+      // process held item
+      if (itemUseTimer > 0) itemUseTimer -= 1;
+
       TickTimer(ref invulnerabilitySeconds);
       t += 1;
     }
@@ -236,8 +240,12 @@ namespace SurviveCore.Engine.Entities
       if (heldItem != null)
       {
         string heldItemID = heldItem.id;
-        Texture2D heldItemTexture = Warehouse.GetTexture(heldItemID);
-        GameDisplay.Draw(heldItemTexture, heldItemTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY * 24, visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
+        Texture2D heldItemTexture = Warehouse.GetTexture(heldItem.properties.texture);
+
+        float chargeNormalised = heldItem.properties.chargeDuration <= 0 ? 0 : (float)itemChargeTimer / heldItem.properties.chargeDuration;
+        float swingNormalised = heldItem.properties.swingDuration <= 0 ? 0 : (1 - (float)itemUseTimer / heldItem.properties.swingDuration);
+
+        GameDisplay.Draw(heldItemTexture, heldItemTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY * (24 - 24 * swingNormalised), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
       }
     }
 
@@ -324,6 +332,36 @@ namespace SurviveCore.Engine.Entities
         selectedItemSlot = cycleLength > 0 ? cycleLength - 1 : inventory.GetItems().Count - 1;
         return;
       }
+    }
+
+    /// <summary>
+    /// Swing the entity's held item.
+    /// </summary>
+    /// <returns>True if successfully started swinging (i.e. not already swinging)</returns>
+    public bool UseHeldItem()
+    {
+      // don't swing if already swinging
+      if (itemUseTimer > 0) return false;
+
+      Item heldItem = GetHeldItem();
+
+      // back out if the item needs charging
+      if (itemChargeTimer < heldItem.properties.chargeDuration)
+      {
+        itemChargeTimer += 1;
+        return false;
+      }
+
+      // swing when charge is complete
+      itemUseTimer = heldItem.properties.swingDuration;
+
+      return true;
+    }
+
+    public void ReleaseUseHeldItem()
+    {
+      // reset charge duration if the item is released
+      itemChargeTimer = 0;
     }
 
     /// <summary>
