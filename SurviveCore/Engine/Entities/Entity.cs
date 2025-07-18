@@ -239,13 +239,18 @@ namespace SurviveCore.Engine.Entities
       Item heldItem = GetHeldItem();
       if (heldItem != null)
       {
-        string heldItemID = heldItem.id;
-        Texture2D heldItemTexture = Warehouse.GetTexture(heldItem.properties.texture);
-
-        float chargeNormalised = heldItem.properties.chargeDuration <= 0 ? 0 : (float)itemChargeTimer / heldItem.properties.chargeDuration;
+        float chargeNormalised = heldItem.properties.chargeDuration <= 0 ? 0 : (1 - (float)itemChargeTimer / heldItem.properties.chargeDuration);
         float swingNormalised = heldItem.properties.swingDuration <= 0 ? 0 : (1 - (float)itemUseTimer / heldItem.properties.swingDuration);
 
-        GameDisplay.Draw(heldItemTexture, heldItemTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY * (24 - 24 * swingNormalised), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
+        Texture2D heldItemTexture = Warehouse.GetTexture(heldItem.properties.texture);
+        Vector2 heldItemPosition = Vector2.UnitY * (24 - 24 * swingNormalised);
+
+        if (chargeNormalised > 0)
+        {
+          heldItemPosition.X += (Game1.rnd.Next(4) - 2) * chargeNormalised;
+        }
+
+        GameDisplay.Draw(heldItemTexture, heldItemTexture.Bounds, GetVisualPosition(tickProgress) - heldItemPosition, visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
       }
     }
 
@@ -345,11 +350,27 @@ namespace SurviveCore.Engine.Entities
 
       Item heldItem = GetHeldItem();
 
-      // back out if the item needs charging
-      if (itemChargeTimer < heldItem.properties.chargeDuration)
+      // is this a chargeable item?
+      if (heldItem.properties.chargeDuration > 0)
       {
-        itemChargeTimer += 1;
-        return false;
+        // start charging the item
+        if (itemChargeTimer == 0)
+        {
+          itemChargeTimer = heldItem.properties.chargeDuration;
+          // don't swing if charging
+          return false;
+        }
+        // charge the item
+        else
+        {
+          itemChargeTimer--;
+
+          // don't swing if not yet fully charged
+          if (itemChargeTimer <= 0)
+          {
+            return false;
+          }
+        }
       }
 
       // swing when charge is complete

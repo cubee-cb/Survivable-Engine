@@ -15,7 +15,7 @@ namespace SurviveCore
     readonly private GraphicsDeviceManager _graphics;
     private SpriteBatch spriteBatch;
 
-    private static Random rnd = new();
+    public static Random rnd = new();
 
     List<GameInstance> gameInstances;
 
