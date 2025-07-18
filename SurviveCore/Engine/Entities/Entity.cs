@@ -49,8 +49,12 @@ namespace SurviveCore.Engine.Entities
     protected float invulnerabilitySeconds = 0;
 
     protected Inventory inventory;
+    protected int selectedItemSlot;
 
     protected List<int> collidingEntityIDs = new();
+
+    // item usage
+    [JsonIgnore] protected float itemUseTimer = 0f;
 
     [JsonIgnore] protected Texture2D texture;
     [JsonIgnore] protected Texture2D shadowTexture;
@@ -224,9 +228,17 @@ namespace SurviveCore.Engine.Entities
       float myShadowElevation = world.GetStandingTileElevation(GetVisualPosition(tickProgress));
       int myLayer = (int)MathF.Floor(myElevation) / TileMap.TILE_THICKNESS + 1;
       int myShadowLayer = (int)MathF.Floor(myShadowElevation) / TileMap.TILE_THICKNESS + 1;
-      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1-myShadowElevation - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myShadowLayer);
+      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1 - myShadowElevation - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myShadowLayer);
       GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
 
+      // render held item
+      Item heldItem = GetHeldItem();
+      if (heldItem != null)
+      {
+        string heldItemID = heldItem.id;
+        Texture2D heldItemTexture = Warehouse.GetTexture(heldItemID);
+        GameDisplay.Draw(heldItemTexture, heldItemTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY * 24, visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
+      }
     }
 
     public virtual Vector2 GetPosition()
@@ -279,6 +291,39 @@ namespace SurviveCore.Engine.Entities
     public virtual float GetStrength()
     {
       return health;
+    }
+
+    /// <summary>
+    /// Get the selected item from the inventory.
+    /// </summary>
+    /// <returns>An Item from the entity's inventory, or Null if out of bounds.</returns>
+    public virtual Item GetHeldItem()
+    {
+      var items = inventory.GetItems();
+      if (selectedItemSlot < 0 || selectedItemSlot >= items.Count) return null;
+      return items[selectedItemSlot];
+    }
+
+    /// <summary>
+    /// Change the selected inventory slot.
+    /// </summary>
+    /// <param name="slots">How many slots to change, forward (+1) or back (-1).</param>
+    /// <param name="cycleLength">Limit to cycle, i.e. for hotbars, etc.</param>-
+    public void ChangeItemSlot(int slots = 1, int cycleLength = 0)
+    {
+      selectedItemSlot += slots;
+
+      //todo: handle cycling properly; changes >1 are lost when cycling
+      if (cycleLength > 0 && selectedItemSlot >= cycleLength || selectedItemSlot >= inventory.GetItems().Count)
+      {
+        selectedItemSlot = 0;
+        return;
+      }
+      if (selectedItemSlot < 0)
+      {
+        selectedItemSlot = cycleLength > 0 ? cycleLength - 1 : inventory.GetItems().Count - 1;
+        return;
+      }
     }
 
     /// <summary>
