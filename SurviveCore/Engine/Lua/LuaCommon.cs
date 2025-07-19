@@ -52,5 +52,30 @@ namespace SurviveCore.Engine.Lua
 
     }
 
+    /// <summary>
+    /// Tries to find a method in the specified script, and runs it if found.
+    /// </summary>
+    /// <param name="script">The script to try running the method in.</param>
+    /// <param name="methodName">The name of the method to try running.</param>
+    /// <param name="args">Arguments to pass to `script.Call()`.</param>
+    /// <returns>The value returned by the function, or DynValue.Nil.</returns>
+    public static DynValue TryRunMethod(Script script, string methodName, params object[] args)
+    {
+      try
+      {
+        DynValue method = script.Globals.Get(methodName);
+        if (method.Type != DataType.Function) return DynValue.Nil;
+
+        DynValue res = script.Call(method, args);
+        return res;
+      }
+      catch (Exception e)
+      {
+        ELDebug.Log("LUA error: \n" + e);
+        return DynValue.Nil;
+      }
+
+    }
+
   }
 }

@@ -112,6 +112,11 @@ namespace SurviveCore.Engine
               entityA.OnCollisionEnter(entityB);
               entityB.OnCollisionEnter(entityA);
             }
+            else
+            {
+              entityA.OnCollisionStay(entityB);
+              entityB.OnCollisionStay(entityA);
+            }
           }
           else
           {

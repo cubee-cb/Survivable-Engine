@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Items;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -58,19 +59,8 @@ namespace SurviveCore.Engine.UI
     {
       if (lua != null)
       {
-        //if (lua.Globals["Tick"] != null) lua.Call(lua.Globals["Tick"], this);
-
-        try
-        {
-          DynValue resTick;
-          if (lua.Globals["Tick"] != null) resTick = lua.Call(lua.Globals["Tick"]);
-          
-        }
-        catch (Exception e)
-        {
-          ELDebug.Log("LUA error: \n" + e);
-        }
-
+        //todo: make slots, etc accessible to the script
+        DynValue resTick = LuaCommon.TryRunMethod(lua, "Tick");
       }
 
       t += 1;

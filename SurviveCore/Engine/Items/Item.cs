@@ -4,6 +4,7 @@ using MoonSharp.Interpreter;
 using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -55,6 +56,10 @@ namespace SurviveCore.Engine.Items
     public virtual void Update(int tick, float deltaTime)
     {
       //luaTick.Call(luaTick.Globals["update"], this);
+      if (lua != null)
+      {
+        DynValue resTick = LuaCommon.TryRunMethod(lua, "Tick");
+      }
 
       t += 1;
     }
@@ -66,6 +71,11 @@ namespace SurviveCore.Engine.Items
     public virtual void Draw(Vector2 position, float tickProgress)
     {
       float localTick = t + tickProgress;
+
+      if (lua != null)
+      {
+        DynValue resVisualTick = LuaCommon.TryRunMethod(lua, "VisualTick");
+      }
 
       // todo: handle spritesheets and multiple textures
       //spriteBatch.Draw(texture, visualPosition, Color.White);

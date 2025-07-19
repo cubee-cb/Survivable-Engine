@@ -35,6 +35,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Hitbox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Warehouse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\GroundTile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\WorldGen\TileMap.cs" />

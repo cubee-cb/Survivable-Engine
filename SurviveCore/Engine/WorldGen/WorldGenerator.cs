@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
+using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,9 +40,14 @@ namespace SurviveCore.Engine.WorldGen
     public void AddRoutine(string scriptID)
     {
       Script routine = Warehouse.GetLua(scriptID);
+      if (routine == null)
+      {
+        ELDebug.Log($"requested generation routine {scriptID} was null.");
+        return;
+      }
 
       // register methods to the script
-      routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
+        routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
       routine.Globals["SetElevation"] = (Func<int, int, int, bool>)SetElevation;
 
       //todo: create a conversion for TileMap<->Array and for TileEntities
@@ -69,10 +75,9 @@ namespace SurviveCore.Engine.WorldGen
         {
           ELDebug.Log("running routine \"" + kvp.Key + "\"");
 
-          DynValue generate = routine.Globals.Get("Generate");
-          if (generate != null)
+          if (routine != null)
           {
-            DynValue outVal = routine.Call(generate, 0, 0, map.width, map.height);
+            DynValue resGenerate = LuaCommon.TryRunMethod(routine, "Generate", 0, 0, map.width, map.height);
           }
         }
       }

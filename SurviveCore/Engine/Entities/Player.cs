@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using SurviveCore.Engine.Display;
 using SurviveCore.Engine.Input;
 using SurviveCore.Engine.JsonHandlers;
+using SurviveCore.Engine.Lua;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -95,14 +96,13 @@ namespace SurviveCore.Engine.Entities
         ReleaseUseHeldItem();
       }
 
-      /*/ run update lua
-        if (lua != null)
-        {
-          DynValue resUpdate = lua.Call(lua.Globals["Update"]);
-        }
-        //*/
+      if (lua != null)
+      {
+        //todo: convert the above to lua
+        DynValue resTick = LuaCommon.TryRunMethod(lua, "Tick");
+      }
 
-        base.PostUpdate(tick, deltaTime);
+      base.PostUpdate(tick, deltaTime);
     }
 
     public override float GetStrength()

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using SurviveCore.Engine.JsonHandlers;
 using static SurviveCore.Engine.JsonHandlers.GroundProperties;
+using SurviveCore.Engine.Lua;
 
 namespace SurviveCore.Engine.WorldGen
 {
@@ -80,6 +81,12 @@ namespace SurviveCore.Engine.WorldGen
       //todo: autotiling
       //todo: tile animations
       //todo: draw neighbour tiles beneath, to fill transparent "blending" areas in the sprites.
+
+      if (lua != null)
+      {
+        // you can handle animated tiles in this script
+        DynValue resTick = LuaCommon.TryRunMethod(lua, "VisualTick");
+      }
 
       Color myColour = elevation == 0 ? Color.LightGray : Color.White;
 
