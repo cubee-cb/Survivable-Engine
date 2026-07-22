@@ -22,10 +22,10 @@ namespace SurviveCore.Engine.Input
 
     readonly Dictionary<string, List<Keys>> keyboardBindings = new()
     {
-      { "left", new List<Keys>() { Keys.Left, Keys.S } },
-      { "right", new List<Keys>() { Keys.Right, Keys.F } },
-      { "up", new List<Keys>() { Keys.Up, Keys.E } },
-      { "down", new List<Keys>() { Keys.Down, Keys.D } },
+      { "left", new List<Keys>() { Keys.Left, Keys.A } },
+      { "right", new List<Keys>() { Keys.Right, Keys.D } },
+      { "up", new List<Keys>() { Keys.Up, Keys.W } },
+      { "down", new List<Keys>() { Keys.Down, Keys.S } },
       { "interact", new List<Keys>() { Keys.E } },
       { "use", new List<Keys>() { Keys.X } },
       { "jump", new List<Keys>() { Keys.Space } },
