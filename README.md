@@ -1,7 +1,7 @@
 # Survivable Engine
 
 A rebuild of my engine for [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle) to be more focused on data files and extensibility, and overall just coded better. Everlost Isle was internally known as Survive, hence the name.
-Built on Monogame 3.8.1. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json) for Json and [MoonSharp](https://www.moonsharp.org/) for Lua scripting.
+Built on Monogame 3.8.4.1 with .NET 9.0. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json) for Json and [MoonSharp](https://www.moonsharp.org/) for Lua scripting.
 
 Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it. The goal is for as much of Everlost Isle as possible to be implemented as an "Asset Pack", so people can easily change or replace practically any part of it.
 
@@ -18,6 +18,7 @@ So far, I've:
 Notable milestones to-do:
 - Add tile entities.
 	- Don't-Starve-like tiles that can be solid and don't typically move, but are also not necessarily locked to the grid like normal tiles.
+- "Buckets" for handling collisions.
 - Collisions between entities and tile entities.
 - Items and inventory interfaces, general UI controls.
 - Saving worlds and players.
@@ -34,7 +35,7 @@ Notable milestones to-do:
 
 
 Controls:
-- Arrow Keys / ESDF - Move.
+- Arrow Keys / WASD - Move.
 - Left Shift - Run.
 - Space - Jump. (temporary, we'll see if I want jumping as a mechanic in Everlost Isle later on)
 - J, K, L - Adjust tickrate. (/8, x8, x16)
