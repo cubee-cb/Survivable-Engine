@@ -33,5 +33,11 @@ namespace SurviveCore.Engine
       return MathF.Max(min, MathF.Min(value, max));
     }
 
+
+    public static bool IsIgnorableDirectory(string dirName)
+    {
+      return dirName.StartsWith('.');
+    }
+
   }
 }

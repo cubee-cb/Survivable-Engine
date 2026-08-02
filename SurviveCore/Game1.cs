@@ -15,6 +15,12 @@ namespace SurviveCore
     readonly private GraphicsDeviceManager _graphics;
     private SpriteBatch spriteBatch;
 
+    /* 
+      change this to force a specific game.
+      otherwise Warehouse will load the first game it finds, which may not be desired.
+     */
+    public const string GAME_NAMESPACE = "";
+
     public static Random rnd = new();
 
     List<GameInstance> gameInstances;
@@ -31,9 +37,6 @@ namespace SurviveCore
       // uncomment these to uncap the framerate
       _graphics.SynchronizeWithVerticalRetrace = false;
       IsFixedTimeStep = false;
-
-      // change this for other games
-      //Warehouse.SetGameFolder("surviveEngine");
     }
 
 
@@ -54,6 +57,7 @@ namespace SurviveCore
       // start up warehouse and load asset packs
       Warehouse.SetGraphicsDevice(GraphicsDevice);
       Warehouse.LoadPlaceholders(Content);
+      Warehouse.LoadGame(GAME_NAMESPACE);
       Warehouse.LoadAll();
 
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)

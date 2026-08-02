@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using SurviveCore.Engine;
+using SurviveCore.Engine.JsonHandlers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,9 +16,23 @@ namespace SurviveDesktop
     public const string PLATFORM_NAME = "desktop";
     public const int MAX_SFX_INSTANCES = 256;
 
-    public static string BASE_FOLDER = AppDomain.CurrentDomain.BaseDirectory;
-    public static string EXTERNAL_FOLDER = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "pxlshk", "surviveEngine");
     //const string SAVE_NAME = "save.json";
+
+    public static string GetBasePath()
+    {
+      return AppDomain.CurrentDomain.BaseDirectory;
+    }
+
+    public static string GetExternalPath()
+    {
+      string gameStorage = Path.Join("cubee", "surviveEngine");
+
+      // use game's studio folder instead of mine if set
+      GameProperties gameProps = Warehouse.GetGameProps();
+      if (gameProps != null) gameStorage = Path.Join(gameProps.studioName, gameProps.nameSpace);
+
+      return Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), gameStorage);
+    }
 
     /// <summary>
     /// Load a text file from the game root. i.e. pass @"Content/lua/textFile.lua".
@@ -30,7 +46,7 @@ namespace SurviveDesktop
         Stream stream = TitleContainer.OpenStream(path);
 
         string fileContents = "";
-        using (StreamReader reader = new StreamReader(stream))
+        using (StreamReader reader = new(stream))
         {
           fileContents = reader.ReadToEnd();
         }

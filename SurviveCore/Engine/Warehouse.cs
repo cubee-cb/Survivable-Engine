@@ -49,35 +49,32 @@ namespace SurviveCore.Engine
     readonly private static Dictionary<string, string> jsonData = [];
     readonly private static Dictionary<string, string> luaScripts = [];
 
-    readonly static private List<string> contentTypeSubfolders =
-    [
-      "common",
-      "character",
-      "ground",
-      "tile",
-      "dimension",
-      "biome",
-      "item",
-      "mob",
-      "worldgen",
-      "font",
-      "ui"
-    ];
-
     private static GameProperties gameProps = null;
     readonly private static List<string> foundNamespaces = [];
-
-    readonly private static List<string> contentPaths =
-    [
-      Path.Combine(Platform.BASE_FOLDER, contentPath),
-      Path.Combine(Platform.EXTERNAL_FOLDER, contentPath)
-    ];
 
     private static GraphicsDevice graphicsDevice;
 
     public static void SetGraphicsDevice(GraphicsDevice newGraphicsDevice)
     {
       graphicsDevice = newGraphicsDevice;
+    }
+
+    private static string[] GetContentPaths(bool prioritiseExternal = true)
+    {
+      if (prioritiseExternal)
+      {
+        return
+        [
+          Path.Combine(Platform.GetExternalPath(), contentPath),
+          Path.Combine(Platform.GetBasePath(), contentPath)
+        ];
+      }
+
+      return
+      [
+        Path.Combine(Platform.GetBasePath(), contentPath),
+        Path.Combine(Platform.GetExternalPath(), contentPath)
+      ];
     }
 
     /// <summary>
@@ -97,21 +94,73 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="path"></param>
     /// <param name="onlyGame"></param>
-    public static void LoadMod(string path, bool onlyGame = false)
+    public static void LoadMod(string path)
     {
-      // load content from folders
-      foreach (string contentType in contentTypeSubfolders)
+      // load content from subfolders
+      foreach (string subfolder in Directory.GetDirectories(path))
       {
-        ELDebug.Log(contentType);
-        currentCategory = contentType;
-        string categoryPath = Path.Join(path, currentCategory);
+        currentCategory = Path.GetFileNameWithoutExtension(subfolder);
+        if (Common.IsIgnorableDirectory(currentCategory))
+        {
+          ELDebug.Log($"subfolder {currentCategory} is ignorable, skipping");
+          continue;
+        }
+        ELDebug.Log(currentCategory);
 
-        LoadAssetsInFolder(Path.Join(categoryPath, TEXTURE_FOLDER), LoadTexture);
-        LoadAssetsInFolder(Path.Join(categoryPath, SOUND_FOLDER), LoadSoundEffect);
-        //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
-        LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
-        LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
+        LoadAssetsInFolder(Path.Join(subfolder, TEXTURE_FOLDER), LoadTexture);
+        LoadAssetsInFolder(Path.Join(subfolder, SOUND_FOLDER), LoadSoundEffect);
+        //LoadAssetsInFolder(Path.Join(subfolder, MUSIC_FOLDER), LoadSong);
+        LoadAssetsInFolder(Path.Join(subfolder, JSON_FOLDER), LoadJson);
+        LoadAssetsInFolder(Path.Join(subfolder, LUA_FOLDER), LoadLua);
       }
+    }
+
+    /// <summary>
+    /// Loads a game. With nothing specified, it will load the first found game.
+    /// </summary>
+    /// <param name="desiredNameSpace">If specified, specifically load the game with this nameSpace.</param>
+    public static void LoadGame(string desiredNameSpace = "")
+    {
+      //todo: make this an async task or something, so the game window can show a loading screen
+
+      ELDebug.Log("searching for a game");
+      foreach (string contentPath in GetContentPaths())
+      {
+        // skip if the directory doesn't exist
+        if (!Directory.Exists(contentPath)) continue;
+
+        // find all pack folders that have pack.json
+        string[] packs = Directory.GetDirectories(contentPath);
+        Array.Sort(packs);
+        foreach (string packPath in packs)
+        {
+          ELDebug.Log("checking " + packPath);
+
+          // skip if game.json doesn't exist
+          if (!Platform.Exists(Path.Combine(packPath, "game.json")))
+          {
+            ELDebug.Log("this is not a game pack. skipping!");
+            continue;
+          }
+
+          gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
+
+          // skip if this isn't the game we're looking for
+          if (!string.IsNullOrWhiteSpace(desiredNameSpace) && gameProps.nameSpace != desiredNameSpace)
+          {
+            ELDebug.Log("this is not the game pack we're looking for. skipping!");
+            continue;
+          }
+
+          nameSpace = gameProps.nameSpace;
+          foundNamespaces.Add(nameSpace);
+          LoadMod(packPath);
+
+        }
+
+      }
+
+      ELDebug.Log("=======================================");
     }
 
     /// <summary>
@@ -122,20 +171,22 @@ namespace SurviveCore.Engine
       //todo: make this an async task or something, so the game window can show a loading screen
 
       ELDebug.Log("loading content packs");
-      foreach (string contentPath in contentPaths)
+      foreach (string contentPath in GetContentPaths())
       {
         // skip if the directory doesn't exist
         if (!Directory.Exists(contentPath)) continue;
 
         // find all pack folders that have pack.json
-        List<string> packPaths = new(Directory.GetDirectories(contentPath));
-
-        foreach (string packPath in packPaths)
+        foreach (string packPath in Directory.GetDirectories(contentPath))
         {
           ELDebug.Log("checking " + packPath);
 
-          // skip this pack if the pack.json doesn't exist
-          if (!Platform.Exists(Path.Combine(packPath, "pack.json"))) continue;
+          // skip if pack.json doesn't exist
+          if (!Platform.Exists(Path.Combine(packPath, "pack.json")))
+          {
+            ELDebug.Log("this not an asset pack. skipping!");
+            continue;
+          }
 
           // load pack.json
           ModProperties packProps = JsonConvert.DeserializeObject<ModProperties>(Platform.LoadFileDirectly(Path.Combine(packPath, "pack.json")));
@@ -144,27 +195,10 @@ namespace SurviveCore.Engine
           nameSpace = packProps.nameSpace;
           foundNamespaces.Add(nameSpace);
 
-          // check if this mod is a game
-          if (Platform.Exists(Path.Combine(packPath, "game.json")))
-          {
-            if (gameProps == null)
-            {
-              gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
-              ELDebug.Log("this is a game pack, using it for game data");
-            }
-            else
-            {
-              ELDebug.Log("this is a game pack, but a game pack has already been loaded. only content will be loaded from this pack - some may be inaccessible or cause conflicts!", category: ELDebug.Category.Warning);
-            }
-          }
-
           LoadMod(packPath);
 
 
         }
-
-
-
 
       }
 

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace SurviveCore.Engine.JsonHandlers
 {
-  public class GameProperties
+  public class GameProperties : ModProperties
   {
     // descriptions
-    public string internalName = "game_default";
+    public string dataFolder = "survivable_engine";
     public List<string> tags = [];
 
     // stats

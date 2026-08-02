@@ -1,7 +1,14 @@
 {
   // properties
   "internalName": "test game",
+  "nameSpace": "default",
+  "revision": 1,
+  "authors": [
+    "cubee"
+  ],
+
   "tags": [
+    "internal",
     "testgame"
   ],
 
