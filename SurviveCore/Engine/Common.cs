@@ -39,5 +39,10 @@ namespace SurviveCore.Engine
       return string.IsNullOrWhiteSpace(dirName) || dirName.StartsWith('.');
     }
 
+    public static string Keyify(string input)
+    {
+      return input.Trim().ToLower().Replace('.', '_');
+    }
+
   }
 }

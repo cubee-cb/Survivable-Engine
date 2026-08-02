@@ -96,23 +96,11 @@ namespace SurviveCore.Engine
     /// <param name="onlyGame"></param>
     public static void LoadMod(string path)
     {
-      // load content from subfolders
-      foreach (string subfolder in Directory.GetDirectories(path))
-      {
-        currentCategory = Path.GetFileNameWithoutExtension(subfolder);
-        if (Common.IsIgnorableDirectory(currentCategory))
-        {
-          ELDebug.Log($"subfolder {currentCategory} is ignorable, skipping");
-          continue;
-        }
-        ELDebug.Log(currentCategory);
-
-        LoadAssetsInFolder(Path.Join(subfolder, TEXTURE_FOLDER), LoadTexture);
-        LoadAssetsInFolder(Path.Join(subfolder, SOUND_FOLDER), LoadSoundEffect);
-        //LoadAssetsInFolder(Path.Join(subfolder, MUSIC_FOLDER), LoadSong);
-        LoadAssetsInFolder(Path.Join(subfolder, JSON_FOLDER), LoadJson);
-        LoadAssetsInFolder(Path.Join(subfolder, LUA_FOLDER), LoadLua);
-      }
+      LoadAssetsInFolder(Path.Join(path, TEXTURE_FOLDER), LoadTexture);
+      LoadAssetsInFolder(Path.Join(path, JSON_FOLDER), LoadJson);
+      LoadAssetsInFolder(Path.Join(path, LUA_FOLDER), LoadLua);
+      LoadAssetsInFolder(Path.Join(path, SOUND_FOLDER), LoadSoundEffect);
+      //LoadAssetsInFolder(Path.Join(path, MUSIC_FOLDER), LoadSong);
     }
 
     /// <summary>
@@ -271,27 +259,20 @@ namespace SurviveCore.Engine
     /// <returns>An object id.</returns>
     private static string BuildInternalName(string file)
     {
-      // get just the filename
-      //todo: do we want this converted to lowercase? camelcase to underscores? do we care what style atrocities pack authors commit?
       file = Path.GetFileNameWithoutExtension(file);
 
       // if the filename has a namespace, use that namespace.
       // handy for having packs loaded later override content in already loaded packs, or inject content into other namespaces
       if (file.Contains(NAMESPACE_SEPARATOR))
       {
-        string[] splitName = file.Split(NAMESPACE_SEPARATOR);
-
         // use the first part as the namespace, and the last as the id.
-        // we can ignore extensions since we already removed them at the eginning of this method.
-        return string.Join(NAMESPACE_SEPARATOR, splitName[0], currentCategory, splitName[^1]);
-      }
-      // if it's missing a namespace, use the active namespace.
-      // handy for if you want to easily change the pack's namespace later for whatever reason.
-      else
-      {
-        return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, file);
+        // we can ignore extensions since we already removed them at the beginning of this method.
+        string[] splitName = file.Split(NAMESPACE_SEPARATOR);
+        return string.Join(NAMESPACE_SEPARATOR, Common.Keyify(splitName[0]), currentCategory, Common.Keyify(splitName[^1]));
       }
 
+      // if there's no namespace in the file name, use the current pack's namespace.
+      return string.Join(NAMESPACE_SEPARATOR, nameSpace, currentCategory, Common.Keyify(file));
     }
 
     /// <summary>
@@ -304,21 +285,33 @@ namespace SurviveCore.Engine
       // skip this folder if it doesn't exist
       if (!Directory.Exists(path)) return;
 
-      // try to load all the files in the folder
-      foreach (string file in Directory.GetFiles(path))
+      // load content from subfolders
+      foreach (string subfolder in Directory.GetDirectories(path))
       {
-        try
+        currentCategory = Common.Keyify(Path.GetFileNameWithoutExtension(subfolder));
+        if (Common.IsIgnorableDirectory(currentCategory))
         {
-          string internalName = loadMethod(file);
-
-          // the loadMethod handles its own output
-          //ELDebug.Log("loaded " + subfolder + " " + internalName);
+          ELDebug.Log($"subfolder {currentCategory} is ignorable, skipping");
+          continue;
         }
-        catch
+
+        // try to load all the files in the folder
+        foreach (string file in Directory.GetFiles(subfolder))
         {
-          ELDebug.Log(" failed to load " + basePath + " for category " + currentCategory + ". wrong file type?", category: ELDebug.Category.ERROR);
+          try
+          {
+            string internalName = loadMethod(file);
+
+            // the loadMethod handles its own output
+            //ELDebug.Log("loaded " + subfolder + " " + internalName);
+          }
+          catch
+          {
+            ELDebug.Log(" failed to load " + basePath + " for category " + currentCategory + ". wrong file type?", category: ELDebug.Category.ERROR);
+          }
         }
       }
+
     }
 
     private static string LoadTexture(string filePath)
