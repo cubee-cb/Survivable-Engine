@@ -124,8 +124,12 @@ namespace SurviveCore.Engine
       //todo: make this an async task or something, so the game window can show a loading screen
 
       ELDebug.Log("searching for a game");
+      string gamePath = "";
       foreach (string contentPath in GetContentPaths())
       {
+        ELDebug.LogSeparator();
+        ELDebug.Log(contentPath);
+
         // skip if the directory doesn't exist
         if (!Directory.Exists(contentPath)) continue;
 
@@ -143,36 +147,56 @@ namespace SurviveCore.Engine
             continue;
           }
 
-          gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
+          GameProperties newProps = GetJson<GameProperties>(LoadJson(Path.Combine(packPath, "game.json")));
 
           // skip if this isn't the game we're looking for
-          if (!string.IsNullOrWhiteSpace(desiredNameSpace) && gameProps.nameSpace != desiredNameSpace)
+          if (!string.IsNullOrWhiteSpace(desiredNameSpace) && newProps.nameSpace != desiredNameSpace)
           {
             ELDebug.Log("this is not the game pack we're looking for. skipping!");
             continue;
           }
 
-          nameSpace = gameProps.nameSpace;
-          foundNamespaces.Add(nameSpace);
-          LoadMod(packPath);
+          if (gameProps == null || gameProps.priority < newProps.priority)
+          {
+            gameProps = newProps;
+            gamePath = packPath;
+            ELDebug.Log($"got a game! {gameProps.internalName}");
+          }
 
         }
 
       }
 
-      ELDebug.Log("=======================================");
+      if (gameProps == null)
+      {
+        ELDebug.Log("no game was loaded!", ELDebug.Category.ERROR);
+        return;
+      }
+
+      // reload game properties with correct namespace
+      // kinda hacky but whatever
+      //todo: ideally unload or replace the other one
+      nameSpace = gameProps.nameSpace;
+      gameProps = GetJson<GameProperties>(LoadJson(Path.Combine(gamePath, "game.json")));
+      foundNamespaces.Add(nameSpace);
+      LoadMod(gamePath);
+
+      ELDebug.LogSeparator();
     }
 
     /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
-    public static void LoadAll()
+    public static void LoadAssetPacks()
     {
       //todo: make this an async task or something, so the game window can show a loading screen
 
       ELDebug.Log("loading content packs");
       foreach (string contentPath in GetContentPaths())
       {
+        ELDebug.LogSeparator();
+        ELDebug.Log(contentPath);
+
         // skip if the directory doesn't exist
         if (!Directory.Exists(contentPath)) continue;
 
@@ -202,7 +226,7 @@ namespace SurviveCore.Engine
 
       }
 
-      ELDebug.Log("=======================================");
+      ELDebug.LogSeparator();
     }
 
     public static void UnloadAll()
@@ -308,13 +332,9 @@ namespace SurviveCore.Engine
         stream.Dispose(); //DisposeAsync();
 
         // replace loaded asset if it already exists
-        if (textures.ContainsKey(internalName))
+        if (!textures.TryAdd(internalName, loadedTexture))
         {
           textures[internalName] = loadedTexture;
-        }
-        else
-        {
-          textures.Add(internalName, loadedTexture);
         }
 
         ELDebug.Log("loaded texture file: " + internalName);
@@ -363,13 +383,9 @@ namespace SurviveCore.Engine
         stream.Dispose(); //DisposeAsync();
 
         // replace loaded asset if it already exists
-        if (sounds.ContainsKey(internalName))
+        if (!sounds.TryAdd(internalName, loadedSound))
         {
           sounds[internalName] = loadedSound;
-        }
-        else
-        {
-          sounds.Add(internalName, loadedSound);
         }
 
         ELDebug.Log("loaded sound file " + internalName);
@@ -416,13 +432,9 @@ namespace SurviveCore.Engine
         string jsonString = Platform.LoadFileDirectly(filePath).Replace("@", nameSpace + ".");
 
         // replace loaded asset if it already exists
-        if (jsonData.ContainsKey(internalName))
+        if (!jsonData.TryAdd(internalName, jsonString))
         {
           jsonData[internalName] = jsonString;
-        }
-        else
-        {
-          jsonData.Add(internalName, jsonString);
         }
 
         ELDebug.Log("loaded json file " + internalName);
@@ -478,13 +490,9 @@ namespace SurviveCore.Engine
         string luaString = Platform.LoadFileDirectly(filePath).Replace("@", nameSpace + ".");
 
         // replace loaded asset if it already exists
-        if (luaScripts.ContainsKey(internalName))
+        if (!luaScripts.TryAdd(internalName, luaString))
         {
           luaScripts[internalName] = luaString;
-        }
-        else
-        {
-          luaScripts.Add(internalName, luaString);
         }
 
         ELDebug.Log("loaded lua file " + internalName);

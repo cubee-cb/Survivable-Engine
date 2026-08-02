@@ -36,7 +36,7 @@ namespace SurviveCore.Engine
 
     public static bool IsIgnorableDirectory(string dirName)
     {
-      return dirName.StartsWith('.');
+      return string.IsNullOrWhiteSpace(dirName) || dirName.StartsWith('.');
     }
 
   }

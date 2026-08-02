@@ -17,7 +17,13 @@ namespace SurviveCore.Engine
     public static void Log(object output, Category category = Category.Log)
     {
       output ??= "<null>";
-      Debug.WriteLine(output.ToString(), '[' + category.ToString() + ']');
+      Console.WriteLine(output.ToString(), '[' + category.ToString() + ']');
+    }
+
+    [Conditional("DEBUG")]
+    public static void LogSeparator()
+    {
+      Console.WriteLine("==========================================");
     }
 
     /// <summary>

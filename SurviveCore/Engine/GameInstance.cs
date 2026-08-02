@@ -119,7 +119,7 @@ namespace SurviveCore.Engine
         // load all asset packs ([I]nitialise)
         if (ELDebug.Key(Keys.I))
         {
-          Warehouse.LoadAll();
+          Warehouse.LoadAssetPacks();
           UpdateAssets();
         }
       }

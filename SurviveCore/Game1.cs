@@ -58,7 +58,7 @@ namespace SurviveCore
       Warehouse.SetGraphicsDevice(GraphicsDevice);
       Warehouse.LoadPlaceholders(Content);
       Warehouse.LoadGame(GAME_NAMESPACE);
-      Warehouse.LoadAll();
+      Warehouse.LoadAssetPacks();
 
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
       gameInstances =

@@ -27,9 +27,9 @@ namespace SurviveDesktop
     {
       string gameStorage = Path.Join("cubee", "surviveEngine");
 
-      // use game's studio folder instead of mine if set
+      // use game's data folder instead of mine if set
       GameProperties gameProps = Warehouse.GetGameProps();
-      if (gameProps != null) gameStorage = Path.Join(gameProps.studioName, gameProps.nameSpace);
+      if (gameProps != null) gameStorage = Path.Join(gameProps.dataFolder, gameProps.nameSpace);
 
       return Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), gameStorage);
     }

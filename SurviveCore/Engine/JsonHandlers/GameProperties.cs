@@ -11,6 +11,8 @@ namespace SurviveCore.Engine.JsonHandlers
     public string dataFolder = "survivable_engine";
     public List<string> tags = [];
 
+    public int priority = 0;
+
     // stats
     public string hudLayout = "ui_default";
     public string inventory = "ui_default";

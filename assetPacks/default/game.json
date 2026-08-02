@@ -1,4 +1,6 @@
 {
+  "priority": -1,
+
   // properties
   "internalName": "test game",
   "nameSpace": "default",
