@@ -9,8 +9,8 @@ namespace SurviveCore.Engine.JsonHandlers
     // descriptions
     public string texture = "ground_default";
     public string internalName = "ground_default";
-    public List<string> tags = new();
-    public List<string> sounds = new();
+    public List<string> tags = [];
+    public List<string> sounds = [];
 
     // stats
     public SlopeType slope = SlopeType.None;

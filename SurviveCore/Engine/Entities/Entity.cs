@@ -24,7 +24,7 @@ namespace SurviveCore.Engine.Entities
     protected string id;
     protected EntityProperties properties;
 
-    [JsonIgnore] protected List<string> tags = new();
+    [JsonIgnore] protected List<string> tags = [];
     protected int t;
 
     // should these be vector3? thinking we want to support elevations
@@ -40,7 +40,7 @@ namespace SurviveCore.Engine.Entities
     [JsonIgnore] protected FacingDirection currentVisualDirection = FacingDirection.Down;
     [JsonIgnore] protected FacingDirection lastVisualDirection = FacingDirection.Down;
 
-    [JsonIgnore] protected Dictionary<string, int> spriteDimensions = new();
+    [JsonIgnore] protected Dictionary<string, int> spriteDimensions = [];
     [JsonIgnore] public int feetOffsetY = 2;
 
     [JsonIgnore] protected bool grounded = false;
@@ -51,8 +51,8 @@ namespace SurviveCore.Engine.Entities
     protected Inventory inventory;
     protected int selectedItemSlot;
 
-    protected List<int> collidingEntityIDs = new();
-    protected List<Hitbox> hitboxes = new();
+    protected List<int> collidingEntityIDs = [];
+    protected List<Hitbox> hitboxes = [];
 
     // item usage
     [JsonIgnore] protected int itemUseTimer = 0;
@@ -670,8 +670,8 @@ namespace SurviveCore.Engine.Entities
 
 
     // directions corresponding to each rotation step
-    private readonly List<FacingDirection> correspondingDirection = new()
-    {
+    private readonly List<FacingDirection> correspondingDirection =
+    [
         FacingDirection.Right,
         FacingDirection.RightDown,
         FacingDirection.Down,
@@ -680,7 +680,7 @@ namespace SurviveCore.Engine.Entities
         FacingDirection.LeftUp,
         FacingDirection.Up,
         FacingDirection.RightUp
-    };
+    ];
 
     // dictionary of the appropriate facing directions for sprites corresponding to each rotation type
     private readonly Dictionary<SpriteRotationType, List<FacingDirection>> directionToSpriteName = new() {

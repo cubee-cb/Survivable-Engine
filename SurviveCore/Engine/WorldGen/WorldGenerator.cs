@@ -9,7 +9,7 @@ namespace SurviveCore.Engine.WorldGen
 {
   public class WorldGenerator
   {
-    private readonly Dictionary<string, Script> worldgenRoutines = new();
+    private readonly Dictionary<string, Script> worldgenRoutines = [];
     private TileMap activeMap;
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace SurviveCore.Engine.WorldGen
       }
 
       // register methods to the script
-        routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
+      routine.Globals["Plot"] = (Func<int, int, string, bool>)Plot;
       routine.Globals["SetElevation"] = (Func<int, int, int, bool>)SetElevation;
 
       //todo: create a conversion for TileMap<->Array and for TileEntities

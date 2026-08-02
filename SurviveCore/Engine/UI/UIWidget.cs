@@ -11,11 +11,11 @@ namespace SurviveCore.Engine.UI
     public string texture = "uiwidget_default";
     public string name = "widget";
     public int frame = 0;
-    public List<float> position = new();
+    public List<float> position = [];
 
     public UIWidget()
     {
-      
+
     }
 
   }

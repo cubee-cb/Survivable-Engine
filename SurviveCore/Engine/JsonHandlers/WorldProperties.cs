@@ -9,11 +9,11 @@ namespace SurviveCore.Engine.JsonHandlers
   {
 
     public Dictionary<string, int> area;
-    public List<string> tags = new();
+    public List<string> tags = [];
 
     public float gravity = 0.5f;
 
-    public List<string> generationRoutines = new();
+    public List<string> generationRoutines = [];
 
     // lua
     public string lua;

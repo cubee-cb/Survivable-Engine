@@ -12,8 +12,8 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string texture = "ui_default";
-    public List<string> tags = new();
-    public List<string> sounds = new();
+    public List<string> tags = [];
+    public List<string> sounds = [];
 
     public List<UISlot> slots;
     public List<UIWidget> widgets;

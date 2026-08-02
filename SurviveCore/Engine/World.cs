@@ -48,8 +48,8 @@ namespace SurviveCore.Engine
 
       map = new TileMap(width, height);
 
-      entities = new();
-      activeEntities = new();
+      entities = [];
+      activeEntities = [];
 
       generator = new WorldGenerator(properties.generationRoutines);
       generator.Generate(map);
@@ -235,7 +235,7 @@ namespace SurviveCore.Engine
     public Entity FindEntityWithTag(Entity callingEntity, string tag, MatchCondition condition = MatchCondition.Nearest)
     {
       // get list of targets matching the tag
-      List<Entity> validTargets = new();
+      List<Entity> validTargets = [];
       foreach (Entity entity in entities)
       {
         if (entity.GetTags().Contains(tag))
@@ -272,7 +272,8 @@ namespace SurviveCore.Engine
           foreach (Entity entity in validTargets)
           {
             // select this entity if it's further
-            if (Vector2.Distance(entity.GetPosition(), callingEntity.GetPosition()) > Vector2.Distance(returnEntity.GetPosition(), callingEntity.GetPosition()))            {
+            if (Vector2.Distance(entity.GetPosition(), callingEntity.GetPosition()) > Vector2.Distance(returnEntity.GetPosition(), callingEntity.GetPosition()))
+            {
               returnEntity = entity;
             }
           }

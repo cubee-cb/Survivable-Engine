@@ -43,14 +43,14 @@ namespace SurviveCore.Engine
     private static SoundEffect missingSound;
     private static Song missingMusic;
 
-    readonly private static Dictionary<string, Texture2D> textures = new();
-    readonly private static Dictionary<string, SoundEffect> sounds = new();
-    readonly private static Dictionary<string, Song> music = new();
-    readonly private static Dictionary<string, string> jsonData = new();
-    readonly private static Dictionary<string, string> luaScripts = new();
+    readonly private static Dictionary<string, Texture2D> textures = [];
+    readonly private static Dictionary<string, SoundEffect> sounds = [];
+    readonly private static Dictionary<string, Song> music = [];
+    readonly private static Dictionary<string, string> jsonData = [];
+    readonly private static Dictionary<string, string> luaScripts = [];
 
-    readonly static private List<string> contentTypeSubfolders = new()
-    {
+    readonly static private List<string> contentTypeSubfolders =
+    [
       "common",
       "character",
       "ground",
@@ -62,16 +62,16 @@ namespace SurviveCore.Engine
       "worldgen",
       "font",
       "ui"
-    };
+    ];
 
     private static GameProperties gameProps = null;
-    readonly private static List<string> foundNamespaces = new();
+    readonly private static List<string> foundNamespaces = [];
 
-    readonly private static List<string> contentPaths = new()
-    {
+    readonly private static List<string> contentPaths =
+    [
       Path.Combine(Platform.BASE_FOLDER, contentPath),
       Path.Combine(Platform.EXTERNAL_FOLDER, contentPath)
-    };
+    ];
 
     private static GraphicsDevice graphicsDevice;
 

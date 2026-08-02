@@ -57,7 +57,7 @@ namespace SurviveCore.Engine
       tick = 0;
       deltaTimeAccumulated = 0;
 
-      worlds = new List<World>();
+      worlds = [];
       activeWorldIndex = 0;
 
       //todo: temp; need to figure out how world storage is going to work, and load from file/server/generate worlds as needed
@@ -77,10 +77,10 @@ namespace SurviveCore.Engine
       }
 
       // tell camera to focus on this entity
-      cameraFocusEntities = new()
-      {
+      cameraFocusEntities =
+      [
         player
-      };
+      ];
 
       foreach (string itemID in gameProps.startingInventory)
       {

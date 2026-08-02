@@ -57,13 +57,13 @@ namespace SurviveCore
       Warehouse.LoadAll();
 
       // initialise game instances (todo: these should only be done once player count and single/multiplayer has been chosen)
-      gameInstances = new()
-      {
+      gameInstances =
+      [
         new GameInstance(EInstanceMode.Host, PlayerIndex.One, targetTickRate: 60, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Two, targetTickRate: 60, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Three, targetTickRate: 60, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
         //new GameInstance(EInstanceMode.Client, PlayerIndex.Four, targetTickRate: 60, graphicsDevice: GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight),
-      };
+      ];
 
     }
 
@@ -106,7 +106,7 @@ namespace SurviveCore
       int displayHeight = Window.ClientBounds.Height / displayGridY;
 
       // draw game instances to their own textures
-      List<Texture2D> displays = new();
+      List<Texture2D> displays = [];
       foreach (GameInstance instance in gameInstances)
       {
         // resize the displays to fit the grid layout

@@ -9,7 +9,7 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string internalName = "game_default";
-    public List<string> tags = new();
+    public List<string> tags = [];
 
     // stats
     public string hudLayout = "ui_default";
@@ -17,8 +17,8 @@ namespace SurviveCore.Engine.JsonHandlers
 
     public string startingDimension = "dimension_default";
     public string startingPlayer = "character_default";
-    public List<string> startingInventory = new();
-    public List<string> startingMobs = new();
+    public List<string> startingInventory = [];
+    public List<string> startingMobs = [];
 
 
     // lua

@@ -50,8 +50,8 @@ namespace SurviveCore.Engine.Input
       this.pointerSource = pointerSource;
       this.hasKeyboard = hasKeyboard;
 
-      if (hasKeyboard) keyboardBuffer = new();
-      gamepadBuffer = new();
+      if (hasKeyboard) keyboardBuffer = [];
+      gamepadBuffer = [];
     }
 
     /// <summary>

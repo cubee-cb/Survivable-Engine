@@ -14,7 +14,7 @@ namespace SurviveCore.Engine.Items
 
     public Inventory(int size)
     {
-      items = new();
+      items = [];
       for (int i = 0; i < size; i++)
       {
         items.Add(null);

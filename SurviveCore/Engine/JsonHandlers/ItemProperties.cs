@@ -8,7 +8,7 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string texture = "item_default";
-    public List<string> tags = new();
+    public List<string> tags = [];
 
     public int framesX = 1; // used to animate the item over time
     public int framesY = 1; // used for the charging animation of charged items

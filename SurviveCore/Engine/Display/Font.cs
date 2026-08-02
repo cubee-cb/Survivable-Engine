@@ -12,7 +12,7 @@ namespace SurviveCore.Engine.Display
     public Texture2D texture;
 
     public string glyphOrder = " abcdefghijklmnopqrstuvwxyz./-_()";
-    public Dictionary<char, int> glyphSizeOverrides = new();
+    public Dictionary<char, int> glyphSizeOverrides = [];
     public int glyphSize = 8;
     public int glyphGap = 0;
 
