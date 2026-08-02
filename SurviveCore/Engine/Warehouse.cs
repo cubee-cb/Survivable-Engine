@@ -28,7 +28,7 @@ namespace SurviveCore.Engine
     // paths are relative to the executable
     readonly private static string contentPath = "assetPacks"; // the base path where assets will be stored
 
-    private static string nameSpace = "default"; // the subfolder the assets are stored in, for packding purposes
+    private static string nameSpace = "default"; // the subfolder the assets are stored in, for pack-loading purposes
     private static string currentCategory = "default";
 
     private const string TEXTURE_FOLDER = "spr";
@@ -93,6 +93,28 @@ namespace SurviveCore.Engine
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="onlyGame"></param>
+    public static void LoadMod(string path, bool onlyGame = false)
+    {
+      // load content from folders
+      foreach (string contentType in contentTypeSubfolders)
+      {
+        ELDebug.Log(contentType);
+        currentCategory = contentType;
+        string categoryPath = Path.Join(path, currentCategory);
+
+        LoadAssetsInFolder(Path.Join(categoryPath, TEXTURE_FOLDER), LoadTexture);
+        LoadAssetsInFolder(Path.Join(categoryPath, SOUND_FOLDER), LoadSoundEffect);
+        //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
+        LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
+        LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
+      }
+    }
+
+    /// <summary>
     /// Preloads all assets that can be found by Warehouse.
     /// </summary>
     public static void LoadAll()
@@ -136,19 +158,7 @@ namespace SurviveCore.Engine
             }
           }
 
-          // load content from folders
-          foreach (string contentType in contentTypeSubfolders)
-          {
-            ELDebug.Log(contentType);
-            currentCategory = contentType;
-            string categoryPath = Path.Join(packPath, currentCategory);
-
-            LoadAssetsInFolder(Path.Join(categoryPath, TEXTURE_FOLDER), LoadTexture);
-            LoadAssetsInFolder(Path.Join(categoryPath, SOUND_FOLDER), LoadSoundEffect);
-            //LoadAssetsInFolder(Path.Join(categoryPath, MUSIC_FOLDER), LoadSong);
-            LoadAssetsInFolder(Path.Join(categoryPath, JSON_FOLDER), LoadJson);
-            LoadAssetsInFolder(Path.Join(categoryPath, LUA_FOLDER), LoadLua);
-          }
+          LoadMod(packPath);
 
 
         }
@@ -242,7 +252,7 @@ namespace SurviveCore.Engine
         try
         {
           string internalName = loadMethod(file);
-          
+
           // the loadMethod handles its own output
           //ELDebug.Log("loaded " + subfolder + " " + internalName);
         }
@@ -287,7 +297,7 @@ namespace SurviveCore.Engine
     public static Texture2D GetTexture(string internalName)
     {
       internalName = ProcessWildcard(internalName, textures);
-      
+
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
