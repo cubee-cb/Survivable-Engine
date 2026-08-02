@@ -59,7 +59,7 @@ namespace SurviveCore.Engine
       graphicsDevice = newGraphicsDevice;
     }
 
-    private static string[] GetContentPaths(bool prioritiseExternal = true)
+    private static string[] GetContentPaths(bool prioritiseExternal = false)
     {
       if (prioritiseExternal)
       {
