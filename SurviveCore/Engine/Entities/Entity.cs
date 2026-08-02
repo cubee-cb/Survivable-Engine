@@ -123,6 +123,7 @@ namespace SurviveCore.Engine.Entities
         lua.Globals["GetTarget"] = (Func<string, string, Table>)GetTarget;
         lua.Globals["DistanceTo"] = (Func<float, float, float>)DistanceTo;
         lua.Globals["SnapPosition"] = (Func<float, float, bool>)SnapPosition;
+        lua.Globals["LookAt"] = (Func<float, float, bool>)LookAt;
       }
     }
 
@@ -887,6 +888,11 @@ namespace SurviveCore.Engine.Entities
       //todo: return false if there was a collider in the way
       return true;
     }
+    private bool LookAt(float x, float y)
+    {
+      direction = GetFacingDirection(new(x - position.X, y - position.Y));
+      return true;
+    }
 
     /// <summary>
     /// Get a target matching certain tags. If multiple are found, a random one is chosen other than the current target.
@@ -895,7 +901,7 @@ namespace SurviveCore.Engine.Entities
     /// <returns>The position of the target</returns>
     private Table GetTarget(string tag, string condition)
     {
-      MatchCondition matchCondition = (MatchCondition)Enum.Parse(typeof(MatchCondition), condition);
+      MatchCondition matchCondition = Enum.Parse<MatchCondition>(condition);
 
       Entity foundEntity = world.FindEntityWithTag(this, tag, matchCondition);
 
