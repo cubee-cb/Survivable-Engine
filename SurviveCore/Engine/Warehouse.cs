@@ -348,27 +348,22 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the texture to get.</param>
     /// <returns>The texture that was found, or the missing texture if not.</returns>
-    public static Texture2D GetTexture(string internalName)
+    public static Texture2D GetTexture(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, textures);
 
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty texture reference", category: ELDebug.Category.Warning);
+        if (!silence) ELDebug.Log("got an empty texture reference", category: ELDebug.Category.Warning);
         return missingTexture;
       }
 
       // find the loaded texture and return it
-      if (textures.ContainsKey(internalName))
-      {
-        return textures[internalName];
-      }
-      else
-      {
-        ELDebug.Log("failed to obtain texture " + internalName, category: ELDebug.Category.Warning);
-        return missingTexture;
-      }
+      if (textures.TryGetValue(internalName, out Texture2D texture)) return texture;
+
+      if (!silence) ELDebug.Log("failed to obtain texture " + internalName, category: ELDebug.Category.Warning);
+      return missingTexture;
     }
 
 
@@ -399,27 +394,22 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the sound to load.</param>
     /// <returns>The sound that was found, or the missing sound if not.</returns>
-    public static SoundEffect GetSoundEffect(string internalName)
+    public static SoundEffect GetSoundEffect(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, sounds);
 
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty sound reference", category: ELDebug.Category.Warning);
+        if (!silence) ELDebug.Log("got an empty sound reference", category: ELDebug.Category.Warning);
         return missingSound;
       }
 
       // find the loaded sound and return it
-      if (sounds.ContainsKey(internalName))
-      {
-        return sounds[internalName];
-      }
-      else
-      {
-        ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
-        return missingSound;
-      }
+      if (sounds.TryGetValue(internalName, out SoundEffect sound)) return sound;
+
+      if (!silence) ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
+      return missingSound;
     }
 
     private static string LoadJson(string filePath)
@@ -449,33 +439,22 @@ namespace SurviveCore.Engine
     /// <typeparam name="T">The type to deserialise the json file to.</typeparam>
     /// <param name="fileName">Name of the file to load.</param>
     /// <returns>An object deserialised from the json, based on the type provided to the function.</returns>
-    public static T GetJson<T>(string internalName)
+    public static T GetJson<T>(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, jsonData);
 
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty json reference", category: ELDebug.Category.Warning);
+        if (!silence) ELDebug.Log("got an empty json reference", category: ELDebug.Category.Warning);
         return JsonConvert.DeserializeObject<T>("{}");
       }
 
       // find the loaded json, process, and return it
-      if (jsonData.ContainsKey(internalName))
-      {
-        string jsonString = jsonData[internalName];
+      if (jsonData.TryGetValue(internalName, out string jsonString)) return JsonConvert.DeserializeObject<T>(jsonString);
 
-        T thing = JsonConvert.DeserializeObject<T>(jsonString);
-
-        return thing;
-      }
-
-      else
-      {
-        ELDebug.Log("failed to obtain json file " + internalName, category: ELDebug.Category.Warning);
-        return JsonConvert.DeserializeObject<T>("{}");
-      }
-
+      if (!silence) ELDebug.Log("failed to obtain json file " + internalName, category: ELDebug.Category.Warning);
+      return JsonConvert.DeserializeObject<T>("{}");
     }
 
 
@@ -507,28 +486,25 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the file to load.</param>
     /// <returns>A Script built based on the file contents.</returns>
-    public static Script GetLua(string internalName)
+    public static Script GetLua(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, luaScripts);
 
       // exit if the filename is blank
       if (string.IsNullOrWhiteSpace(internalName))
       {
-        ELDebug.Log("got an empty lua reference", category: ELDebug.Category.Warning);
+        if (!silence) ELDebug.Log("got an empty lua reference", category: ELDebug.Category.Warning);
         return default;
       }
 
       // find the loaded lua, process, and return it
-      if (luaScripts.ContainsKey(internalName))
+      if (luaScripts.TryGetValue(internalName, out string luaString))
       {
-        string luaString = luaScripts[internalName];
-
         // execute lua script and put it into a Script object
         Script script = new(CoreModules.Preset_SoftSandbox);
 
         // register common methods
         LuaCommon.Register(script);
-
 
         try
         {
@@ -543,12 +519,8 @@ namespace SurviveCore.Engine
         return script;
       }
 
-      else
-      {
-        ELDebug.Log("failed to obtain lua file " + internalName, category: ELDebug.Category.Warning);
-        return default;
-      }
-
+      if (!silence) ELDebug.Log("failed to obtain lua file " + internalName, category: ELDebug.Category.Warning);
+      return default;
     }
 
     public static GameProperties GetGameProps()
@@ -562,11 +534,7 @@ namespace SurviveCore.Engine
 
       foreach (string name in foundNamespaces)
       {
-        if (dict.ContainsKey(name + "." + processedName))
-        {
-          return name + "." + processedName;
-
-        }
+        if (dict.ContainsKey(name + "." + processedName)) return name + "." + processedName;
       }
 
       return internalName;

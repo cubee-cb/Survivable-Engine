@@ -102,7 +102,8 @@ namespace SurviveCore.Engine.Entities
     {
       // load assets
       texture = Warehouse.GetTexture(properties.texture);
-      shadowTexture = Warehouse.GetTexture(properties.shadow);
+      if (!string.IsNullOrWhiteSpace(properties.shadow))
+        shadowTexture = Warehouse.GetTexture(properties.shadow, silence: true);
 
       rotationType = properties.rotationType;
       spriteDimensions = properties.spriteDimensions;
@@ -241,7 +242,8 @@ namespace SurviveCore.Engine.Entities
       float myShadowElevation = world.GetStandingTileElevation(GetVisualPosition(tickProgress));
       int myLayer = (int)MathF.Floor(myElevation) / TileMap.TILE_THICKNESS + 1;
       int myShadowLayer = (int)MathF.Floor(myShadowElevation) / TileMap.TILE_THICKNESS + 1;
-      GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1 - myShadowElevation - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myShadowLayer);
+      if (!string.IsNullOrWhiteSpace(properties.shadow))
+        GameDisplay.Draw(shadowTexture, shadowTexture.Bounds, GetVisualPosition(tickProgress) - Vector2.UnitY, visualOffsetX: -shadowTexture.Width / 2, visualOffsetY: 1 - myShadowElevation - shadowTexture.Height / 2, colour: Color.White * 0.5f, layer: myShadowLayer);
       GameDisplay.Draw(texture, clippingRect, GetVisualPosition(tickProgress), visualOffsetX: -width / 2, visualOffsetY: feetOffsetY - myElevation - height, colour: Color.White * opacity, layer: myLayer);
 
       // render held item

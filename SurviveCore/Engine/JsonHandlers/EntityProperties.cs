@@ -9,7 +9,7 @@ namespace SurviveCore.Engine.JsonHandlers
   {
     // descriptions
     public string texture = "entity_default";
-    public string shadow = "shadow_default";
+    public string shadow = "";
     public List<string> tags = [];
     public int feetOffsetY = 2;
     public Dictionary<string, int> hitbox = [];
