@@ -12,6 +12,8 @@ namespace SurviveCore
 {
   public class Game1 : Game
   {
+    public const string ENGINE_NAME = "Survivable Engine";
+
     readonly private GraphicsDeviceManager _graphics;
     private SpriteBatch spriteBatch;
 
@@ -22,6 +24,11 @@ namespace SurviveCore
     public const string GAME_NAMESPACE = "";
 
     public static Random rnd = new();
+    private static GameWindow window;
+    public static void SetWindowTitle(string windowTitle = "")
+    {
+      window.Title = windowTitle;
+    }
 
     List<GameInstance> gameInstances;
 
@@ -32,7 +39,7 @@ namespace SurviveCore
       IsMouseVisible = true;
 
       Window.AllowUserResizing = true;
-
+      window = Window;
 
       // uncomment these to uncap the framerate
       _graphics.SynchronizeWithVerticalRetrace = false;
@@ -44,6 +51,8 @@ namespace SurviveCore
     protected override void Initialize()
     {
       // TODO: Add your initialization logic here
+
+      SetWindowTitle(ENGINE_NAME);
 
       base.Initialize();
     }

@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\MobProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\EntityProperties.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\JsonHandlers\UIProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Engine\Languages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Lua\LuaCommon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Player.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Engine\Entities\Mob.cs" />

@@ -169,6 +169,8 @@ namespace SurviveCore.Engine
       foundNamespaces.Add(nameSpace);
       LoadMod(gamePath);
 
+      Game1.SetWindowTitle(Languages.Translate(gameProps.internalName));
+
       ELDebug.LogSeparator();
     }
 

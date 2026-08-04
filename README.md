@@ -42,6 +42,5 @@ Controls:
 - Left Alt - (while held) Print tick stats to the console.
 
 Special Controls (Hold Right CTRL):
-- U - Unload all asset packs.
-- I - Load all asset packs.
+- R - Reload all asset packs.
 

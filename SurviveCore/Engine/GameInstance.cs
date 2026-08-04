@@ -110,15 +110,11 @@ namespace SurviveCore.Engine
       // dangerous keys (hold right control to activate)
       if (ELDebug.Key(Keys.RightControl))
       {
-        // unload all asset packs ([U]nload)
-        if (ELDebug.Key(Keys.U))
+        // [R]eload all asset packs
+        if (ELDebug.Key(Keys.R))
         {
           Warehouse.UnloadAll();
-          UpdateAssets();
-        }
-        // load all asset packs ([I]nitialise)
-        if (ELDebug.Key(Keys.I))
-        {
+          Warehouse.LoadGame();
           Warehouse.LoadAssetPacks();
           UpdateAssets();
         }
