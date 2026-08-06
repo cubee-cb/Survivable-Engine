@@ -53,6 +53,7 @@ namespace SurviveCore
       // TODO: Add your initialization logic here
 
       SetWindowTitle(ENGINE_NAME);
+      AudioManager.Initialise();
 
       base.Initialize();
     }

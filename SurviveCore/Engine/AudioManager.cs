@@ -1,16 +1,55 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using SurviveDesktop;
+﻿using SurviveDesktop;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Xna.Framework.Audio;
+
+using SoundFlow.Backends.MiniAudio;
+using SoundFlow.Structs;
+using System.Linq;
+using SoundFlow.Components;
+using SoundFlow.Providers;
+using System.IO;
+using SoundFlow.Abstracts.Devices;
 
 namespace SurviveCore.Engine
 {
   // based on SoundEffectInstance manager code from Ninja Cat Remewstered
   internal static class AudioManager
   {
+
     private static readonly List<SoundEffectInstance> soundInstances = [];
     private static readonly Dictionary<string, SoundEffectInstance> keyedSoundInstances = [];
+
+    private static SoundPlayer player;
+
+    public static void Initialise()
+    {
+      AudioFormat format = AudioFormat.DvdHq;
+
+      // init soundflow audio and playback device
+      using MiniAudioEngine engine = new();
+      engine.UpdateAudioDevicesInfo();
+      DeviceInfo defaultDevice = engine.PlaybackDevices.FirstOrDefault(deviceInfo => deviceInfo.IsDefault); // attempt to use default device
+      using AudioPlaybackDevice playbackDevice = engine.InitializePlaybackDevice(defaultDevice, format);
+      playbackDevice.Start();
+
+      // get audio stream from file and put into player
+      using StreamDataProvider dataProvider = new(engine, format, File.OpenRead("/mnt/big-chungus/projects/monogame/Survivable-Engine/SurviveCore/Content/sfx/missing.wav"));
+      player = new(engine, format, dataProvider);
+
+      // add it to the mixer
+      playbackDevice.MasterMixer.AddComponent(player);
+
+      // play
+      player.Play();
+
+      // it does play, but presumably the audio system doesn't live long anough to actually be audible,
+      // outside of pausing here
+
+      // then stop all audio
+      playbackDevice.Stop();
+    }
 
     /// <summary>
     /// Creates an instance of a soundeffect stored in Warehouse. Can optionally be made unique by passing a key.
