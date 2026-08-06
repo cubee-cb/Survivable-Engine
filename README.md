@@ -1,9 +1,13 @@
 # Survivable Engine
 
-A rebuild of my engine for [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle) to be more focused on data files and extensibility, and overall just coded better. Everlost Isle was internally known as Survive, hence the name.
-Built on Monogame 3.8.4.1 with .NET 9.0. Uses [Newtonsoft.Json](https://www.newtonsoft.com/json) for Json and [MoonSharp](https://www.moonsharp.org/) for Lua scripting.
+A rebuild of my engine for [Everlost Isle](https://cubee.games/?rel=games&sub=everlost_isle) to be more focused on data files and extensibility, and overall just coded better.
+This engine is intended to be used primarily for Everlost Isle (which was internally known as Survive, hence the name), though I may use it for other projects if their gameplay is similar enough.
 
-Everlost Isle is intended to become a top-down survival game, largely inspired by Terraria's progression style and Stardew Valley's world structure and perspective, though this time I intend to build the engine separately from the game's content in a way that can allow easy modding through Lua and Json files, with potentially entirely new games able to be built on it. The goal is for as much of Everlost Isle as possible to be implemented as an "Asset Pack", so people can easily change or replace practically any part of it.
+Built on:
+- Monogame 3.8.4.1 (.NET 9.0)
+- [Newtonsoft.Json](https://www.newtonsoft.com/json)
+- [MoonSharp](https://www.moonsharp.org/)
+- [SoundFlow](https://github.com/LSXPrime/SoundFlow)
 
 ![image](.github/screen1.png)
 
