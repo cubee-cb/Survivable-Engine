@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using SoundFlow.Providers;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.Lua;
 using SurviveDesktop;
@@ -40,12 +32,10 @@ namespace SurviveCore.Engine
     private const char NAMESPACE_SEPARATOR = '.';
 
     private static Texture2D missingTexture;
-    private static SoundEffect missingSound;
-    private static Song missingMusic;
 
     readonly private static Dictionary<string, Texture2D> textures = [];
-    readonly private static Dictionary<string, SoundEffect> sounds = [];
-    readonly private static Dictionary<string, Song> music = [];
+    readonly private static Dictionary<string, AssetDataProvider> sounds = [];
+    readonly private static Dictionary<string, StreamDataProvider> music = [];
     readonly private static Dictionary<string, string> jsonData = [];
     readonly private static Dictionary<string, string> luaScripts = [];
 
@@ -85,8 +75,6 @@ namespace SurviveCore.Engine
       // load fallback content for warehouse, used when an asset cannot be found
       // content.Load is only used here for built-in engine content like placeholders.
       missingTexture = Content.Load<Texture2D>("spr/missing");
-      missingSound = Content.Load<SoundEffect>("sfx/missing");
-      missingMusic = Content.Load<Song>("music/missing");
     }
 
     /// <summary>
@@ -232,14 +220,14 @@ namespace SurviveCore.Engine
       }
       textures.Clear();
 
-      foreach (KeyValuePair<string, SoundEffect> kvp in sounds)
+      foreach (KeyValuePair<string, AssetDataProvider> kvp in sounds)
       {
         kvp.Value.Dispose();
         ELDebug.Log("unloaded sound effect " + kvp.Key);
       }
       sounds.Clear();
 
-      foreach (KeyValuePair<string, Song> kvp in music)
+      foreach (KeyValuePair<string, StreamDataProvider> kvp in music)
       {
         kvp.Value.Dispose();
         ELDebug.Log("unloaded music track " + kvp.Key);
@@ -368,9 +356,7 @@ namespace SurviveCore.Engine
 
       if (Platform.Exists(filePath))
       {
-        FileStream stream = new(filePath, FileMode.Open);
-        SoundEffect loadedSound = SoundEffect.FromStream(stream);
-        stream.Dispose(); //DisposeAsync();
+        AssetDataProvider loadedSound = AudioManager.FromAsset(filePath);
 
         // replace loaded asset if it already exists
         if (!sounds.TryAdd(internalName, loadedSound))
@@ -389,7 +375,7 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the sound to load.</param>
     /// <returns>The sound that was found, or the missing sound if not.</returns>
-    public static SoundEffect GetSoundEffect(string internalName, bool silence = false)
+    public static AssetDataProvider GetSoundEffect(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, sounds);
 
@@ -397,14 +383,14 @@ namespace SurviveCore.Engine
       if (string.IsNullOrWhiteSpace(internalName))
       {
         if (!silence) ELDebug.Log("got an empty sound reference", category: ELDebug.Category.Warning);
-        return missingSound;
+        return null;
       }
 
       // find the loaded sound and return it
-      if (sounds.TryGetValue(internalName, out SoundEffect sound)) return sound;
+      if (sounds.TryGetValue(internalName, out AssetDataProvider sound)) return sound;
 
       if (!silence) ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
-      return missingSound;
+      return null;
     }
 
     private static string LoadJson(string filePath)

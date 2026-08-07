@@ -31,6 +31,10 @@
     <Content Include="$(ProjectDir)../assetPacks/**/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest">
       <Link>assetPacks/%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+
+    <Content Include="$(ProjectDir)Content/sfx/*.*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest">
+      <Link>Content/sfx/%(Filename)%(Extension)</Link>
+    </Content>
   </ItemGroup>
 
   <Import Project="..\SurviveCore\SurviveCore.projitems" Label="Shared" />
