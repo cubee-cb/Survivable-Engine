@@ -12,6 +12,7 @@ using SoundFlow.Providers;
 using System.IO;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Enums;
+using SoundFlow.Interfaces;
 
 namespace SurviveCore.Engine
 {
@@ -48,36 +49,50 @@ namespace SurviveCore.Engine
       //playbackDevice.Stop();
     }
 
-    public static AssetDataProvider FromAsset(string path)
+    /// <summary>
+    /// construct format based on the sound's metadata
+    /// </summary>
+    /// <param name="provider">SoundDataProvider</param>
+    /// <returns>AudioFormat</returns>
+    private static AudioFormat InferFormat(ISoundDataProvider provider)
     {
-      return new(engine, path);
+      return new()
+      {
+        SampleRate = provider.FormatInfo.SampleRate,
+        Channels = provider.FormatInfo.ChannelCount,
+        Layout = provider.FormatInfo.ChannelCount == 1 ? ChannelLayout.Mono : ChannelLayout.Stereo,
+        Format = SampleFormat.U8,
+      };
     }
 
-    public static StreamDataProvider FromAsset(Stream stream)
+    public static SoundPlayer SoundFromAsset(string path)
     {
-      return new(engine, stream);
+      AssetDataProvider soundAsset = new(engine, path);
+
+      // put into player and add it to the mixer
+      SoundPlayer player = new(engine, InferFormat(soundAsset), soundAsset);
+      playbackDevice.MasterMixer.AddComponent(player);
+      return player;
+    }
+
+    public static SoundPlayer SoundFromStream(Stream stream)
+    {
+      StreamDataProvider soundAsset = new(engine, stream);
+
+      // put into player and add it to the mixer
+      SoundPlayer player = new(engine, InferFormat(soundAsset), soundAsset);
+      playbackDevice.MasterMixer.AddComponent(player);
+      return player;
     }
 
     private static SoundPlayer PlaySoundInternal(string soundKey)
     {
       // get audio stream from warehouse
-      AssetDataProvider soundAsset = Warehouse.GetSoundEffect(soundKey);
-      if (soundAsset == null) return null;
-
-      // constructs format based on the sound's metadata
-      AudioFormat format = new()
-      {
-        SampleRate = soundAsset.FormatInfo.SampleRate,
-        Channels = soundAsset.FormatInfo.ChannelCount,
-        Layout = soundAsset.FormatInfo.ChannelCount == 1 ? ChannelLayout.Mono : ChannelLayout.Stereo,
-        Format = SampleFormat.U8,
-      };
-
-      // put into player and add it to the mixer
-      SoundPlayer player = new(engine, format, soundAsset);
-      playbackDevice.MasterMixer.AddComponent(player);
+      SoundPlayer player = Warehouse.GetSoundEffect(soundKey);
+      if (player == null) return null;
 
       // play
+      player.Stop();
       player.Play();
       return player;
     }
@@ -90,19 +105,7 @@ namespace SurviveCore.Engine
     /// <returns>A reference to the SoundEffectInstance that was made.</returns>
     public static SoundPlayer PlaySound(string soundKey)
     {
-      // only play the sound if there's a free slot, or it would replace an existing sound
-      if (soundPlayers.Count + soundPlayersKeyed.Count >= Platform.MAX_SFX_INSTANCES)
-      {
-        ELDebug.Log("max sound instances reached, not playing " + soundKey);
-        return null;
-      }
-
-      ELDebug.Log($"playing {soundKey}");
-      SoundPlayer player = PlaySoundInternal(soundKey);
-      ELDebug.Log($"player: {player.State} {player.Volume} {player.IsDisposed} {player.DataProvider.Length} {player.Name}");
-      ELDebug.Log($"mixer: {playbackDevice.MasterMixer.Components.Count} {playbackDevice.MasterMixer.Enabled}");
-      soundPlayers.Add(player);
-      return player;
+      return PlaySoundInternal(soundKey);
     }
 
     /// <summary>
@@ -113,13 +116,6 @@ namespace SurviveCore.Engine
     /// <returns>A reference to the SoundEffectInstance that was made.</returns>
     public static SoundPlayer PlaySound(string soundKey, string key)
     {
-      // only play the sound if there's a free slot, or it would replace an existing sound
-      if (soundPlayers.Count + soundPlayersKeyed.Count >= Platform.MAX_SFX_INSTANCES && !soundPlayersKeyed.ContainsKey(key))
-      {
-        ELDebug.Log("max sound instances reached, not playing " + soundKey);
-        return null;
-      }
-
       if (string.IsNullOrWhiteSpace(key))
       {
         ELDebug.Log("key is blank or null, not playing " + soundKey);
@@ -127,13 +123,11 @@ namespace SurviveCore.Engine
       }
 
       // restart old sound instance instead of creating a new one, if it already exists
-      if (soundPlayersKeyed.TryGetValue(key, out SoundPlayer oldPlayer))
+      if (soundPlayersKeyed.TryGetValue(key, out SoundPlayer existingPlayer))
       {
-        ELDebug.Log("conflicting keyed sound instance " + soundKey + " exists, replacing old instance");
-        oldPlayer.Stop();
-        oldPlayer.Play();
-        soundPlayersKeyed.Remove(key);
-        return oldPlayer;
+        existingPlayer.Stop();
+        existingPlayer.Play();
+        return existingPlayer;
       }
 
       SoundPlayer player = PlaySoundInternal(soundKey);
@@ -147,13 +141,13 @@ namespace SurviveCore.Engine
     /// <returns>True</returns>
     public static bool StopAllSounds()
     {
-      foreach (SoundPlayer sf in soundPlayers)
+      foreach (SoundPlayer player in soundPlayers)
       {
-        sf.Stop();
+        player.Stop();
       }
-      foreach (KeyValuePair<string, SoundPlayer> sf in soundPlayersKeyed)
+      foreach (KeyValuePair<string, SoundPlayer> player in soundPlayersKeyed)
       {
-        sf.Value.Stop();
+        player.Value.Stop();
       }
       return true;
     }
@@ -201,20 +195,7 @@ namespace SurviveCore.Engine
     /// </summary>
     public static void Cleanup()
     {
-      // clean up finished SoundEffectInstances
-      // loop in reverse so we don't skip the next one after removing one
-      for (int i = soundPlayers.Count - 1; i > -1; i--)
-      {
-        SoundPlayer sf = soundPlayers[i];
-        if (sf.State == PlaybackState.Stopped)
-        {
-          playbackDevice.MasterMixer.RemoveComponent(sf);
-          sf.Dispose();
-          soundPlayers.RemoveAt(i);
-        }
-      }
-
-      // don't bother cleaning up keyed sounds; they will be reused next time something plays them
+      // don't bother cleaning up sounds; sounds are currently not instanced
     }
 
   }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
 using Newtonsoft.Json;
-using SoundFlow.Providers;
+using SoundFlow.Components;
 using SurviveCore.Engine.JsonHandlers;
 using SurviveCore.Engine.Lua;
 using SurviveDesktop;
@@ -34,8 +34,8 @@ namespace SurviveCore.Engine
     private static Texture2D missingTexture;
 
     readonly private static Dictionary<string, Texture2D> textures = [];
-    readonly private static Dictionary<string, AssetDataProvider> sounds = [];
-    readonly private static Dictionary<string, StreamDataProvider> music = [];
+    readonly private static Dictionary<string, SoundPlayer> sounds = [];
+    readonly private static Dictionary<string, SoundPlayer> music = [];
     readonly private static Dictionary<string, string> jsonData = [];
     readonly private static Dictionary<string, string> luaScripts = [];
 
@@ -220,14 +220,14 @@ namespace SurviveCore.Engine
       }
       textures.Clear();
 
-      foreach (KeyValuePair<string, AssetDataProvider> kvp in sounds)
+      foreach (KeyValuePair<string, SoundPlayer> kvp in sounds)
       {
         kvp.Value.Dispose();
         ELDebug.Log("unloaded sound effect " + kvp.Key);
       }
       sounds.Clear();
 
-      foreach (KeyValuePair<string, StreamDataProvider> kvp in music)
+      foreach (KeyValuePair<string, SoundPlayer> kvp in music)
       {
         kvp.Value.Dispose();
         ELDebug.Log("unloaded music track " + kvp.Key);
@@ -356,7 +356,7 @@ namespace SurviveCore.Engine
 
       if (Platform.Exists(filePath))
       {
-        AssetDataProvider loadedSound = AudioManager.FromAsset(filePath);
+        SoundPlayer loadedSound = AudioManager.SoundFromAsset(filePath);
 
         // replace loaded asset if it already exists
         if (!sounds.TryAdd(internalName, loadedSound))
@@ -375,7 +375,7 @@ namespace SurviveCore.Engine
     /// </summary>
     /// <param name="fileName">Name of the sound to load.</param>
     /// <returns>The sound that was found, or the missing sound if not.</returns>
-    public static AssetDataProvider GetSoundEffect(string internalName, bool silence = false)
+    public static SoundPlayer GetSoundEffect(string internalName, bool silence = false)
     {
       internalName = ProcessWildcard(internalName, sounds);
 
@@ -387,7 +387,7 @@ namespace SurviveCore.Engine
       }
 
       // find the loaded sound and return it
-      if (sounds.TryGetValue(internalName, out AssetDataProvider sound)) return sound;
+      if (sounds.TryGetValue(internalName, out SoundPlayer sound)) return sound;
 
       if (!silence) ELDebug.Log("failed to obtain sound " + internalName, category: ELDebug.Category.Warning);
       return null;
